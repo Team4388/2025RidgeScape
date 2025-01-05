@@ -52,7 +52,7 @@ public class SwerveModule extends Subsystem {
     // private int selfid;
     // private ConfigurableDouble offsetGetter;
     private static int swerveId = 0;
-    public static Gains swerveGains = SwerveDriveConstants.PIDConstants.SWERVE_GAINS;
+    public static Gains swerveGains = SwerveDriveConstants.PIDConstants.SWERVE_ROT_GAINS;
   
     
     /** Creates a new SwerveModule. */

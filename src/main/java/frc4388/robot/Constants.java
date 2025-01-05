@@ -10,6 +10,15 @@ package frc4388.robot;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PPLTVController;
+import com.pathplanner.lib.controllers.PathFollowingController;
+
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
@@ -34,6 +43,8 @@ public final class Constants {
         public static       double ROTATION_SPEED       = MAX_ROT_SPEED;
         public static       double PLAYBACK_ROTATION_SPEED = AUTO_MAX_ROT_SPEED;
         public static       double ROT_CORRECTION_SPEED = 10; // MIN_ROT_SPEED;
+
+        public static final double SWERVE_MODULE_OFFSET = 0.3; // In meters. This only works for square swerve chasis
 
         public static final double CORRECTION_MIN = 10;
         public static final double CORRECTION_MAX = 50;
@@ -77,9 +88,8 @@ public final class Constants {
         public static final class PIDConstants {
             public static final int SWERVE_SLOT_IDX = 0;
             public static final int SWERVE_PID_LOOP_IDX = 1;
-            public static final Gains SWERVE_GAINS = new Gains(50, 0.0, 0.32, 0.0, 0, 0.0);
-
-            public static final Gains TEST_SWERVE_GAINS = new Gains(1.2, 0.0, 0.0, 0.0, 0, 0.0);
+            public static final Gains SWERVE_MOVE_GAINS = new Gains(50, 0.0, 0.32, 0.0, 0, 0.0);
+            public static final Gains SWERVE_ROT_GAINS = new Gains(50, 0.0, 0.32, 0.0, 0, 0.0);
 
         }
     
@@ -91,7 +101,60 @@ public final class Constants {
             
             public static final double PATH_MAX_VEL = 0.3; // TODO: find the actual value
             public static final double PATH_MAX_ACC = 0.3; // TODO: find the actual value
-        }
+
+
+        public static final double MASS = 10; // KG
+        public static final double MOI = 10;  // Moment of inertia
+
+        public static final double WHEEL_RADIUS = 0.05; // Meters
+        public static final double MAX_DRIVE_VELOCITY = 0.5; // Meters per second
+        public static final double MAX_ROT_SPEED = 0.2; // Rotations per second
+
+
+        public static final double COEFFICENT_OF_FRICTION = 1.0; // Between 0 and 1
+        public static final DCMotor MOTOR = DCMotor.getKrakenX60(1);
+        public static final double DRIVE_CURRENT_LIMIT = 100000; //TODO: Get actual value
+
+
+        public static final ModuleConfig MODULE_CONFIG = new ModuleConfig(
+            WHEEL_RADIUS, 
+            MAX_DRIVE_VELOCITY, 
+            COEFFICENT_OF_FRICTION, 
+            MOTOR,
+            DRIVE_CURRENT_LIMIT, 
+            1);
+
+        public static final RobotConfig PP_ROBOT_CONFIG = new RobotConfig(
+            MASS, 
+            MOI, 
+            MODULE_CONFIG,
+            new Translation2d[] { //TODO: Find if the negatives will work correctly.
+                new Translation2d(-SWERVE_MODULE_OFFSET, SWERVE_MODULE_OFFSET), //FL
+                new Translation2d( SWERVE_MODULE_OFFSET, SWERVE_MODULE_OFFSET), //FR
+                new Translation2d(-SWERVE_MODULE_OFFSET,-SWERVE_MODULE_OFFSET), //BL
+                new Translation2d( SWERVE_MODULE_OFFSET,-SWERVE_MODULE_OFFSET), //BR
+            });
+
+        // public static final 
+            
+        // public static final double ROBOT_LOOP_TIME = 0.02; // Time it takes for the robot to run a loop
+        public static final PathFollowingController PP_PATH_FOLLOWING_CONTROLLER = new PPHolonomicDriveController( 
+
+            new com.pathplanner.lib.config.PIDConstants(
+                PIDConstants.SWERVE_MOVE_GAINS.kP, 
+                PIDConstants.SWERVE_MOVE_GAINS.kI, 
+                PIDConstants.SWERVE_MOVE_GAINS.kD,
+                PIDConstants.SWERVE_MOVE_GAINS.kIZone
+            ),
+
+            new com.pathplanner.lib.config.PIDConstants(
+                PIDConstants.SWERVE_ROT_GAINS.kP, 
+                PIDConstants.SWERVE_ROT_GAINS.kI, 
+                PIDConstants.SWERVE_ROT_GAINS.kD,
+                PIDConstants.SWERVE_ROT_GAINS.kIZone
+            ));
+        
+    }
     
         public static final class Conversions {
             public static final double JOYSTICK_TO_METERS_PER_SECOND_FAST = 6.22;
@@ -134,6 +197,7 @@ public final class Constants {
       }
     
     public static final class VisionConstants {
+        public static final String CAMERA_NAME = "Camera_Module_v1";
     }
 
     public static final class DriveConstants {

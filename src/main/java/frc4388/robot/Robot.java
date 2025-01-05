@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
             Subsystem.subsystems.get(i).queryStatus();
           }
 
-          System.out.println("Updated statuses!");
+          // System.out.println("Updated statuses!");
           
         }
         }catch(Exception e){

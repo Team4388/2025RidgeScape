@@ -6,16 +6,20 @@ package frc4388.robot.subsystems;
 
 import java.util.logging.Level;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.Constants.SwerveDriveConstants;
+import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 import frc4388.robot.Constants.SwerveDriveConstants.Conversions;
 import frc4388.utility.RobotGyro;
 import frc4388.utility.RobotUnits;
@@ -53,17 +57,49 @@ public class SwerveDrive extends Subsystem {
   public Rotation2d orientRotTarget = new Rotation2d();
   public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
+  private RobotLocalizer robotLocalizer;
+
   /** Creates a new SwerveDrive. */
-  public SwerveDrive(SwerveModule leftFront, SwerveModule rightFront, SwerveModule leftBack, SwerveModule rightBack, RobotGyro gyro) {
+  public SwerveDrive(
+    SwerveModule leftFront, 
+    SwerveModule rightFront, 
+    SwerveModule leftBack, 
+    SwerveModule rightBack, 
+    RobotGyro gyro, 
+    RobotLocalizer robotLocalizer) {
+      
     super();
     this.leftFront = leftFront;
     this.rightFront = rightFront;
     this.leftBack = leftBack;
     this.rightBack = rightBack;
+    this.robotLocalizer = robotLocalizer;
     
     this.gyro = gyro;
     reset_index();
     this.modules = new SwerveModule[] {this.leftFront, this.rightFront, this.leftBack, this.rightBack};
+
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+        robotLocalizer::getPose,
+        robotLocalizer::resetPose,
+        robotLocalizer::getChassisSpeeds,
+        this::setTargetChassisSpeeds,
+        AutoConstants.PP_PATH_FOLLOWING_CONTROLLER,
+        AutoConstants.PP_ROBOT_CONFIG,
+        () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+        },
+        this
+    );
   }
 
   public void oneModuleTest(SwerveModule module, Translation2d leftStick, Translation2d rightStick){
@@ -213,6 +249,10 @@ public class SwerveDrive extends Subsystem {
     return false;
   }
 
+  public void setTargetChassisSpeeds(ChassisSpeeds speeds){
+    setModuleStates(kinematics.toSwerveModuleStates(chassisSpeeds));
+  }
+
   public double getGyroAngle() {
     return -gyro.getAngle();
   }
@@ -328,6 +368,11 @@ public class SwerveDrive extends Subsystem {
   public void shiftDownRot() {
     rotSpeedAdjust = SwerveDriveConstants.MIN_ROT_SPEED;
   }
+
+
+
+
+
 
   @Override
   public String getSubsystemName() {

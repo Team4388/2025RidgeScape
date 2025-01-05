@@ -15,6 +15,8 @@ import com.kauailabs.navx.frc.AHRS;
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 /**
  * Gyro class that allows for interchangeable use between a pigeon and a navX
@@ -261,6 +263,24 @@ public class RobotGyro {
 
     public AHRS getNavX(){
         return m_navX;
+    }
+
+    public Translation3d getAcceleration3d() {
+        if(!m_isGyroAPigeon) return new Translation3d();
+        return new Translation3d(
+            m_pigeon.getAccelerationX().getValue().baseUnitMagnitude(), 
+            m_pigeon.getAccelerationY().getValue().baseUnitMagnitude(), 
+            m_pigeon.getAccelerationZ().getValue().baseUnitMagnitude());
+    }    
+
+    public double getYawAngularVelocity() {
+        if(!m_isGyroAPigeon) return 0;
+        return m_pigeon.getAngularVelocityYDevice().getValueAsDouble();
+    }
+
+    public Rotation3d getRotation3d() {
+        if(!m_isGyroAPigeon) return new Rotation3d();
+        return m_pigeon.getRotation3d();
     }
 
     public void close() throws Exception {
