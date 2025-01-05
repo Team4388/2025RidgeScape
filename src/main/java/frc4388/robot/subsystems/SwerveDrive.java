@@ -12,6 +12,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -334,16 +339,24 @@ public class SwerveDrive extends Subsystem {
     return "Swerve Drive Controller";
   }
 
+  ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
+  .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+  .withSize(2, 2);
+
+  GenericEntry sbGyro = subsystemLayout
+  .add("Gyro angle", 0)
+  .withWidget(BuiltInWidgets.kGyro)
+  .getEntry();
+
+  GenericEntry sbShiftState = subsystemLayout
+  .add("Shift State", 0)
+  .withWidget(BuiltInWidgets.kNumberBar)
+  .getEntry();
+
   @Override
   public void queryStatus() {
-
-    SmartDashboard.putNumber("[" + getSubsystemName() + "] Gyro angle", this.gyro.getAngle());
-    SmartDashboard.putNumber("[" + getSubsystemName() + "] Shift State", this.speedAdjust);
-
-    // this.leftFront.queryStatus();
-    // this.leftBack.queryStatus();
-    // this.rightFront.queryStatus();
-    // this.rightBack.queryStatus();
+    sbGyro.setDouble(this.gyro.getAngle());
+    sbShiftState.setDouble(this.speedAdjust);
   
     //TODO: Add more status things
   }

@@ -33,6 +33,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -243,10 +248,39 @@ public class SwerveModule extends Subsystem {
         return this.name;
     }
 
+    ShuffleboardLayout subsystemLayout;
+    GenericEntry sbSpeed;
+    GenericEntry sbAngle;
+
+    private void createLayout(){
+
+        subsystemLayout = Shuffleboard.getTab("Subsystems")
+        .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+        .withSize(2, 2);
+
+        sbSpeed =  subsystemLayout
+        .add("Drive motor speed", 0)
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .getEntry();
+
+        sbAngle =  subsystemLayout
+        .add("Angle motor angle", 0)
+        .withWidget(BuiltInWidgets.kGyro)
+        .getEntry();
+    }
+
+
     @Override
     public void queryStatus() {
-        SmartDashboard.putNumber("[" + getSubsystemName() + "] Drive motor speed", this.driveMotor.get());
-        SmartDashboard.putNumber("[" + getSubsystemName() + "] Angle motor angle", this.angleMotor.getRotorPosition().getValueAsDouble());
+        if(subsystemLayout == null)
+            createLayout();
+
+        // Shuffleboard.getTab("Subsystems").set
+
+        // sbSpeed.setDouble(this.driveMotor.get());
+        sbAngle.setDouble(this.angleMotor.getRotorPosition().getValueAsDouble());
+        // SmartDashboard.putNumber("[" + getSubsystemName() + "] Drive motor speed", this.driveMotor.get());
+        // SmartDashboard.putNumber("[" + getSubsystemName() + "] Angle motor angle", this.angleMotor.getRotorPosition().getValueAsDouble());
         //TODO: Add more status things
     }
 
