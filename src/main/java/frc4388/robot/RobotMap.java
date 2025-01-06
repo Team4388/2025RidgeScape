@@ -10,6 +10,10 @@ package frc4388.robot;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 // import edu.wpi.first.wpilibj.motorcontrol.Spark;
 // import frc4388.robot.Constants.LEDConstants;
@@ -22,8 +26,8 @@ import frc4388.utility.RobotGyro;
  * testing and modularization.
  */
 public class RobotMap {
-    private Pigeon2 m_pigeon2 = new Pigeon2(SwerveDriveConstants.IDs.DRIVE_PIGEON.id);
-    public RobotGyro gyro = new RobotGyro(m_pigeon2);
+    // private Pigeon2 m_pigeon2 = new Pigeon2(SwerveDriveConstants.IDs.DRIVE_PIGEON.id);
+    // public RobotGyro gyro = new RobotGyro(m_pigeon2);
     
     public SwerveModule leftFront;
     public SwerveModule rightFront;
@@ -36,6 +40,13 @@ public class RobotMap {
 
     /* LED Subsystem */
     // public final Spark LEDController = new Spark(LEDConstants.LED_SPARK_ID);
+
+    public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(
+        TalonFX::new, TalonFX::new, CANcoder::new, 
+        new SwerveDrivetrainConstants().withPigeon2Id(SwerveDriveConstants.IDs.DRIVE_PIGEON.id),
+        new SwerveModuleConstants[] {
+        }
+    )
 
     /* Swreve Drive Subsystem */
     public final TalonFX  leftFrontWheel    = new  TalonFX(SwerveDriveConstants.IDs.LEFT_FRONT_WHEEL.id);

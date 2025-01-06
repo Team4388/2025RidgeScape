@@ -10,6 +10,11 @@ package frc4388.robot;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ParentConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
@@ -43,7 +48,7 @@ public final class Constants {
         public static final double SLOW_SPEED = 0.25;
         public static final double FAST_SPEED = 0.5;
         public static final double TURBO_SPEED = 1.0;
-    
+
         // public static List<CanDevice> CAN_DEVICES = new ArrayList<>();
 
         public static final class DefaultSwerveRotOffsets {
@@ -127,7 +132,18 @@ public final class Constants {
         public static final double HEIGHT = 18.5;
         public static final double HALF_WIDTH = WIDTH / 2.d;
         public static final double HALF_HEIGHT = HEIGHT / 2.d;
-    
+        
+        public static final SwerveModuleConstants<ParentConfiguration, ParentConfiguration, ParentConfiguration> FRONT_LEFT = new SwerveModuleConstants<>()
+            .withLocationX(HALF_WIDTH)
+            .withLocationX(HALF_HEIGHT)
+            .withDriveMotorId(2)
+            .withDriveMotorInverted(false)
+            .withSteerMotorId(3)
+            .withSteerMotorInverted(false)
+            .withEncoderId(10)
+            .withEncoderInverted(false)
+            .withEncoderOffset(0.0);
+
         // misc
         public static final int TIMEOUT_MS = 30;
         public static final int SMARTDASHBOARD_UPDATE_FRAME = 2;
