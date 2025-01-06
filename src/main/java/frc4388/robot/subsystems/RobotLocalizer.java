@@ -10,11 +10,14 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -22,8 +25,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc4388.robot.Constants.SwerveDriveConstants;
 import frc4388.utility.RobotGyro;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
@@ -33,63 +38,70 @@ public class RobotLocalizer extends Subsystem {
     private Pose2d lastPose2d = new Pose2d();
     private PhotonCameraSim camera;
 
-    private Translation3d accel = new Translation3d();
-    private Rotation3d rot = new Rotation3d();
+    private SwerveModule leftFront;
+    private SwerveModule rightFront;
+    private SwerveModule leftBack;
+    private SwerveModule rightBack;
 
+    private SwerveDriveOdometry physicalOdometry;
 
-    public RobotLocalizer(RobotGyro gyro, PhotonCameraSim cam) {
+    private Field2d smdField = new Field2d();
+
+    public RobotLocalizer(
+            SwerveModule leftFront,
+            SwerveModule rightFront,
+            SwerveModule leftBack,
+            SwerveModule rightBack,
+        
+            RobotGyro gyro, PhotonCameraSim cam
+        ) {
+
+        this.leftFront = leftFront;
+        this.rightFront = rightFront;
+        this.leftBack = leftBack;
+        this.rightBack = rightBack;
+
         this.gyro = gyro;
         this.camera = cam;
+
+        this.physicalOdometry = new SwerveDriveOdometry(
+            SwerveDriveConstants.KINEMATICS, 
+            gyro.getRotation2d(),
+            getSwerveModulePositions(),
+            new Pose2d()
+        );
+
+
+        SmartDashboard.putData("Robot Pose", smdField);
     }
+
+    private SwerveModulePosition[] getSwerveModulePositions() {
+        return new SwerveModulePosition[] {
+            leftFront.getPosition(),
+            rightFront.getPosition(),
+            leftBack.getPosition(),
+            rightBack.getPosition()
+        };
+    }
+
+    private Translation3d gyroAccel = new Translation3d();
+    private Rotation2d gyroRot = new Rotation2d();
+
+    private Pose2d physicalOdometryPose = new Pose2d();
 
     @Override
     public void periodic() {
-        // time
-        accel = gyro.getAcceleration3d();
+        gyroAccel = gyro.getAcceleration3d();
+        gyroRot = gyro.getRotation2d();
 
+        physicalOdometryPose = physicalOdometry.update(gyroRot, getSwerveModulePositions());
 
-        rot = gyro.getRotation3d();
-
-        // boolean tagExists = SmartDashboard.getBoolean("photonvision/Camera_Module_v1/hasTarget", false);
+        // Translation2d pos;
         
-        Translation2d pos;
-
-        // var result = camera.getAllUnreadResults();
-        // if (result.hasTargets()) {
-        //     PhotonTrackedTarget target = result.getBestTarget();
-        //     Transform3d pos3d = target.getBestCameraToTarget();
-        //     pos = new Translation2d(pos3d.getX(), pos3d.getY());
-        // } else {
-            pos = lastPose2d.getTranslation();
-        // }
-
-        // results.
-        // if (!results.isEmpty()) {
-
-        //     double totalX = 0;
-        //     double totalY = 0;
-
-        //     // Camera processed a new frame since last
-        //     // Get the last one in the list.
-        //     var result = results.get(results.size() - 1);
-        //     // PhotonTrackedTarget targets = result.getMultiTagResult();
-
-        //     if (result.hasTargets()) {
-        //         PhotonTrackedTarget target = result.getBestTarget();
-        //         Transform3d pos3d = target.getBestCameraToTarget();
-        //         pos = new Translation2d(pos3d.getX(), pos3d.getY());
-        //     } else {
-        //         pos = lastPose2d.getTranslation();
-        //     }
-        // }else {
-        //     pos = lastPose2d.getTranslation();
-        // }
+        // pos = lastPose2d.getTranslation();
 
 
-        lastPose2d = new Pose2d(
-            pos,
-            gyro.getRotation2d() 
-        );
+        lastPose2d = physicalOdometryPose;
     }
 
     // Pathplanner function
@@ -105,8 +117,8 @@ public class RobotLocalizer extends Subsystem {
     // PathPlanner
     public ChassisSpeeds getChassisSpeeds() {
         return new ChassisSpeeds(
-            0, 
-            0, 
+            0,
+            0,
             Units.rotationsToRadians(gyro.getYawAngularVelocity())
         );
     }
@@ -135,23 +147,14 @@ public class RobotLocalizer extends Subsystem {
     public void queryStatus() {
         // subsystemLayout
 
-        sbGyro.setDouble(rot.getX());
+        smdField.setRobotPose(lastPose2d);
+
+        sbGyro.setDouble(gyroRot.getDegrees());
         Shuffleboard.update();
-        // sbAccleration.set
-        
-        // SmartDashboard.putNumber("Accel X", accel.getX());
-        // SmartDashboard.putNumber("Accel Y", accel.getY());
-        // SmartDashboard.putNumber("Accel Z", accel.getZ());
-
-
-        // SmartDashboard.putNumber("Rot X", rot.getX());
-        // SmartDashboard.putNumber("Rot Y", rot.getY());
-        // SmartDashboard.putNumber("Rot Z", rot.getZ());
     }
 
     @Override
     public Status diagnosticStatus() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'diagnosticStatus'");
+        return new Status();
     }
 }

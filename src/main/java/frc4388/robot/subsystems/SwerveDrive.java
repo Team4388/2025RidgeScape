@@ -6,12 +6,15 @@ package frc4388.robot.subsystems;
 
 import java.util.logging.Level;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -37,13 +40,6 @@ public class SwerveDrive extends Subsystem {
 
   private SwerveModule[] modules;
 
-  private Translation2d leftFrontLocation = new Translation2d(Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  private Translation2d rightFrontLocation = new Translation2d(-Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  private Translation2d leftBackLocation = new Translation2d(Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), -Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  private Translation2d rightBackLocation = new Translation2d(-Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), -Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontLocation, rightFrontLocation, leftBackLocation, rightBackLocation);
-  
   private RobotGyro gyro;
   
   private int gear_index;
@@ -152,7 +148,7 @@ public class SwerveDrive extends Subsystem {
     } else {      // Create robot-relative speeds.
       chassisSpeeds = new ChassisSpeeds(-1 * leftStick.getX(), -1 * leftStick.getY(), -1 * rightStick.getX() * SwerveDriveConstants.ROTATION_SPEED);
     }
-    setModuleStates(kinematics.toSwerveModuleStates(chassisSpeeds));
+    setModuleStates(SwerveDriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
   }
 
   public void playbackDriveWithInput(Translation2d leftStick, Translation2d rightStick, boolean fieldRelative) {
@@ -250,7 +246,7 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void setTargetChassisSpeeds(ChassisSpeeds speeds){
-    setModuleStates(kinematics.toSwerveModuleStates(chassisSpeeds));
+    setModuleStates(SwerveDriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
   }
 
   public double getGyroAngle() {
@@ -290,19 +286,20 @@ public class SwerveDrive extends Subsystem {
   }
 
   public SwerveDriveKinematics getKinematics() {
-    return this.kinematics;
+    return SwerveDriveConstants.KINEMATICS;
   }
 
   public boolean getSpeedState() {
-    
+    // SwerveDrivetrain e = new SwerveDrivetrain()
     return false;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run\
-    SmartDashboard.putNumber("Gyro", getGyroAngle());
-    SmartDashboard.putNumber("RotTartget", rotTarget);
+    // SmartDashboard.putNumber("Gyro", getGyroAngle());
+    // SmartDashboard.putNumber("RotTartget", rotTarget);
+
   }
 
   private void reset_index() {

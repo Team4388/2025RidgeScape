@@ -202,6 +202,17 @@ public class SwerveModule extends Subsystem {
         );
     }
 
+
+    /**
+     * Get position of swerve module, for odometry
+     * @return distance traveled of encoder and current angle
+     */
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+            driveMotor.getPosition().getValueAsDouble() * SwerveDriveConstants.Conversions.WHEEL_REV_PER_MOTOR_REV, 
+            getAngle());
+    }
+
     // private SwerveModuleState optimizeState(SwerveModuleState desiredState) {
     //     Rotation2d curRot = this.getAngle();
         

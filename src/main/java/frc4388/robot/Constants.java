@@ -18,8 +18,10 @@ import com.pathplanner.lib.controllers.PathFollowingController;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
@@ -44,8 +46,6 @@ public final class Constants {
         public static       double PLAYBACK_ROTATION_SPEED = AUTO_MAX_ROT_SPEED;
         public static       double ROT_CORRECTION_SPEED = 10; // MIN_ROT_SPEED;
 
-        public static final double SWERVE_MODULE_OFFSET = 0.3; // In meters. This only works for square swerve chasis
-
         public static final double CORRECTION_MIN = 10;
         public static final double CORRECTION_MAX = 50;
         
@@ -54,6 +54,21 @@ public final class Constants {
         public static final double SLOW_SPEED = 0.25;
         public static final double FAST_SPEED = 0.5;
         public static final double TURBO_SPEED = 1.0;
+
+
+
+        public static final Translation2d LEFT_FRONT_LOCATION = new Translation2d(Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
+        public static final Translation2d RIGHT_FRONT_LOCATION = new Translation2d(-Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
+        public static final Translation2d LEFT_BACK_LOCATION = new Translation2d(Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), -Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
+        public static final Translation2d RIGHT_BACK_LOCATION = new Translation2d(-Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), -Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
+        
+        public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+            LEFT_FRONT_LOCATION, 
+            RIGHT_FRONT_LOCATION, 
+            LEFT_BACK_LOCATION,
+            RIGHT_BACK_LOCATION
+        );
+        
     
         // public static List<CanDevice> CAN_DEVICES = new ArrayList<>();
 
@@ -99,62 +114,59 @@ public final class Constants {
             public static final Gains THETA_CONTROLLER = new Gains(-0.8, 0.0, 0.0);
             public static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2); // TODO: tune
             
-            public static final double PATH_MAX_VEL = 0.3; // TODO: find the actual value
-            public static final double PATH_MAX_ACC = 0.3; // TODO: find the actual value
+            public static final double MASS = 40; // KG
+            public static final double MOI = ((WIDTH + Math.pow(HEIGHT, 3)) / 12) * MASS;  // Moment of inertia
+
+            public static final double WHEEL_RADIUS = 0.05; // Meters
+            public static final double MAX_DRIVE_VELOCITY = 6; // Meters per second
+            // public static final double MAX_ROT_SPEED = MAX_DRIVE_VELOCITY / WHEEL_RADIUS; // Rotations per second
 
 
-        public static final double MASS = 10; // KG
-        public static final double MOI = 10;  // Moment of inertia
-
-        public static final double WHEEL_RADIUS = 0.05; // Meters
-        public static final double MAX_DRIVE_VELOCITY = 0.5; // Meters per second
-        public static final double MAX_ROT_SPEED = 0.2; // Rotations per second
+            public static final double COEFFICENT_OF_FRICTION = 1.0; // Between 0 and 1
+            public static final DCMotor MOTOR = DCMotor.getKrakenX60(1);
+            public static final double DRIVE_CURRENT_LIMIT = 100000; //TODO: Get actual value
 
 
-        public static final double COEFFICENT_OF_FRICTION = 1.0; // Between 0 and 1
-        public static final DCMotor MOTOR = DCMotor.getKrakenX60(1);
-        public static final double DRIVE_CURRENT_LIMIT = 100000; //TODO: Get actual value
+            public static final ModuleConfig MODULE_CONFIG = new ModuleConfig(
+                WHEEL_RADIUS, 
+                MAX_DRIVE_VELOCITY, 
+                COEFFICENT_OF_FRICTION, 
+                MOTOR,
+                DRIVE_CURRENT_LIMIT, 
+                1);
 
+            public static final RobotConfig PP_ROBOT_CONFIG = new RobotConfig(
+                MASS, 
+                MOI, 
+                MODULE_CONFIG,
+                new Translation2d[] { //TODO: Find if the negatives will work correctly.
+                    LEFT_FRONT_LOCATION,
+                    RIGHT_FRONT_LOCATION,
+                    LEFT_BACK_LOCATION,
+                    RIGHT_BACK_LOCATION
+                }
+            );
 
-        public static final ModuleConfig MODULE_CONFIG = new ModuleConfig(
-            WHEEL_RADIUS, 
-            MAX_DRIVE_VELOCITY, 
-            COEFFICENT_OF_FRICTION, 
-            MOTOR,
-            DRIVE_CURRENT_LIMIT, 
-            1);
+            // public static final 
+                
+            // public static final double ROBOT_LOOP_TIME = 0.02; // Time it takes for the robot to run a loop
+            public static final PathFollowingController PP_PATH_FOLLOWING_CONTROLLER = new PPHolonomicDriveController(
+                new com.pathplanner.lib.config.PIDConstants(
+                    PIDConstants.SWERVE_MOVE_GAINS.kP, 
+                    PIDConstants.SWERVE_MOVE_GAINS.kI, 
+                    PIDConstants.SWERVE_MOVE_GAINS.kD,
+                    PIDConstants.SWERVE_MOVE_GAINS.kIZone
+                ),
 
-        public static final RobotConfig PP_ROBOT_CONFIG = new RobotConfig(
-            MASS, 
-            MOI, 
-            MODULE_CONFIG,
-            new Translation2d[] { //TODO: Find if the negatives will work correctly.
-                new Translation2d(-SWERVE_MODULE_OFFSET, SWERVE_MODULE_OFFSET), //FL
-                new Translation2d( SWERVE_MODULE_OFFSET, SWERVE_MODULE_OFFSET), //FR
-                new Translation2d(-SWERVE_MODULE_OFFSET,-SWERVE_MODULE_OFFSET), //BL
-                new Translation2d( SWERVE_MODULE_OFFSET,-SWERVE_MODULE_OFFSET), //BR
-            });
-
-        // public static final 
-            
-        // public static final double ROBOT_LOOP_TIME = 0.02; // Time it takes for the robot to run a loop
-        public static final PathFollowingController PP_PATH_FOLLOWING_CONTROLLER = new PPHolonomicDriveController( 
-
-            new com.pathplanner.lib.config.PIDConstants(
-                PIDConstants.SWERVE_MOVE_GAINS.kP, 
-                PIDConstants.SWERVE_MOVE_GAINS.kI, 
-                PIDConstants.SWERVE_MOVE_GAINS.kD,
-                PIDConstants.SWERVE_MOVE_GAINS.kIZone
-            ),
-
-            new com.pathplanner.lib.config.PIDConstants(
-                PIDConstants.SWERVE_ROT_GAINS.kP, 
-                PIDConstants.SWERVE_ROT_GAINS.kI, 
-                PIDConstants.SWERVE_ROT_GAINS.kD,
-                PIDConstants.SWERVE_ROT_GAINS.kIZone
-            ));
+                new com.pathplanner.lib.config.PIDConstants(
+                    PIDConstants.SWERVE_ROT_GAINS.kP, 
+                    PIDConstants.SWERVE_ROT_GAINS.kI, 
+                    PIDConstants.SWERVE_ROT_GAINS.kD,
+                    PIDConstants.SWERVE_ROT_GAINS.kIZone
+                )
+            );
         
-    }
+        }
     
         public static final class Conversions {
             public static final double JOYSTICK_TO_METERS_PER_SECOND_FAST = 6.22;

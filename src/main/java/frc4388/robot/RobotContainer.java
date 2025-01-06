@@ -52,7 +52,16 @@ public class RobotContainer {
     public final RobotMap m_robotMap = new RobotMap();
     
     /* Subsystems */
-    private final RobotLocalizer localizer = new RobotLocalizer(m_robotMap.gyro, m_robotMap.camera);
+    
+    private final RobotLocalizer localizer = new RobotLocalizer(
+        m_robotMap.leftFront,
+        m_robotMap.rightFront,
+        m_robotMap.leftBack,
+        m_robotMap.rightBack,
+
+        m_robotMap.gyro, 
+        m_robotMap.camera
+    );
     // private final LED m_robotLED = new LED();
 
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.leftFront,
