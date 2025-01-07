@@ -62,7 +62,7 @@ public final class Constants {
         public static final double TURBO_SPEED = 1.0;
         
         public static final double[] GEARS = {SLOW_SPEED, FAST_SPEED, TURBO_SPEED};
-
+        public static final int STARTING_GEAR = 0;
         // dimensions
         public static final double WIDTH = 18.5; // TODO: validate
         public static final double HEIGHT = 18.5; // TODO: validate
@@ -192,17 +192,13 @@ public final class Constants {
         }
     
         public static final class Configurations {
-            public static final double OPEN_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
-            public static final double CLOSED_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
+            public static final double OPEN_LOOP_RAMP_RATE = 0.0; // Todo: Test. think this will help.
+            public static final double CLOSED_LOOP_RAMP_RATE = 0.0; // Todo: Test. think this will help.
             public static final double NEUTRAL_DEADBAND = 0.04;
 
             // POWER! (limiting)
             private static final TalonFXConfiguration DRIVE_MOTOR_CONFIGS = new TalonFXConfiguration()
-                .withCurrentLimits(
-                    new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(100) // TODO: tune???
-                        .withStatorCurrentLimitEnable(true)
-                ).withMotorOutput(
+                .withMotorOutput(
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withDutyCycleNeutralDeadband(SwerveDriveConstants.Configurations.NEUTRAL_DEADBAND)
@@ -229,7 +225,7 @@ public final class Constants {
                         new ClosedLoopRampsConfigs()
                             .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
             );
-            private static final double SLIP_CURRENT = 120; // TODO: Tune??? 
+            private static final double SLIP_CURRENT = 100; // TODO: Tune??? 
         }
 
         // No mans land

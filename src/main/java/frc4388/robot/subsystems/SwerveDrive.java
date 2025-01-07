@@ -4,8 +4,6 @@
 
 package frc4388.robot.subsystems;
 
-import java.util.logging.Level;
-
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
@@ -14,9 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -24,25 +20,22 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.Constants.SwerveDriveConstants;
 import frc4388.robot.Constants.SwerveDriveConstants.Conversions;
-import frc4388.utility.RobotGyro;
-import frc4388.utility.RobotUnits;
+
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
-import frc4388.utility.Status.Report;
 import frc4388.utility.Status.ReportLevel;
 
 public class SwerveDrive extends Subsystem {
   private SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain;
   
-  private int gear_index;
+  private int gear_index = SwerveDriveConstants.STARTING_GEAR;
   private boolean stopped = false;
 
-  public double speedAdjust = SwerveDriveConstants.Conversions.JOYSTICK_TO_METERS_PER_SECOND_FAST;
+  public double speedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * SwerveDriveConstants.GEARS[gear_index];
   public double rotSpeedAdjust = SwerveDriveConstants.MAX_ROT_SPEED;
-  public double autoSpeedAdjust = SwerveDriveConstants.Conversions.JOYSTICK_TO_METERS_PER_SECOND_SLOW;
+  public double autoSpeedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * 0.25; // cap auto performance to 25%
   
   public double rotTarget = 0.0;
   public Rotation2d orientRotTarget = new Rotation2d();
@@ -53,25 +46,23 @@ public class SwerveDrive extends Subsystem {
     super();
     
     this.swerveDriveTrain = swerveDriveTrain;
-
-    reset_index();
   }
 
-  public void oneModuleTest(SwerveModule module, Translation2d leftStick, Translation2d rightStick){
-    // double ang = Math.atan2(rightStick.getY(), rightStick.getX());
-    // rightStick.getAngle()
-    double speed = Math.sqrt(Math.pow(leftStick.getX(), 2) + Math.pow(leftStick.getY(), 2));
-    // System.out.println(ang);
-    // module.go(ang);
-    // Rotation2d rot = Rotation2d.fromRadians(ang);
-    Rotation2d rot = new Rotation2d(rightStick.getX(), rightStick.getY());
-    SwerveModuleState state = new SwerveModuleState(speed, rot);
-    module.setDesiredState(state);
-  }
+  // public void oneModuleTest(SwerveModule module, Translation2d leftStick, Translation2d rightStick){
+  //   // double ang = Math.atan2(rightStick.getY(), rightStick.getX());
+  //   // rightStick.getAngle()
+  //   double speed = Math.sqrt(Math.pow(leftStick.getX(), 2) + Math.pow(leftStick.getY(), 2));
+  //   // System.out.println(ang);
+  //   // module.go(ang);
+  //   // Rotation2d rot = Rotation2d.fromRadians(ang);
+  //   Rotation2d rot = new Rotation2d(rightStick.getX(), rightStick.getY());
+  //   SwerveModuleState state = new SwerveModuleState(speed, rot);
+  //   module.setDesiredState(state);
+  // }
 
   public void driveWithInput(Translation2d leftStick, Translation2d rightStick, boolean fieldRelative) {
     if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05 && stopped == false) // if no imput and the swerve drive is still going:
-      swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake()); // stop the swerve
+      stopModules(); // stop the swerve
     
     if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) //if no imput
       return; // don't bother doing swerve drive math and return early.
@@ -118,97 +109,36 @@ public class SwerveDrive extends Subsystem {
     //   // chassisSpeeds = chassisSpeeds.
     //   chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), (-1 * rightStick.getX() * rotSpeedAdjust) - rot_correction, gyro.getRotation2d().times(-1));
     } else {      // Create robot-relative speeds.
-      chassisSpeeds = new ChassisSpeeds(-1 * leftStick.getX(), -1 * leftStick.getY(), -1 * rightStick.getX() * SwerveDriveConstants.ROTATION_SPEED);
+      swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
+        .withVelocityX(leftStick.getX()*speedAdjust)
+        .withVelocityY(leftStick.getY()*speedAdjust)
+        .withRotationalRate(rightStick.getY()*rotSpeedAdjust)
+      );
     }
-    setModuleStates(kinematics.toSwerveModuleStates(chassisSpeeds));
   }
 
-  public void playbackDriveWithInput(Translation2d leftStick, Translation2d rightStick, boolean fieldRelative) {
-    if (fieldRelative) {
+  public void driveWithInputOrientation(Translation2d leftStick, Translation2d rightStick) { // there is no practical reason to have a robot relitive version of this, and no pre provided version 
+    if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05 && stopped == false) // if no imput and the swerve drive is still going:
+      stopModules(); // stop the swerve
+  
+    if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) //if no imput
+      return; // don't bother doing swerve drive math and return early.
 
-      double rot = 0;
-      
-      // ! drift correction
-      if (rightStick.getNorm() > 0.05) {
-        rotTarget = gyro.getAngle();
-        rot = rightStick.getX() * SwerveDriveConstants.ROTATION_SPEED;
-      //  SmartDashboard.putBoolean("drift correction", false);
-        stopped = false;
-      } else if(leftStick.getNorm() > 0.05) {
-        if (!stopped) {
-          stopModules();
-          stopped = true;
-        }
-
-     //   SmartDashboard.putBoolean("drift correction", true);
-        // double rot_correction = ((rotTarget - gyro.getAngle()) / 360) * SwerveDriveConstants.ROT_CORRECTION_SPEED;
-        
-
-      }
-
-      // Use the left joystick to set speed. Apply a cubic curve and the set max speed.
-      Translation2d speed = leftStick.times(leftStick.getNorm() * autoSpeedAdjust);
-      // Translation2d cubedSpeed = new Translation2d(Math.pow(speed.getX(), 3.00), Math.pow(speed.getY(), 3.00));
-
-      // Convert field-relative speeds to robot-relative speeds.
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), rightStick.getX() * SwerveDriveConstants.PLAYBACK_ROTATION_SPEED, gyro.getRotation2d());//.times(-1));
-    } else {      // Create robot-relative speeds.
-      chassisSpeeds = new ChassisSpeeds(-1 * leftStick.getX(), -1 * leftStick.getY(), -1 * rightStick.getX() * SwerveDriveConstants.PLAYBACK_ROTATION_SPEED);
-    }
-    // setModuleStates(kinematics.toSwerveModuleStates(chassisSpeeds));
-  }
-
-  public void driveWithInputOrientation(Translation2d leftStick, Translation2d rightStick, boolean fieldRelative) {
-
-    // Translation2d rightStick = new Translation2d(-rightX, rightY);
-    double rightX = rightStick.getX();
-    double rightY = rightStick.getY();
-
-    double rot_correction = 0;
-
-    // double rot_correction = ((rightStick.getAngle().getDegrees() - gyro.getAngle()) / 360) * SwerveDriveConstants.ROT_CORRECTION_SPEED;
-
-    if(fieldRelative) {
-      double rot = 0;
-      if(rightStick.getNorm() > 0.5) {
-        orientRotTarget = new Rotation2d(rightX, -rightY).minus(new Rotation2d(0,1));
-        
-        Rotation2d tmp =  orientRotTarget.minus(gyro.getRotation2d().minus(new Rotation2d(Math.PI)).interpolate(orientRotTarget, 0.5));
-        double min = tmp.getDegrees();
-        min = Math.max(Math.abs(min), 2);
-        if(tmp.getDegrees() < 0)
-          min*=-1;
-        tmp = new Rotation2d(min * Math.PI / 180);
-        rot = tmp.getRadians(); // x   x - y/x
-      }
+    leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
     
-    Translation2d speed = leftStick.times(leftStick.getNorm() * speedAdjust);
-
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), ((-1 * rightStick.getX()) * SwerveDriveConstants.ROTATION_SPEED) + rot_correction, gyro.getRotation2d()).times(1);
-    } else {      // Create robot-relative speeds.
-      chassisSpeeds = new ChassisSpeeds(-1 * leftStick.getX(), -1 * leftStick.getY(), -1 * rightStick.getX() * SwerveDriveConstants.ROTATION_SPEED);
-    }
-    // setModuleStates(kinematics.toSwerveModuleStates(chassisSpeeds));  
-    }
-
-  /**
-   * Set each module of the swerve drive to the corresponding desired state.
-   * @param desiredStates Array of module states to set.
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Units.feetToMeters(SwerveDriveConstants.MAX_SPEED_FEET_PER_SECOND));
-    for (int i = 0; i < desiredStates.length; i++) {
-      SwerveModule module = modules[i];
-      SwerveModuleState state = desiredStates[i];
-      module.setDesiredState(state);
-    }
+    swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
+      .withVelocityX(leftStick.getX()*speedAdjust)
+      .withVelocityY(leftStick.getY()*speedAdjust)
+      .withTargetDirection(rightStick.getAngle())
+    ); 
   }
 
   public boolean rotateToTarget(double angle) {
-    double currentAngle = getGyroAngle();
-    double error = angle - currentAngle;
-
-    driveWithInput(new Translation2d(0, 0), new Translation2d(error / Math.abs(error) * 0.3, 0), true);
+    swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
+      .withVelocityX(0)
+      .withVelocityY(0)
+      .withTargetDirection(Rotation2d.fromDegrees(angle))
+    );
 
     if (Math.abs(angle - getGyroAngle()) < 5.0) {
       return true;
@@ -218,48 +148,15 @@ public class SwerveDrive extends Subsystem {
   }
 
   public double getGyroAngle() {
-    return -gyro.getAngle();
-  }
-
-  public void add180() {
-    gyro.reset(gyro.getAngle()+180);
-    rotTarget = gyro.getAngle();
-
+    return swerveDriveTrain.getRotation3d().getAngle();
   }
 
   public void resetGyro() {
-    gyro.reset();
-    rotTarget = gyro.getAngle();
+    swerveDriveTrain.tareEverything();
   }
 
-  public void resetGyroFlip() {
-    gyro.resetFlip();
-    rotTarget = gyro.getAngle();
-  }
-
-  public void resetGyroRightBlue() {
-    gyro.resetRightSideBlue();
-    rotTarget = gyro.getAngle();
-  }
-
-  public void resetGyroRightAmp() {
-    gyro.resetAmpSide();
-    rotTarget = gyro.getAngle();
-  }
-  
   public void stopModules() {
-    for (SwerveModule module : this.modules) {
-      module.stop();
-    }
-  }
-
-  public SwerveDriveKinematics getKinematics() {
-    return this.kinematics;
-  }
-
-  public boolean getSpeedState() {
-    
-    return false;
+    swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
   }
 
   @Override
@@ -270,7 +167,7 @@ public class SwerveDrive extends Subsystem {
   }
 
   private void reset_index() {
-    gear_index = 0; // however we wish to initialize the gear (What gear does the robot start in?)
+    gear_index = SwerveDriveConstants.STARTING_GEAR; // however we wish to initialize the gear (What gear does the robot start in?)
   }
 
   public void shiftDown() {
@@ -295,34 +192,18 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void setToSlow() {
-    this.speedAdjust = Conversions.JOYSTICK_TO_METERS_PER_SECOND_FAST * SwerveDriveConstants.SLOW_SPEED;
-    for(int i=0;i<5;i++){
-      Log("SLOW");
-    }
+    setPercentOutput(SwerveDriveConstants.SLOW_SPEED);
+    gear_index = 0;
   }
 
   public void setToFast() {
-    this.speedAdjust = Conversions.JOYSTICK_TO_METERS_PER_SECOND_FAST * SwerveDriveConstants.FAST_SPEED;
-    for(int i=0;i<5;i++){
-      Log("FAST");
-    }
+    setPercentOutput(SwerveDriveConstants.FAST_SPEED);
+    gear_index = 1;
   }
 
   public void setToTurbo() {
-    this.speedAdjust = Conversions.JOYSTICK_TO_METERS_PER_SECOND_FAST * SwerveDriveConstants.TURBO_SPEED;
-        for(int i=0;i<5;i++){
-      Log("TURBO");
-    }
-  }
-
-  public void toggleGear(double angle) {
-    if (Math.abs(this.speedAdjust - SwerveDriveConstants.Conversions.JOYSTICK_TO_METERS_PER_SECOND_SLOW) < .01 && Math.abs(angle) < 10) {
-      this.speedAdjust = SwerveDriveConstants.Conversions.JOYSTICK_TO_METERS_PER_SECOND_FAST;
-      SwerveDriveConstants.ROT_CORRECTION_SPEED = SwerveDriveConstants.CORRECTION_MIN;
-    } else {
-      this.speedAdjust = SwerveDriveConstants.Conversions.JOYSTICK_TO_METERS_PER_SECOND_SLOW;
-      SwerveDriveConstants.ROT_CORRECTION_SPEED = SwerveDriveConstants.CORRECTION_MIN;
-    }
+    setPercentOutput(SwerveDriveConstants.TURBO_SPEED);
+    gear_index = 2;
   }
 
   public void shiftUpRot() {
@@ -354,7 +235,7 @@ public class SwerveDrive extends Subsystem {
 
   @Override
   public void queryStatus() {
-    sbGyro.setDouble(this.gyro.getAngle());
+    sbGyro.setDouble(getGyroAngle());
     sbShiftState.setDouble(this.speedAdjust);
   
     //TODO: Add more status things
@@ -363,13 +244,8 @@ public class SwerveDrive extends Subsystem {
   @Override
   public Status diagnosticStatus() {
     Status status = new Status();
-    for (SwerveModule module : modules) {
-      for (Report moduleDignostic : module.diagnosticStatus().reports) {
-        status.addReport(moduleDignostic.reportLevel, "[" + module.getSubsystemName() + "] " + moduleDignostic.description);
-      }
-    }
 
-    status.diagnoseHardwareCTRE("Swerve Gyro", gyro.getPigeon());
+    status.addReport(ReportLevel.ERROR, "Don't know how to diganose new CTRE swerve systems. please check under the CAN(t) section for more detailed information about the swerves there.");
     
     return status;
   }
