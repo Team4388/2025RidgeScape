@@ -6,6 +6,11 @@ package frc4388.robot.subsystems;
 
 import java.util.logging.Level;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -30,22 +35,7 @@ import frc4388.utility.Status.Report;
 import frc4388.utility.Status.ReportLevel;
 
 public class SwerveDrive extends Subsystem {
-  
-  private SwerveModule leftFront;
-  private SwerveModule rightFront;
-  private SwerveModule leftBack;
-  private SwerveModule rightBack;
-
-  private SwerveModule[] modules;
-
-  private Translation2d leftFrontLocation = new Translation2d(Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  private Translation2d rightFrontLocation = new Translation2d(-Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  private Translation2d leftBackLocation = new Translation2d(Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), -Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  private Translation2d rightBackLocation = new Translation2d(-Units.inchesToMeters(SwerveDriveConstants.HALF_HEIGHT), -Units.inchesToMeters(SwerveDriveConstants.HALF_WIDTH));
-  
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontLocation, rightFrontLocation, leftBackLocation, rightBackLocation);
-  
-  private RobotGyro gyro;
+  private SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain;
   
   private int gear_index;
   private boolean stopped = false;
@@ -59,16 +49,12 @@ public class SwerveDrive extends Subsystem {
   public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
   /** Creates a new SwerveDrive. */
-  public SwerveDrive(SwerveModule leftFront, SwerveModule rightFront, SwerveModule leftBack, SwerveModule rightBack, RobotGyro gyro) {
+  public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
     super();
-    this.leftFront = leftFront;
-    this.rightFront = rightFront;
-    this.leftBack = leftBack;
-    this.rightBack = rightBack;
     
-    this.gyro = gyro;
+    this.swerveDriveTrain = swerveDriveTrain;
+
     reset_index();
-    this.modules = new SwerveModule[] {this.leftFront, this.rightFront, this.leftBack, this.rightBack};
   }
 
   public void oneModuleTest(SwerveModule module, Translation2d leftStick, Translation2d rightStick){
@@ -84,40 +70,47 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void driveWithInput(Translation2d leftStick, Translation2d rightStick, boolean fieldRelative) {
-
-    double rot_correction = RobotUnits.degreesToRadians(gyro.getRotation2d().getDegrees() - rotTarget) * 0.0;
-    SmartDashboard.putNumber("Rot_correct", RobotUnits.radiansToDegrees(rot_correction));
-
+    leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
     if (fieldRelative) {
-
-      double rot = 0;
+      // if (rightStick.getNorm() > 0.05 && 
+      swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
+        .withVelocityX(leftStick.getX()*speedAdjust)
+        .withVelocityY(leftStick.getY()*speedAdjust)
+        .withRotationalRate(rightStick.getY()*rotSpeedAdjust)
+      );
+      // double rot = 0;
       
       // ! drift correction
-      if (rightStick.getNorm() > 0.05) {
-        rotTarget = gyro.getAngle();
-        rot_correction = 0;
-        // rot = rightStick.getX();
-      //  SmartDashboard.putBoolean("drift correction", false);
-        stopped = false;
-      } else if(leftStick.getNorm() > 0.05) {
-        if (!stopped) {
-          stopModules();
-          stopped = true;
-        }
+      // dependant on if the new odomitry system acounts for rotational drift, this may not be needed.
+    //   if (rightStick.getNorm() > 0.05) {
+    //     rotTarget = swerveDriveTrain.getRotation3d().toRotation2d().getDegrees();
+    //     swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
+    //       .withVelocityX(leftStick.getX()*speedAdjust)
+    //       .withVelocityY(leftStick.getY()*speedAdjust)
+    //       .withRotationalRate(rightStick.getY()*rotSpeedAdjust)
+    //     );
+      
+    //   //  SmartDashboard.putBoolean("drift correction", false);
+    //     stopped = false;
+    //   } else if(leftStick.getNorm() > 0.05) {
+    //     if (!stopped) {
+    //       stopModules();
+    //       stopped = true;
+    //     }
 
-     //   SmartDashboard.putBoolean("drift correction", true);
+    //  //   SmartDashboard.putBoolean("drift correction", true);
         
-        // rot = ((rotTarget - gyro.getAngle()) / 360) * SwerveDriveConstants.ROT_CORRECTION_SPEED;
+    //     // rot = ((rotTarget - gyro.getAngle()) / 360) * SwerveDriveConstants.ROT_CORRECTION_SPEED;
 
-      }
+    //   }
 
-      // Use the left joystick to set speed. Apply a cubic curve and the set max speed.
-      Translation2d speed = leftStick.times(leftStick.getNorm() * speedAdjust);
-      // Translation2d cubedSpeed = new Translation2d(Math.pow(speed.getX(), 3.00), Math.pow(speed.getY(), 3.00));
+    //   // Use the left joystick to set speed. Apply a cubic curve and the set max speed.
+    //   Translation2d speed = leftStick.times(leftStick.getNorm() * speedAdjust);
+    //   // Translation2d cubedSpeed = new Translation2d(Math.pow(speed.getX(), 3.00), Math.pow(speed.getY(), 3.00));
 
-      // Convert field-relative speeds to robot-relative speeds.
-      // chassisSpeeds = chassisSpeeds.
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), (-1 * rightStick.getX() * rotSpeedAdjust) - rot_correction, gyro.getRotation2d().times(-1));
+    //   // Convert field-relative speeds to robot-relative speeds.
+    //   // chassisSpeeds = chassisSpeeds.
+    //   chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), (-1 * rightStick.getX() * rotSpeedAdjust) - rot_correction, gyro.getRotation2d().times(-1));
     } else {      // Create robot-relative speeds.
       chassisSpeeds = new ChassisSpeeds(-1 * leftStick.getX(), -1 * leftStick.getY(), -1 * rightStick.getX() * SwerveDriveConstants.ROTATION_SPEED);
     }

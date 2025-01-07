@@ -80,6 +80,8 @@ public final class Constants {
         public static final double MAX_SPEED_FEET_PER_SECOND = MAX_SPEED_MEETERS_PER_SEC * 3.28084;
         public static final double MAX_ANGULAR_SPEED_FEET_PER_SECOND = 2 * 2 * Math.PI;
 
+        public static final double FORWARD_OFFSET = 0; // 0, 90, 180, 270
+
         private static final class ModuleSpecificConstants {
             //Front Left
             private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.0);
@@ -148,13 +150,13 @@ public final class Constants {
 
             // The steer motor uses any SwerveModule.SteerRequestType control request with the
             // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-            private static final Slot0Configs PREPROVIDED_STEER_GAINS = new Slot0Configs()
+            public static final Slot0Configs PREPROVIDED_STEER_GAINS = new Slot0Configs()
                 .withKP(100).withKI(0).withKD(0.5)
                 .withKS(0.1).withKV(1.91).withKA(0)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
             // When using closed-loop control, the drive motor uses the control
             // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-            private static final Slot0Configs PREPROVIDED_DRIVE_GAINS = new Slot0Configs()
+            public static final Slot0Configs PREPROVIDED_DRIVE_GAINS = new Slot0Configs()
                 .withKP(0.1).withKI(0).withKD(0)
                 .withKS(0).withKV(0.124);
         }
