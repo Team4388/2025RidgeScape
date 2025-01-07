@@ -70,9 +70,15 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void driveWithInput(Translation2d leftStick, Translation2d rightStick, boolean fieldRelative) {
+    if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05 && stopped == false) // if no imput and the swerve drive is still going:
+      swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake()); // stop the swerve
+    
+    if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) //if no imput
+      return; // don't bother doing swerve drive math and return early.
+
     leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+    
     if (fieldRelative) {
-      // if (rightStick.getNorm() > 0.05 && 
       swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
         .withVelocityX(leftStick.getX()*speedAdjust)
         .withVelocityY(leftStick.getY()*speedAdjust)
