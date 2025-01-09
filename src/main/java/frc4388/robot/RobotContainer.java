@@ -54,12 +54,7 @@ public class RobotContainer {
     /* Subsystems */
     // private final LED m_robotLED = new LED();
 
-    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.leftFront,
-                                                                  m_robotMap.rightFront,
-                                                                  m_robotMap.leftBack,
-                                                                  m_robotMap.rightBack,
-                                              
-                                                                  m_robotMap.gyro);
+    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
     /* Controllers */
     private final DeadbandedXboxController m_driverXbox   = new DeadbandedXboxController(OIConstants.XBOX_DRIVER_ID);
@@ -88,7 +83,7 @@ public class RobotContainer {
     public RobotContainer() {
         configureButtonBindings();        
         configureVirtualButtonBindings();
-        new DeferredBlock(() -> m_robotSwerveDrive.resetGyroFlip());
+        new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
         DriverStation.silenceJoystickConnectionWarning(true);
         // CameraServer.startAutomaticCapture();
 
@@ -148,7 +143,7 @@ public class RobotContainer {
         // ? /* Driver Buttons */
 
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyroFlip()));
+            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
             
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
