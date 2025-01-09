@@ -70,7 +70,7 @@ public final class Constants {
         public static final double HALF_HEIGHT = HEIGHT / 2.d;
 
         // Mechanics
-        private static final double COUPLE_RATIO = 1; //todo: find
+        private static final double COUPLE_RATIO = 3; //todo: find
         private static final double DRIVE_RATIO = 6.12;
         private static final double STEER_RATIO = (150/7);
         private static final Distance WHEEL_RADIUS = Inches.of(2);
@@ -80,39 +80,39 @@ public final class Constants {
         public static final double MAX_SPEED_FEET_PER_SECOND = MAX_SPEED_MEETERS_PER_SEC * 3.28084;
         public static final double MAX_ANGULAR_SPEED_FEET_PER_SECOND = 2 * 2 * Math.PI;
 
-        public static final double FORWARD_OFFSET = 0; // 0, 90, 180, 270
+        public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
 
         private static final class ModuleSpecificConstants {
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.0);
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = false;
+            private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_LEFT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_WIDTH);
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.0);
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.133056640625);
             private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = false;
+            private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
             private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_RIGHT_YPOS = Inches.of(HALF_HEIGHT);
+            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.0);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.47705078125 + 0.5);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = false;
+            private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
             private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_LEFT_YPOS = Inches.of(-HALF_HEIGHT);
+            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.0);
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.355224609375 + 0.5);
             private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = false;
+            private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance BACK_RIGHT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
         }
 
@@ -145,13 +145,17 @@ public final class Constants {
             public static final Slot0Configs CURRENT_SWERVE_ROT_GAINS = new Slot0Configs()
                 .withKP(50).withKI(0).withKD(0.32)
                 .withKS(0).withKV(0).withKA(0);
+            
+                public static final Slot0Configs TEST_SWERVE_ROT_GAINS = new Slot0Configs()
+                .withKP(10).withKI(0).withKD(0.3)
+                .withKS(0).withKV(0).withKA(0);
 
             public static final Gains TEST_SWERVE_GAINS = new Gains(1.2, 0.0, 0.0, 0.0, 0, 0.0);
 
             // The steer motor uses any SwerveModule.SteerRequestType control request with the
             // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
             public static final Slot0Configs PREPROVIDED_STEER_GAINS = new Slot0Configs()
-                .withKP(100).withKI(0).withKD(0.5)
+                .withKP(100).withKI(0).withKD(0.6)
                 .withKS(0.1).withKV(1.91).withKA(0)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
             // When using closed-loop control, the drive motor uses the control
@@ -218,12 +222,12 @@ public final class Constants {
                         new MotorOutputConfigs()
                             .withNeutralMode(NeutralModeValue.Brake)
                             .withDutyCycleNeutralDeadband(SwerveDriveConstants.Configurations.NEUTRAL_DEADBAND)
-                    ).withOpenLoopRamps(
-                        new OpenLoopRampsConfigs()
-                            .withDutyCycleOpenLoopRampPeriod(SwerveDriveConstants.Configurations.OPEN_LOOP_RAMP_RATE)
-                    ).withClosedLoopRamps(
-                        new ClosedLoopRampsConfigs()
-                            .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
+                    // ).withOpenLoopRamps(
+                    //     new OpenLoopRampsConfigs()
+                    //         .withDutyCycleOpenLoopRampPeriod(SwerveDriveConstants.Configurations.OPEN_LOOP_RAMP_RATE)
+                    // ).withClosedLoopRamps(
+                    //     new ClosedLoopRampsConfigs()
+                    //         .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
             );
             private static final double SLIP_CURRENT = 100; // TODO: Tune??? 
         }
@@ -239,7 +243,7 @@ public final class Constants {
                 .withSteerMotorGearRatio(STEER_RATIO)
                 .withCouplingGearRatio(COUPLE_RATIO)
                 .withWheelRadius(WHEEL_RADIUS)
-                .withSteerMotorGains(PIDConstants.CURRENT_SWERVE_ROT_GAINS) // ?
+                .withSteerMotorGains(PIDConstants.PREPROVIDED_STEER_GAINS) // ?
                 .withDriveMotorGains(PIDConstants.PREPROVIDED_DRIVE_GAINS) // ?
                 .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
                 .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)

@@ -4,11 +4,15 @@
 
 package frc4388.robot.subsystems;
 
+import java.util.Optional;
+
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.robot.Constants.SwerveDriveConstants;
@@ -41,13 +46,16 @@ public class SwerveDrive extends Subsystem {
   public Rotation2d orientRotTarget = new Rotation2d();
   public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
+  private Field2d field = new Field2d();
+
   /** Creates a new SwerveDrive. */
   public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
     super();
-    
+
+    SmartDashboard.putData(field);
+
     this.swerveDriveTrain = swerveDriveTrain;
   }
-
   // public void oneModuleTest(SwerveModule module, Translation2d leftStick, Translation2d rightStick){
   //   // double ang = Math.atan2(rightStick.getY(), rightStick.getX());
   //   // rightStick.getAngle()
@@ -67,13 +75,13 @@ public class SwerveDrive extends Subsystem {
     if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) //if no imput
       return; // don't bother doing swerve drive math and return early.
 
-    leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+    leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
     
     if (fieldRelative) {
       swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
-        .withVelocityX(leftStick.getX()*speedAdjust)
+        .withVelocityX(leftStick.getX()*-speedAdjust)
         .withVelocityY(leftStick.getY()*speedAdjust)
-        .withRotationalRate(rightStick.getY()*rotSpeedAdjust)
+        .withRotationalRate(rightStick.getX()*rotSpeedAdjust)
       );
       // double rot = 0;
       
@@ -110,9 +118,9 @@ public class SwerveDrive extends Subsystem {
     //   chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), (-1 * rightStick.getX() * rotSpeedAdjust) - rot_correction, gyro.getRotation2d().times(-1));
     } else {      // Create robot-relative speeds.
       swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
-        .withVelocityX(leftStick.getX()*speedAdjust)
+        .withVelocityX(leftStick.getX()*-speedAdjust)
         .withVelocityY(leftStick.getY()*speedAdjust)
-        .withRotationalRate(rightStick.getY()*rotSpeedAdjust)
+        .withRotationalRate(rightStick.getX()*rotSpeedAdjust)
       );
     }
   }
@@ -164,6 +172,11 @@ public class SwerveDrive extends Subsystem {
     // This method will be called once per scheduler run\
     SmartDashboard.putNumber("Gyro", getGyroAngle());
     SmartDashboard.putNumber("RotTartget", rotTarget);
+
+    Optional<Pose2d> e = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds());
+
+    if(e.isPresent())
+      field.setRobotPose(e.get());
   }
 
   private void reset_index() {
