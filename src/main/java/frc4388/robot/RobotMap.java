@@ -8,6 +8,9 @@
 package frc4388.robot;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import org.photonvision.PhotonCamera;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
@@ -18,6 +21,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 // import edu.wpi.first.wpilibj.motorcontrol.Spark;
 // import frc4388.robot.Constants.LEDConstants;
 import frc4388.robot.Constants.SwerveDriveConstants;
+import frc4388.robot.Constants.VisionConstants;
 // import frc4388.robot.subsystems.SwerveModule;
 import frc4388.utility.RobotGyro;
 
@@ -28,6 +32,8 @@ import frc4388.utility.RobotGyro;
 public class RobotMap {
     // private Pigeon2 m_pigeon2 = new Pigeon2(SwerveDriveConstants.IDs.DRIVE_PIGEON.id);
     // public RobotGyro gyro = new RobotGyro(m_pigeon2);
+
+    public PhotonCamera camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
     
     public RobotMap() {
         configureDriveMotorControllers();

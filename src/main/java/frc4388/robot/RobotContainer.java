@@ -33,6 +33,7 @@ import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
 // Subsystems
 // import frc4388.robot.subsystems.LED;
+import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
@@ -53,8 +54,10 @@ public class RobotContainer {
     
     /* Subsystems */
     // private final LED m_robotLED = new LED();
+    public final Vision m_vision = new Vision(m_robotMap.camera);
 
-    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
+    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
+
 
     /* Controllers */
     private final DeadbandedXboxController m_driverXbox   = new DeadbandedXboxController(OIConstants.XBOX_DRIVER_ID);
