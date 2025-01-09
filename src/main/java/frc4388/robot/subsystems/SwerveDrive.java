@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.robot.Constants.SwerveDriveConstants;
-import frc4388.robot.Constants.SwerveDriveConstants.Conversions;
 
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
@@ -200,7 +199,7 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void setPercentOutput(double speed) {
-    speedAdjust = Conversions.JOYSTICK_TO_METERS_PER_SECOND_FAST * speed;
+    speedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * speed;
     gear_index = -1;
   }
 
