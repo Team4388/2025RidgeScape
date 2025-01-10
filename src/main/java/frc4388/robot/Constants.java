@@ -276,11 +276,11 @@ public final class Constants {
       }
     
     public static final class VisionConstants {
-        public static final String CAMERA_NAME = "photonvision";
+        public static final String CAMERA_NAME = "Camera_Module_v1";
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(), new Rotation3d());
 
-        public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+        public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)

@@ -56,9 +56,15 @@ public class Vision extends Subsystem {
     public void periodic() {
         var result = camera.getLatestResult();
         isTag = result.hasTargets();
+        
+        field.setRobotPose(lastPhysOdomPose);
+
+        // sbCamConnected.setBoolean(camera);
+
+        // System.out.println(isTag);
 
         if(!isTag){
-            field.setRobotPose(lastPhysOdomPose);
+            sbTag.setBoolean(isTag);
             return;
         }
 
@@ -66,12 +72,11 @@ public class Vision extends Subsystem {
 
         // In case the pose estimator fails to estimate the pose, fallback to physical odometry.
         if(EstimatedRobotPose.isEmpty()){
+            sbTag.setBoolean(isTag);
             field.setRobotPose(lastPhysOdomPose);
             isTag = false;
             return;
         }
-
-        field.setRobotPose(lastVisionPose);
     }
 
 
@@ -196,6 +201,11 @@ public class Vision extends Subsystem {
         return Utils.getCurrentTimeSeconds();
     }
 
+    public boolean isTag(){
+        return isTag;
+    }
+
+
 
 
 
@@ -219,6 +229,11 @@ public class Vision extends Subsystem {
   .add("Tag Detected", false)
   .withWidget(BuiltInWidgets.kBooleanBox)
   .getEntry();
+  
+  GenericEntry sbCamConnected = subsystemLayout
+  .add("Camera Connnected", false)
+  .withWidget(BuiltInWidgets.kBooleanBox)
+  .getEntry();
 
 //   GenericEntry sbShiftState = subsystemLayout
 //   .add("Shift State", 0)
@@ -229,6 +244,7 @@ public class Vision extends Subsystem {
     @Override
     public void queryStatus() {
         sbTag.setBoolean(isTag);
+        sbCamConnected.setBoolean(camera.isConnected());
         field.setRobotPose(getPose2d());
     }
 

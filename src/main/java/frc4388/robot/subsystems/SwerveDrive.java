@@ -49,6 +49,7 @@ public class SwerveDrive extends Subsystem {
 
   /** Creates a new SwerveDrive. */
   public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain, Vision vision) {
+    // public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
     super();
 
     this.swerveDriveTrain = swerveDriveTrain;
@@ -172,7 +173,13 @@ public class SwerveDrive extends Subsystem {
     SmartDashboard.putNumber("Gyro", getGyroAngle());
     SmartDashboard.putNumber("RotTartget", rotTarget);
 
-    vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(Vision.getTime()));
+    double time = Vision.getTime();
+
+    vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(time));
+
+    if(vision.isTag()){
+      swerveDriveTrain.addVisionMeasurement(vision.getPose2d(), time);
+    }
 
     // if(e.isPresent())
   }
