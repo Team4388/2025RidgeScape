@@ -93,7 +93,7 @@ public class RobotContainer {
         m_robotSwerveDrive.setDefaultCommand(new RunCommand(() -> {
             m_robotSwerveDrive.driveWithInput(getDeadbandedDriverController().getLeft(),
                                             getDeadbandedDriverController().getRight(),
-                                true);
+                                false);
         }, m_robotSwerveDrive)
         .withName("SwerveDrive DefaultCommand"));
         m_robotSwerveDrive.setToSlow();

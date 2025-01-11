@@ -78,7 +78,7 @@ public class SwerveDrive extends Subsystem {
     
     if (fieldRelative) {
       swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
-        .withVelocityX(leftStick.getX()*-speedAdjust)
+        .withVelocityX(leftStick.getX()*speedAdjust)
         .withVelocityY(leftStick.getY()*speedAdjust)
         .withRotationalRate(rightStick.getX()*rotSpeedAdjust)
       );
@@ -163,7 +163,7 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void stopModules() {
-    swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
+    // swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
   }
 
   @Override
