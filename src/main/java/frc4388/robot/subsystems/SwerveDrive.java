@@ -155,6 +155,23 @@ public class SwerveDrive extends Subsystem {
     return false;
   }
 
+  public void driveWithInputRotation(Translation2d leftStick, Rotation2d rot) {
+    // if (leftStick.getNorm() < 0.05 && stopped == false) // if no imput and the swerve drive is still going:
+    //   stopModules(); // stop the swerve
+    
+    // if (leftStick.getNorm() < 0.05) //if no imput
+    //   return; // don't bother doing swerve drive math and return early.
+
+    leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+    
+    swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
+      .withVelocityX(leftStick.getX()*-speedAdjust)
+      .withVelocityY(leftStick.getY()*speedAdjust)
+      .withTargetDirection(rot)
+    );
+      // double
+  }
+
   public double getGyroAngle() {
     return swerveDriveTrain.getRotation3d().getAngle();
   }

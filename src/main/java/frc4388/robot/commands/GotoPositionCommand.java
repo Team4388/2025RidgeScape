@@ -1,5 +1,7 @@
 package frc4388.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,12 +15,16 @@ import frc4388.utility.controller.VirtualController;
 public class GotoPositionCommand extends Command {
     
 
-    private Translation2d translation2d= new Translation2d(0,0);
-    static Gains gains = new Gains(3,0,0);
+    // private Translation2d translation2d= new Translation2d(14.579471999999997,0.24587199999999998);
+    // private Translation2d translation2d= new Translation2d(16.579342-0.15,5.547867999999999);
+    private Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
+    static Gains xygains = new Gains(3,0,0);
+    static Gains rotgains = new Gains(0.1,0,0.0);
     static double tolerance = 0;
 
-    private PID xPID = new PID(gains, 0);
-    private PID yPID = new PID(gains, 0);
+    private PID xPID = new PID(xygains, 0);
+    private PID yPID = new PID(xygains, 0);
+    private PID rotPID = new PID(rotgains, 0);
 
     SwerveDrive swerveDrive;
     Vision vision;
@@ -42,24 +48,31 @@ public class GotoPositionCommand extends Command {
     
     @Override
     public void execute() {
-        double xerr = translation2d.getX() - vision.getPose2d().getX();
-        double yerr = translation2d.getY() - vision.getPose2d().getY();
+        double xerr = targetpos.getX() - vision.getPose2d().getX();
+        double yerr = targetpos.getY() - vision.getPose2d().getY();
+        double roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
 
         SmartDashboard.putNumber("PID X Error", xerr);
         SmartDashboard.putNumber("PID Y Error", yerr);
 
         double xoutput = xPID.update(xerr);
         double youtput = yPID.update(yerr);
+        double rotoutput = rotPID.update(roterr);
 
         Translation2d leftStick = new Translation2d(
             Math.max(Math.min(youtput, 1), -1),
             Math.max(Math.min(xoutput, 1), -1)
+            // 0,0
         );
 
-        Translation2d rightStick = new Translation2d();
+        Translation2d rightStick = new Translation2d(
+            Math.max(Math.min(rotoutput, 1), -1), 
+           0
+        );
 
         SmartDashboard.putNumber("PID X Output", xoutput);
         SmartDashboard.putNumber("PID Y Output", youtput);
+        // SmartDashboard.putNumber("PID Y Output", youtput);
 
         swerveDrive.driveWithInput(leftStick, rightStick, true);
     }
