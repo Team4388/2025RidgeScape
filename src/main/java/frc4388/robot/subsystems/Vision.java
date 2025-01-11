@@ -106,11 +106,13 @@ public class Vision extends Subsystem {
         }
 
         lastVisionPose = EstimatedRobotPose.get().estimatedPose.toPose2d();
+        // lastVisionPose.rotateBy(lastVisionPose.getRotation().minus(lastPhysOdomPose.getRotation()));
         // lastVisionPose = new Pose2d(
-        //     new Translation2d(lastVisionPose.getY(), lastVisionPose.getX()), 
-        //     lastVisionPose.getRotation()
+        //     lastVisionPose.getTranslation(), 
+        //     lastPhysOdomPose.getRotation()
         // );
 
+        
         
         field.setRobotPose(getPose2d());
 
