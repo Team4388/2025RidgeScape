@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 // Autos
 import frc4388.utility.controller.VirtualController;
+import frc4388.robot.commands.GotoPositionCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -213,7 +214,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoPlayback;
+        //return autoPlayback;
+        return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
     }
 
     /**

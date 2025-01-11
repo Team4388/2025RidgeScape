@@ -31,6 +31,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -275,10 +276,12 @@ public final class Constants {
         public static final int SMARTDASHBOARD_UPDATE_FRAME = 2;
       }
     
-    public static final class VisionConstants {
+    public static final class VisionConstants { 
         public static final String CAMERA_NAME = "Camera_Module_v1";
 
-        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(), new Rotation3d());
+        public static final Rotation2d ROTATE_BY = Rotation2d.fromDegrees(180);
+
+        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(.3048, .2413, .2794), new Rotation3d(0,0.52333,0));
 
         public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 

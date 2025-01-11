@@ -3,6 +3,8 @@ package frc4388.robot.subsystems;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
@@ -16,6 +18,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.Utils;
@@ -43,6 +46,21 @@ public class Vision extends Subsystem {
     private final PhotonPoseEstimator photonEstimator;
 
     private Field2d field = new Field2d();
+
+    
+    ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
+    .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+    .withSize(2, 2);
+
+    GenericEntry sbTag = subsystemLayout
+    .add("Tag Detected", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
+    
+    GenericEntry sbCamConnected = subsystemLayout
+    .add("Camera Connnected", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
     
     public Vision(PhotonCamera camera){
         this.camera = camera;
@@ -57,7 +75,15 @@ public class Vision extends Subsystem {
         var result = camera.getLatestResult();
         isTag = result.hasTargets();
         
-        field.setRobotPose(lastPhysOdomPose);
+        // Optional<MultiTargetPNPResult> multitag = result.getMultiTagResult();
+
+        // if (multitag.isEmpty()) {
+        //     Transform3d fieldToCamera = result.getMultiTagResult().estimatedPose.best;
+        // }else if()
+
+        
+        // sbTag.setBoolean(isTag);
+        // field.setRobotPose(getPose2d());
 
         // sbCamConnected.setBoolean(camera);
 
@@ -65,6 +91,7 @@ public class Vision extends Subsystem {
 
         if(!isTag){
             sbTag.setBoolean(isTag);
+            field.setRobotPose(getPose2d());
             return;
         }
 
@@ -72,11 +99,23 @@ public class Vision extends Subsystem {
 
         // In case the pose estimator fails to estimate the pose, fallback to physical odometry.
         if(EstimatedRobotPose.isEmpty()){
-            sbTag.setBoolean(isTag);
-            field.setRobotPose(lastPhysOdomPose);
             isTag = false;
+            sbTag.setBoolean(isTag);
+            field.setRobotPose(getPose2d());
             return;
         }
+
+        lastVisionPose = EstimatedRobotPose.get().estimatedPose.toPose2d();
+        // lastVisionPose = new Pose2d(
+        //     new Translation2d(lastVisionPose.getY(), lastVisionPose.getX()), 
+        //     lastVisionPose.getRotation()
+        // );
+
+        
+        field.setRobotPose(getPose2d());
+
+
+
     }
 
 
@@ -220,21 +259,6 @@ public class Vision extends Subsystem {
         return "Vision";
     }
 
-
-  ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
-  .getLayout(getSubsystemName(), BuiltInLayouts.kList)
-  .withSize(2, 2);
-
-  GenericEntry sbTag = subsystemLayout
-  .add("Tag Detected", false)
-  .withWidget(BuiltInWidgets.kBooleanBox)
-  .getEntry();
-  
-  GenericEntry sbCamConnected = subsystemLayout
-  .add("Camera Connnected", false)
-  .withWidget(BuiltInWidgets.kBooleanBox)
-  .getEntry();
-
 //   GenericEntry sbShiftState = subsystemLayout
 //   .add("Shift State", 0)
 //   .withWidget(BuiltInWidgets.kNumberBar)
@@ -245,7 +269,7 @@ public class Vision extends Subsystem {
     public void queryStatus() {
         sbTag.setBoolean(isTag);
         sbCamConnected.setBoolean(camera.isConnected());
-        field.setRobotPose(getPose2d());
+        // field.setRobotPose(getPose2d());
     }
 
     @Override
