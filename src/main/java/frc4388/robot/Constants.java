@@ -100,7 +100,7 @@ public final class Constants {
             private static final Distance FRONT_RIGHT_YPOS = Inches.of(HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.35205078125+.25);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.3828125+.25+.5);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
