@@ -46,11 +46,17 @@ public class GotoPositionCommand extends Command {
         yPID.initialize();
     }
     
+    double xerr;
+    double yerr;
+    double roterr;
+    double xytolerance = 0.01;
+    double rottolerance = 1;
+
     @Override
     public void execute() {
-        double xerr = targetpos.getX() - vision.getPose2d().getX();
-        double yerr = targetpos.getY() - vision.getPose2d().getY();
-        double roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
+        xerr = targetpos.getX() - vision.getPose2d().getX();
+        yerr = targetpos.getY() - vision.getPose2d().getY();
+        roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
 
         SmartDashboard.putNumber("PID X Error", xerr);
         SmartDashboard.putNumber("PID Y Error", yerr);
@@ -76,6 +82,13 @@ public class GotoPositionCommand extends Command {
 
         swerveDrive.driveWithInput(leftStick, rightStick, true);
     }
+
+    @Override
+    public final boolean isFinished() {
+        return (Math.abs(xerr) < xytolerance && Math.abs(yerr) < xytolerance && Math.abs(roterr) < rottolerance);
+                // this statement is a boolean in and of itself
+    }
+    
     // @Override
     // public void end(boolean interrupted) {
        
