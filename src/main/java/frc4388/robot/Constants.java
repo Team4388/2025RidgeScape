@@ -10,6 +10,10 @@ package frc4388.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Rotations;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -27,6 +31,20 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -137,7 +155,6 @@ public final class Constants {
             public static final CanDevice RIGHT_BACK_ENCODER  = new CanDevice("RIGHT_BACK_ENCODER", 13);
 
             public static final CanDevice DRIVE_PIGEON        = new CanDevice("DRIVE_PIGEON", 14);
-            public static final CanDevice e        = new CanDevice("NONEXISTANT_CAN", 50);
         }
     
         public static final class PIDConstants {
@@ -169,13 +186,14 @@ public final class Constants {
         }
     
         public static final class AutoConstants {
-            public static final Gains X_CONTROLLER = new Gains(0.8, 0.0, 0.0);
-            public static final Gains Y_CONTROLLER = new Gains(0.8, 0.0, 0.0);
-            public static final Gains THETA_CONTROLLER = new Gains(-0.8, 0.0, 0.0);
-            public static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2); // TODO: tune
-            
-            public static final double PATH_MAX_VEL = 0.3; // TODO: find the actual value
-            public static final double PATH_MAX_ACC = 0.3; // TODO: find the actual value
+            public static final Gains XY_GAINS = new Gains(3,0,0);
+            public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
+
+                    
+            public static final double XY_TOLERANCE = 0.05;
+            public static final double ROT_TOLERANCE = 1;
+                    
+            public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
         }
     
     
@@ -269,7 +287,26 @@ public final class Constants {
         public static final int SMARTDASHBOARD_UPDATE_FRAME = 2;
       }
     
-    public static final class VisionConstants {
+    public static final class VisionConstants { 
+        public static final String CAMERA_NAME = "Camera_Module_v1";
+
+        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
+        
+        // public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+
+        // Test april tag field layout
+        public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
+            Arrays.asList(new AprilTag[] {
+                new AprilTag(1, new Pose3d(
+                    new Translation3d(0.,0.,0.26035), new Rotation3d(0.,0.,0.)
+                )),
+            }), 100, 100);
+
+        // The standard deviations of our vision estimated poses, which affect correction rate
+        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
     public static final class DriveConstants {

@@ -20,6 +20,7 @@ import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.OIConstants;
 import frc4388.robot.Constants.SwerveDriveConstants;
+import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -30,11 +31,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 // Autos
 import frc4388.utility.controller.VirtualController;
+import frc4388.robot.commands.GotoPositionCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
 // Subsystems
 // import frc4388.robot.subsystems.LED;
+import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
@@ -55,8 +58,11 @@ public class RobotContainer {
     
     /* Subsystems */
     // private final LED m_robotLED = new LED();
+    public final Vision m_vision = new Vision(m_robotMap.camera);
 
-    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
+    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
+    // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
+
 
     /* Controllers */
     private final DeadbandedXboxController m_driverXbox   = new DeadbandedXboxController(OIConstants.XBOX_DRIVER_ID);
@@ -172,6 +178,13 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftUpRot()));
           
         // ?  /* Operator Buttons */
+
+        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos));
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
+            // creates an empty command & requires the swerve drive, subsystems can run only 1 command at a time
             
         // ? /* Programer Buttons (Controller 3)*/
 
@@ -222,7 +235,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoPlayback;
+        //return autoPlayback;
+        return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
     }
 
     /**
