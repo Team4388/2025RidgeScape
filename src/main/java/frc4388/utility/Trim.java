@@ -56,7 +56,7 @@ public class Trim {
             trimElement.setValue(currentValue);
         modified = true;
     }
-    
+
     public void stepUp() {
         this.currentValue += step;
         clampModify();
@@ -109,7 +109,7 @@ public class Trim {
     }
 
     public static void dumpAll() {
-        for (int i = 0; i > trims.size(); i++) {
+        for (int i = 0; i < trims.size(); i++) {
             Trim trim = trims.get(i);
             if (trim.isModified()) 
                 trim.dump();

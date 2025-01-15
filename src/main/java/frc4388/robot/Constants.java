@@ -33,6 +33,7 @@ import edu.wpi.first.units.measure.Distance;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
+import frc4388.utility.Trim;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -81,6 +82,8 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED_FEET_PER_SECOND = 2 * 2 * Math.PI;
 
         public static final double FORWARD_OFFSET = 0; // 0, 90, 180, 270
+
+        public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 1.d, 10);
 
         private static final class ModuleSpecificConstants {
             //Front Left

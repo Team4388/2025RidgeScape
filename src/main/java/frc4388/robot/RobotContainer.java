@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.OIConstants;
+import frc4388.robot.Constants.SwerveDriveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -145,7 +146,18 @@ public class RobotContainer {
 
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
-            
+        
+        // @ /* Trim Test Buttons */
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepUp()));
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepDown()));
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
+            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.load()));
+
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
