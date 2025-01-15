@@ -20,6 +20,7 @@ import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.OIConstants;
 import frc4388.robot.Constants.SwerveDriveConstants;
+import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
