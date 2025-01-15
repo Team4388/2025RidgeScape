@@ -51,6 +51,7 @@ import edu.wpi.first.units.measure.Distance;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
+import frc4388.utility.Trim;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -98,50 +99,52 @@ public final class Constants {
         public static final double MAX_SPEED_FEET_PER_SECOND = MAX_SPEED_MEETERS_PER_SEC * 3.28084;
         public static final double MAX_ANGULAR_SPEED_FEET_PER_SECOND = 2 * 2 * Math.PI;
 
-        public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
+        public static final double FORWARD_OFFSET = 0; // 0, 90, 180, 270
+
+        public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 1.d, 10);
 
         private static final class ModuleSpecificConstants {
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.229736328125+.25);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance FRONT_LEFT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.133056640625);
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(-0.371337890625+.5+.25);
             private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
             private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
+            private static final Distance FRONT_RIGHT_YPOS = Inches.of(HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.47705078125 + 0.5);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.3828125+.25+.5);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
             private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
+            private static final Distance BACK_LEFT_YPOS = Inches.of(-HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.355224609375 + 0.5);
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.01904296875+.25);
             private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance BACK_RIGHT_XPOS = Inches.of(HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
         }
 
         public static final class IDs {
-            public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 2);
-            public static final CanDevice RIGHT_FRONT_STEER   = new CanDevice("RIGHT_FRONT_STEER", 3);
-            public static final CanDevice RIGHT_FRONT_ENCODER = new CanDevice("RIGHT_FRONT_ENCODER", 10);
+            public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 4);
+            public static final CanDevice RIGHT_FRONT_STEER   = new CanDevice("RIGHT_FRONT_STEER", 5);
+            public static final CanDevice RIGHT_FRONT_ENCODER = new CanDevice("RIGHT_FRONT_ENCODER", 11);
             
-            public static final CanDevice LEFT_FRONT_WHEEL    = new CanDevice("LEFT_FRONT_WHEEL", 4);
-            public static final CanDevice LEFT_FRONT_STEER    = new CanDevice("LEFT_FRONT_STEER", 5);
-            public static final CanDevice LEFT_FRONT_ENCODER  = new CanDevice("LEFT_FRONT_ENCODER", 11);
+            public static final CanDevice LEFT_FRONT_WHEEL    = new CanDevice("LEFT_FRONT_WHEEL", 2);
+            public static final CanDevice LEFT_FRONT_STEER    = new CanDevice("LEFT_FRONT_STEER", 3);
+            public static final CanDevice LEFT_FRONT_ENCODER  = new CanDevice("LEFT_FRONT_ENCODER", 10);
             
             public static final CanDevice LEFT_BACK_WHEEL     = new CanDevice("LEFT_BACK_WHEEL", 6);
             public static final CanDevice LEFT_BACK_STEER     = new CanDevice("LEFT_BACK_STEER", 7);
