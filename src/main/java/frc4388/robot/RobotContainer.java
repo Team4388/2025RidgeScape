@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.OIConstants;
+import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -167,7 +168,7 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision));
+            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos));
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
@@ -224,15 +225,16 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return autoPlayback;
         //return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
-	try{
-	    // Load the path you want to follow using its name in the GUI
-	    return new PathPlannerAuto("Example Auto");
+	//try{
+	//    // Load the path you want to follow using its name in the GUI
+	/    return new PathPlannerAuto("Example Auto");
 	} catch (Exception e) {
 	    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
 	    return Commands.none();
 	}
 	// zach told me to do the below comment
 	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+        return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
     }
 
 

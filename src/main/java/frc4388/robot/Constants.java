@@ -36,10 +36,12 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -153,7 +155,6 @@ public final class Constants {
             public static final CanDevice RIGHT_BACK_ENCODER  = new CanDevice("RIGHT_BACK_ENCODER", 13);
 
             public static final CanDevice DRIVE_PIGEON        = new CanDevice("DRIVE_PIGEON", 14);
-            public static final CanDevice e        = new CanDevice("NONEXISTANT_CAN", 50);
         }
     
         public static final class PIDConstants {
@@ -185,13 +186,14 @@ public final class Constants {
         }
     
         public static final class AutoConstants {
-            public static final Gains X_CONTROLLER = new Gains(0.8, 0.0, 0.0);
-            public static final Gains Y_CONTROLLER = new Gains(0.8, 0.0, 0.0);
-            public static final Gains THETA_CONTROLLER = new Gains(-0.8, 0.0, 0.0);
-            public static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2); // TODO: tune
-            
-            public static final double PATH_MAX_VEL = 0.3; // TODO: find the actual value
-            public static final double PATH_MAX_ACC = 0.3; // TODO: find the actual value
+            public static final Gains XY_GAINS = new Gains(3,0,0);
+            public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
+
+                    
+            public static final double XY_TOLERANCE = 0.05;
+            public static final double ROT_TOLERANCE = 1;
+                    
+            public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
         }
     
     
@@ -289,10 +291,11 @@ public final class Constants {
         public static final String CAMERA_NAME = "Camera_Module_v1";
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
-
+        
         // public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-        
+
+        // Test april tag field layout
         public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
             Arrays.asList(new AprilTag[] {
                 new AprilTag(1, new Pose3d(
