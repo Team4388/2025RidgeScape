@@ -26,13 +26,15 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.robot.Constants.SwerveDriveConstants;
-
+import frc4388.robot.Constants.VisionConstants;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
 import frc4388.utility.Status.ReportLevel;
 
 public class SwerveDrive extends Subsystem {
   private SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain;
+
+  private Vision vision;
   
   private int gear_index = SwerveDriveConstants.STARTING_GEAR;
   private boolean stopped = false;
@@ -45,16 +47,15 @@ public class SwerveDrive extends Subsystem {
   public Rotation2d orientRotTarget = new Rotation2d();
   public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
-  private Field2d field = new Field2d();
-
   /** Creates a new SwerveDrive. */
-  public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
+  public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain, Vision vision) {
+    // public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
     super();
 
-    SmartDashboard.putData(field);
-
     this.swerveDriveTrain = swerveDriveTrain;
+    this.vision = vision;
   }
+
   // public void oneModuleTest(SwerveModule module, Translation2d leftStick, Translation2d rightStick){
   //   // double ang = Math.atan2(rightStick.getY(), rightStick.getX());
   //   // rightStick.getAngle()
@@ -154,6 +155,23 @@ public class SwerveDrive extends Subsystem {
     return false;
   }
 
+  public void driveWithInputRotation(Translation2d leftStick, Rotation2d rot) {
+    // if (leftStick.getNorm() < 0.05 && stopped == false) // if no imput and the swerve drive is still going:
+    //   stopModules(); // stop the swerve
+    
+    // if (leftStick.getNorm() < 0.05) //if no imput
+    //   return; // don't bother doing swerve drive math and return early.
+
+    leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+    
+    swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
+      .withVelocityX(leftStick.getX()*-speedAdjust)
+      .withVelocityY(leftStick.getY()*speedAdjust)
+      .withTargetDirection(rot)
+    );
+      // double
+  }
+
   public double getGyroAngle() {
     return swerveDriveTrain.getRotation3d().getAngle();
   }
@@ -172,10 +190,15 @@ public class SwerveDrive extends Subsystem {
     SmartDashboard.putNumber("Gyro", getGyroAngle());
     SmartDashboard.putNumber("RotTartget", rotTarget);
 
-    Optional<Pose2d> e = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds());
+    double time = Vision.getTime();
 
-    if(e.isPresent())
-      field.setRobotPose(e.get());
+    vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(time));
+
+    if(vision.isTag()){
+      swerveDriveTrain.addVisionMeasurement(vision.getPose2d(), time);
+    }
+
+    // if(e.isPresent())
   }
 
   private void reset_index() {

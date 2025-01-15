@@ -165,6 +165,13 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftUpRot()));
           
         // ?  /* Operator Buttons */
+
+        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision));
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
+            // creates an empty command & requires the swerve drive, subsystems can run only 1 command at a time
             
         // ? /* Programer Buttons (Controller 3)*/
 
@@ -224,6 +231,8 @@ public class RobotContainer {
 	    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
 	    return Commands.none();
 	}
+	// zach told me to do the below comment
+	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
     }
 
 
