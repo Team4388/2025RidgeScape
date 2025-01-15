@@ -155,14 +155,14 @@ public class RobotContainer {
         
         // @ /* Trim Test Buttons */
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepUp()));
+        // new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+        //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepUp()));
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepDown()));
+        // new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+        //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepDown()));
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
-            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.load()));
+        // new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
+        //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.load()));
 
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final

@@ -3,6 +3,7 @@ package frc4388.robot.subsystems;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -73,6 +74,9 @@ public class Vision extends Subsystem {
     @Override
     public void periodic() {
         var result = camera.getLatestResult();
+        // var results = camera.getAllUnreadResults();
+        // if (results.size() == 0) return;
+        // var result = results.get(results.size()-1);
         isTag = result.hasTargets();
         
         // Optional<MultiTargetPNPResult> multitag = result.getMultiTagResult();
@@ -106,7 +110,7 @@ public class Vision extends Subsystem {
         }
 
         lastVisionPose = EstimatedRobotPose.get().estimatedPose.toPose2d();
-        // lastVisionPose.rotateBy(lastVisionPose.getRotation().minus(lastPhysOdomPose.getRotation()));
+        lastVisionPose.rotateBy(Rotation2d.k180deg);
         // lastVisionPose = new Pose2d(
         //     lastVisionPose.getTranslation(),
         //     lastPhysOdomPose.getRotation()
