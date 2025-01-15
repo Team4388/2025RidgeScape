@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.OIConstants;
-import frc4388.robot.Constants.SwerveDriveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -27,14 +25,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 // Autos
 import frc4388.utility.controller.VirtualController;
+import frc4388.robot.commands.GotoPositionCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
-
+import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
+import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
@@ -55,8 +56,11 @@ public class RobotContainer {
     
     /* Subsystems */
     // private final LED m_robotLED = new LED();
+    public final Vision m_vision = new Vision(m_robotMap.camera);
 
-    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
+    public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
+    // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
+
 
     /* Controllers */
     private final DeadbandedXboxController m_driverXbox   = new DeadbandedXboxController(OIConstants.XBOX_DRIVER_ID);
@@ -95,7 +99,7 @@ public class RobotContainer {
         m_robotSwerveDrive.setDefaultCommand(new RunCommand(() -> {
             m_robotSwerveDrive.driveWithInput(getDeadbandedDriverController().getLeft(),
                                             getDeadbandedDriverController().getRight(),
-                                false);
+                                true);
         }, m_robotSwerveDrive)
         .withName("SwerveDrive DefaultCommand"));
         m_robotSwerveDrive.setToSlow();
@@ -146,18 +150,7 @@ public class RobotContainer {
 
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
-        
-        // @ /* Trim Test Buttons */
-        
-        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepUp()));
-        
-        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepDown()));
-        
-        new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
-            .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.load()));
-
+            
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
@@ -222,8 +215,18 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoPlayback;
+        //return autoPlayback;
+        //return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+	try{
+	    // Load the path you want to follow using its name in the GUI
+	    return new PathPlannerAuto("Example Auto");
+	} catch (Exception e) {
+	    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+	    return Commands.none();
+	}
     }
+
+
 
     /**
      * A button binding for two controllers, preferably an {@link DeadbandedXboxController Xbox Controller} and {@link VirtualController Virtual Xbox Controller}
