@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 import frc4388.robot.subsystems.SwerveDrive;
 import frc4388.robot.subsystems.Vision;
 import frc4388.utility.Gains;
@@ -17,14 +18,11 @@ public class GotoPositionCommand extends Command {
 
     // private Translation2d translation2d= new Translation2d(14.579471999999997,0.24587199999999998);
     // private Translation2d translation2d= new Translation2d(16.579342-0.15,5.547867999999999);
-    private Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
-    static Gains xygains = new Gains(3,0,0);
-    static Gains rotgains = new Gains(0.1,0,0.0);
-    static double tolerance = 0;
 
-    private PID xPID = new PID(xygains, 0);
-    private PID yPID = new PID(xygains, 0);
-    private PID rotPID = new PID(rotgains, 0);
+    private PID xPID = new PID(AutoConstants.XY_GAINS, 0);
+    private PID yPID = new PID(AutoConstants.XY_GAINS, 0);
+    private PID rotPID = new PID(AutoConstants.ROT_GAINS, 0);
+    private Pose2d targetpos;
 
     SwerveDrive swerveDrive;
     Vision vision;
@@ -34,9 +32,10 @@ public class GotoPositionCommand extends Command {
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision) {
+    public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision, Pose2d targetpos) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
+        this.targetpos = targetpos;
         addRequirements(swerveDrive);
     }
 
@@ -49,8 +48,6 @@ public class GotoPositionCommand extends Command {
     double xerr;
     double yerr;
     double roterr;
-    double xytolerance = 0.01;
-    double rottolerance = 1;
 
     @Override
     public void execute() {
@@ -58,8 +55,8 @@ public class GotoPositionCommand extends Command {
         yerr = targetpos.getY() - vision.getPose2d().getY();
         roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
 
-        SmartDashboard.putNumber("PID X Error", xerr);
-        SmartDashboard.putNumber("PID Y Error", yerr);
+        // SmartDashboard.putNumber("PID X Error", xerr);
+        // SmartDashboard.putNumber("PID Y Error", yerr);
 
         double xoutput = xPID.update(xerr);
         double youtput = yPID.update(yerr);
@@ -76,16 +73,16 @@ public class GotoPositionCommand extends Command {
            0
         );
 
-        SmartDashboard.putNumber("PID X Output", xoutput);
-        SmartDashboard.putNumber("PID Y Output", youtput);
+        // SmartDashboard.putNumber("PID X Output", xoutput);
         // SmartDashboard.putNumber("PID Y Output", youtput);
+        // // SmartDashboard.putNumber("PID Y Output", youtput);
 
         swerveDrive.driveWithInput(leftStick, rightStick, true);
     }
 
     @Override
     public final boolean isFinished() {
-        return (Math.abs(xerr) < xytolerance && Math.abs(yerr) < xytolerance && Math.abs(roterr) < rottolerance);
+        return (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
                 // this statement is a boolean in and of itself
     }
     
