@@ -25,6 +25,7 @@ import frc4388.utility.DeferredBlock;
 import frc4388.utility.RobotTime;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
+import frc4388.utility.Trim;
 import frc4388.utility.Status.Report;
 import frc4388.utility.Status.ReportLevel;
 //import frc4388.robot.subsystems.LED;
@@ -158,6 +159,14 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
   //  m_robotContainer.m_robotMap.rightFront.go(m_robotContainer.getDeadbandedDriverController().getLeft());
+  }
+
+  /**
+   * This function is called periodically during operator control.
+   */
+  @Override
+  public void teleopExit() { // the only OTHER mode that teleop can enter into is disabled.
+    Trim.dumpAll();
   }
 
   @Override
