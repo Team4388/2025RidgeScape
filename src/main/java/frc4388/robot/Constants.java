@@ -46,6 +46,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc4388.utility.CanDevice;
@@ -301,21 +302,26 @@ public final class Constants {
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
         
-        // public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-
-
-        // Test april tag field layout
-        public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
-            Arrays.asList(new AprilTag[] {
-                new AprilTag(1, new Pose3d(
-                    new Translation3d(0.,0.,0.26035), new Rotation3d(0.,0.,0.)
-                )),
-            }), 100, 100);
 
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    }
+
+    public static final class FieldConstants {
+        public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(13);
+
+
+        // Test april tag field layout
+        // public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
+        //     Arrays.asList(new AprilTag[] {
+        //         new AprilTag(1, new Pose3d(
+        //             new Translation3d(0.,0.,0.26035), new Rotation3d(0.,0.,0.)
+        //         )),
+        //     }), 100, 100);
+
     }
 
     public static final class DriveConstants {

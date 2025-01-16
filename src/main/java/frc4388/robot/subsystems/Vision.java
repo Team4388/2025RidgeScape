@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc4388.robot.Constants.FieldConstants;
 import frc4388.robot.Constants.VisionConstants;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
@@ -67,7 +68,7 @@ public class Vision extends Subsystem {
         this.camera = camera;
         SmartDashboard.putData(field);
 
-        photonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.CAMERA_POS);
+        photonEstimator = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.CAMERA_POS);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
