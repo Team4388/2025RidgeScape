@@ -70,7 +70,7 @@ public class SwerveDrive extends Subsystem {
 	    config = null;
 	}
         AutoBuilder.configure(
-			      () -> swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(null), // Robot pose supplier
+			      () -> swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d()), // Robot pose supplier
 			      swerveDriveTrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
 			      () -> swerveDriveTrain.getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
 			      (speeds, feedforwards) -> swerveDriveTrain.setControl(new SwerveRequest.ApplyRobotSpeeds()
@@ -222,7 +222,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void stopModules() {
-	// swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
+	swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
     }
 
     @Override

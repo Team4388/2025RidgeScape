@@ -225,16 +225,16 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return autoPlayback;
         //return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
-	//try{
-	//    // Load the path you want to follow using its name in the GUI
-	//    return new PathPlannerAuto("Example Auto");
-	//} catch (Exception e) {
-	//    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-	//    return Commands.none();
-	//}
+	try{
+	    // Load the path you want to follow using its name in the GUI
+	    return new PathPlannerAuto("New Auto");
+	} catch (Exception e) {
+	    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+	    return Commands.none();
+	}
 	// zach told me to do the below comment
 	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
-        return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
+      //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
     }
 
 
