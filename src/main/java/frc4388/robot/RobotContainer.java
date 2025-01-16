@@ -89,6 +89,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        
         configureButtonBindings();        
         configureVirtualButtonBindings();
         new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
@@ -101,7 +102,7 @@ public class RobotContainer {
         m_robotSwerveDrive.setDefaultCommand(new RunCommand(() -> {
             m_robotSwerveDrive.driveWithInput(getDeadbandedDriverController().getLeft(),
                                             getDeadbandedDriverController().getRight(),
-                                false);
+                                true);
         }, m_robotSwerveDrive)
         .withName("SwerveDrive DefaultCommand"));
         m_robotSwerveDrive.setToSlow();
