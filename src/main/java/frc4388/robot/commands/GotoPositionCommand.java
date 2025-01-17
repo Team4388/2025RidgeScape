@@ -9,6 +9,8 @@ import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 import frc4388.robot.subsystems.SwerveDrive;
 import frc4388.robot.subsystems.Vision;
 import frc4388.utility.Gains;
+import frc4388.utility.ReefPositionHelper;
+import frc4388.utility.ReefPositionHelper.Side;
 import frc4388.utility.UtilityStructs.AutoRecordingControllerFrame;
 import frc4388.utility.UtilityStructs.AutoRecordingFrame;
 import frc4388.utility.controller.VirtualController;
@@ -32,10 +34,9 @@ public class GotoPositionCommand extends Command {
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision, Pose2d targetpos) {
+    public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
-        this.targetpos = targetpos;
         addRequirements(swerveDrive);
     }
 
@@ -43,6 +44,7 @@ public class GotoPositionCommand extends Command {
     public void initialize() {
         xPID.initialize();
         yPID.initialize();
+        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), Side.RIGHT, AutoConstants.X_OFFSET_TRIM.get());
     }
     
     double xerr;

@@ -52,6 +52,7 @@ import edu.wpi.first.units.measure.Distance;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
+import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Trim;
 
 /**
@@ -103,7 +104,7 @@ public final class Constants {
         public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
         // public static final double FORWARD_OFFSET = 0; // 0, 90, 180, 270
 
-        public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 1.d, 10);
+        // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
 
         private static final class ModuleSpecificConstants {
             //Front Left
@@ -199,11 +200,14 @@ public final class Constants {
             public static final Gains XY_GAINS = new Gains(3,0,0);
             public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
+            public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
+
                     
             public static final double XY_TOLERANCE = 0.05;
             public static final double ROT_TOLERANCE = 1;
                     
-            public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
+            // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
+            // public static final Pose2d targetpos = 
         }
     
     
@@ -311,7 +315,9 @@ public final class Constants {
 
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(13);
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
+        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
+
 
 
         // Test april tag field layout

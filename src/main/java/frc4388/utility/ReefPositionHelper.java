@@ -15,7 +15,7 @@ public class ReefPositionHelper {
         RIGHT
     }
 
-    public static Pose2d[] RED_TAGS = {
+    public static final Pose2d[] RED_TAGS = {
         FieldConstants.kTagLayout.getTagPose(6).get().toPose2d(),
         FieldConstants.kTagLayout.getTagPose(7).get().toPose2d(),
         FieldConstants.kTagLayout.getTagPose(8).get().toPose2d(),
@@ -24,7 +24,7 @@ public class ReefPositionHelper {
         FieldConstants.kTagLayout.getTagPose(11).get().toPose2d()
     };
 
-    public static Pose2d[] BLUE_TAGS = {
+    public static final Pose2d[] BLUE_TAGS = {
         FieldConstants.kTagLayout.getTagPose(17).get().toPose2d(),
         FieldConstants.kTagLayout.getTagPose(18).get().toPose2d(),
         FieldConstants.kTagLayout.getTagPose(19).get().toPose2d(),
@@ -34,7 +34,7 @@ public class ReefPositionHelper {
     };
 
     public static double distanceTo(Pose2d first, Pose2d second){
-        return Math.sqrt(  Math.pow(first.getX()  -  second.getX(),2) + Math.pow(first.getY()  -  second.getY(),2));
+        return Math.sqrt(Math.pow(first.getX()  -  second.getX(),2) + Math.pow(first.getY()  -  second.getY(),2));
     }
 
 
@@ -48,12 +48,15 @@ public class ReefPositionHelper {
         double minDistance = distanceTo(position,minPos);
 
         for(int i = 1; i < locations.length; i++){
-            double dist = distanceTo(locations[i],minPos);
+            double dist = distanceTo(locations[i],position);
             if(dist < minDistance){
+                System.out.println(i);
                 minPos = locations[i];
                 minDistance = dist;
             }
         }
+
+        System.out.println(minPos);
 
         return minPos;
     }
@@ -73,16 +76,20 @@ public class ReefPositionHelper {
     }
 
     public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim) {
-        return getNearestTag(horisontalOffset(position, side == Side.LEFT ? -(xtrim+FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET) : (xtrim+FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET))); 
+        return offset(getNearestTag(position), 
+        (side == Side.LEFT ? -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET) : (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET)) + xtrim,
+        FieldConstants.VERTICAL_SCORING_POSITION_OFFSET); 
     }
 
 
-    public static Pose2d horisontalOffset(Pose2d oldPose, double xoffset){
+    public static Pose2d offset(Pose2d oldPose, double xoffset, double yoffset){
         Translation2d oldTranslation = oldPose.getTranslation();
-        Rotation2d rot = oldPose.getRotation();
+        
+        double rot = oldPose.getRotation().getRadians();
+
         return new Pose2d(new Translation2d(
-            oldTranslation.getX() + rot.getCos() * xoffset,
-            oldTranslation.getY() + rot.getSin() * xoffset
+            oldTranslation.getX() + Math.cos(rot + Math.PI/2) * xoffset + Math.cos(rot) * yoffset,
+            oldTranslation.getY() + Math.sin(rot + Math.PI/2) * xoffset + Math.sin(rot) * yoffset
         ), oldPose.getRotation());
     }
 }

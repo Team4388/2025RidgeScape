@@ -40,7 +40,8 @@ public class Vision extends Subsystem {
 
     private PhotonCamera camera;
 
-    private boolean isTag = false;
+    private boolean isTagDetected = false;
+    private boolean isTagProcessed = false;
     private Pose2d lastVisionPose = new Pose2d();
     private Pose2d lastPhysOdomPose = new Pose2d();
 
@@ -54,8 +55,13 @@ public class Vision extends Subsystem {
     .getLayout(getSubsystemName(), BuiltInLayouts.kList)
     .withSize(2, 2);
 
-    GenericEntry sbTag = subsystemLayout
+    GenericEntry sbTagDetected = subsystemLayout
     .add("Tag Detected", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
+
+    GenericEntry sbTagProcessed = subsystemLayout
+    .add("Tag Processed", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
     
@@ -78,7 +84,8 @@ public class Vision extends Subsystem {
         // var results = camera.getAllUnreadResults();
         // if (results.size() == 0) return;
         // var result = results.get(results.size()-1);
-        isTag = result.hasTargets();
+        isTagDetected = result.hasTargets();
+        isTagProcessed = false;
         
         // Optional<MultiTargetPNPResult> multitag = result.getMultiTagResult();
 
@@ -94,8 +101,8 @@ public class Vision extends Subsystem {
 
         // System.out.println(isTag);
 
-        if(!isTag){
-            sbTag.setBoolean(isTag);
+        if(!isTagDetected){
+            // sbTagDetected.setBoolean(isTagDetected);
             field.setRobotPose(getPose2d());
             return;
         }
@@ -104,11 +111,12 @@ public class Vision extends Subsystem {
 
         // In case the pose estimator fails to estimate the pose, fallback to physical odometry.
         if(EstimatedRobotPose.isEmpty()){
-            isTag = false;
-            sbTag.setBoolean(isTag);
-            field.setRobotPose(getPose2d());
+            // sbTagProcessed.setBoolean(isTagProcessed);
+            field.setRobotPose(lastVisionPose);
             return;
         }
+
+        isTagProcessed = true;
 
         lastVisionPose = EstimatedRobotPose.get().estimatedPose.toPose2d();
         // lastVisionPose.rotateBy(Rotation2d.k180deg);
@@ -234,7 +242,7 @@ public class Vision extends Subsystem {
     }
 
     public Pose2d getPose2d() {
-        if(isTag)
+        if(isTagDetected && isTagProcessed)
             return lastVisionPose;
         else
             return lastPhysOdomPose;
@@ -245,7 +253,7 @@ public class Vision extends Subsystem {
     }
 
     public boolean isTag(){
-        return isTag;
+        return isTagDetected && isTagProcessed;
     }
 
 
@@ -271,7 +279,8 @@ public class Vision extends Subsystem {
 
     @Override
     public void queryStatus() {
-        sbTag.setBoolean(isTag);
+        sbTagDetected.setBoolean(isTagDetected);
+        sbTagProcessed.setBoolean(isTagProcessed);
         sbCamConnected.setBoolean(camera.isConnected());
         // field.setRobotPose(getPose2d());
     }

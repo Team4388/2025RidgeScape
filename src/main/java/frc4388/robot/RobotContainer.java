@@ -42,7 +42,9 @@ import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
 import frc4388.utility.DeferredBlock;
+import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Subsystem;
+import frc4388.utility.ReefPositionHelper.Side;
 import frc4388.utility.configurable.ConfigurableString;
 
 /**
@@ -165,6 +167,15 @@ public class RobotContainer {
         // new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
         //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.load()));
 
+        
+        new Trigger(() -> getDeadbandedDriverController().getPOV() == 0)
+            .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepUp()));
+
+        new Trigger(() -> getDeadbandedDriverController().getPOV() == 180)
+            .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
+
+            
+
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
@@ -181,7 +192,7 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos));
+            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision));
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
@@ -237,7 +248,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         //return autoPlayback;
-        return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
+        return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
     }
 
     /**
