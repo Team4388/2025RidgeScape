@@ -5,6 +5,7 @@
 package frc4388.robot.subsystems;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -69,8 +70,13 @@ public class SwerveDrive extends Subsystem {
 	    // Handle exception as needed
 	    config = null;
 	}
+        // DoubleSupplier a = () -> 1.d;
         AutoBuilder.configure(
-			      () -> swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d()), // Robot pose supplier
+			      () -> {
+                    var pose = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d());
+                    pose = new Pose2d(pose.getX(), pose.getY(), pose.getRotation().times(-1));
+                    return pose;//getRotation().times(-1)
+                  }, // Robot pose supplier
 			      swerveDriveTrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
 			      () -> swerveDriveTrain.getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
 			      (speeds, feedforwards) -> swerveDriveTrain.setControl(new SwerveRequest.ApplyRobotSpeeds()
@@ -121,7 +127,7 @@ public class SwerveDrive extends Subsystem {
 	if (fieldRelative) {
 	    swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
 					.withVelocityX(leftStick.getX()*speedAdjust)
-					.withVelocityY(leftStick.getY()*speedAdjust)
+					.withVelocityY(-leftStick.getY()*speedAdjust)
 					.withRotationalRate(rightStick.getX()*rotSpeedAdjust)
 					);
 	    // double rot = 0;
@@ -159,8 +165,8 @@ public class SwerveDrive extends Subsystem {
 	    //   chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 * speed.getY(), (-1 * rightStick.getX() * rotSpeedAdjust) - rot_correction, gyro.getRotation2d().times(-1));
 	} else {      // Create robot-relative speeds.
 	    swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
-					.withVelocityX(leftStick.getX()*-speedAdjust)
-					.withVelocityY(leftStick.getY()*speedAdjust)
+					.withVelocityX(leftStick.getX()*speedAdjust)
+					.withVelocityY(-leftStick.getY()*speedAdjust)
 					.withRotationalRate(rightStick.getX()*rotSpeedAdjust)
 					);
 	}
