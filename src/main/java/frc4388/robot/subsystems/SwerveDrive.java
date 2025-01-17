@@ -74,7 +74,7 @@ public class SwerveDrive extends Subsystem {
         AutoBuilder.configure(
 			      () -> {
                     var pose = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d());
-                    pose = new Pose2d(pose.getX(), pose.getY(), pose.getRotation().times(-1));
+                    // pose = new Pose2d(pose.getX(), pose.getY(), pose.getRotation().times(-1));
                     return pose;//getRotation().times(-1)
                   }, // Robot pose supplier
 			      swerveDriveTrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)

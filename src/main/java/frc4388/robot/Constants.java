@@ -103,7 +103,8 @@ public final class Constants {
 
         public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 1.d, 10);
 
-        private static final class ModuleSpecificConstants {
+        private static final class ModuleSpecificConstants { //2025
+            //Front Left
             private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.229736328125);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
