@@ -326,4 +326,18 @@ public final class Constants {
         public static final double LEFT_AXIS_DEADBAND = 0.1;
 
     }
+
+    public static final class ElevatorConstants {
+        public static final class IDs {
+            public static final int ELEVATOR_ID = 420;
+        }
+        public static final double LEVEL_1 = 123;
+        public static final double LEVEL_2 = 123;
+        public static final double ELEVATOR_MAX_HEIGHT = 123;
+        public static final double ELEVATOR_SPEED_UP = 123;
+        public static final double ELEVATOR_SPEED_DOWN = -123;
+
+
+        
+    }
 }

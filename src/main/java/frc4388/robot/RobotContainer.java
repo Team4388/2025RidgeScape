@@ -39,6 +39,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
+import frc4388.robot.subsystems.Elevator;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
@@ -61,6 +62,7 @@ public class RobotContainer {
     // private final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.camera);
 
+    public final Elevator m_robotELevator= new Elevator(m_robotMap.elevator);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -191,6 +193,24 @@ public class RobotContainer {
             new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
             true, false))
             .onFalse(new InstantCommand());
+
+            /*DPad for Level 1 and 2*/
+        new Trigger(() -> getDeadbandedOperatorController().getRawAxis(XboxController.TOP_BOTTOM_DPAD_AXIS) > 0.9)
+            .onTrue(new InstantCommand(() -> m_robotELevator.PIDLevel2()))
+            .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
+
+        new Trigger(() -> getDeadbandedOperatorController().getRawAxis(XboxController.TOP_BOTTOM_DPAD_AXIS) > -0.9)
+            .onTrue(new InstantCommand(() -> m_robotELevator.PIDLevel1()))
+            .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
+
+            /*Free Brid Mode With Bummpers*/
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.LEFT_BUMPER_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotELevator.elevatorDown()))
+            .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
+        
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.RIGHT_BUMPER_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotELevator.elevatorUp()))
+            .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
     }
     
     /**
