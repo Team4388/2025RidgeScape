@@ -28,13 +28,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 // Autos
 import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoPositionCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
-
+import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
@@ -155,26 +156,6 @@ public class RobotContainer {
 
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
-        
-        // @ /* Trim Test Buttons */
-        
-        // new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-        //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepUp()));
-        
-        // new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-        //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.stepDown()));
-        
-        // new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
-        //     .onTrue(new InstantCommand(() -> SwerveDriveConstants.POINTLESS_TRIM.load()));
-
-        
-        new Trigger(() -> getDeadbandedDriverController().getPOV() == 0)
-            .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepUp()));
-
-        new Trigger(() -> getDeadbandedDriverController().getPOV() == 180)
-            .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
-
-            
 
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
@@ -248,8 +229,20 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         //return autoPlayback;
-        return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+        //return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+	try{
+	    // Load the path you want to follow using its name in the GUI
+	    return new PathPlannerAuto("New Auto");
+	} catch (Exception e) {
+	    DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
+	    return Commands.none();
+	}
+	// zach told me to do the below comment
+	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+      //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
     }
+
+
 
     /**
      * A button binding for two controllers, preferably an {@link DeadbandedXboxController Xbox Controller} and {@link VirtualController Virtual Xbox Controller}
