@@ -130,6 +130,7 @@ public class SwerveDrive extends Subsystem {
             return; // don't bother doing swerve drive math and return early.
 
         leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+		
         if (SwerveDriveConstants.INVERT_X) leftStick = new Translation2d(-leftStick.getX(), leftStick.getY());
         if (SwerveDriveConstants.INVERT_Y) leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
         if (SwerveDriveConstants.INVERT_ROTATION) rightStick.times(-1);

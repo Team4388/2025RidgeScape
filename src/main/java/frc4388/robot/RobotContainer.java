@@ -39,6 +39,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
+import frc4388.robot.subsystems.Lidar;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
@@ -62,7 +63,7 @@ public class RobotContainer {
     /* Subsystems */
     // private final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.camera);
-
+    public final Lidar m_lidar = new Lidar();
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
