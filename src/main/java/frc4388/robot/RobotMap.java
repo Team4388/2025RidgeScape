@@ -51,7 +51,7 @@ public class RobotMap {
     );
 
     /* Elevator Subsystem */
-    public final TalonFX elevator = new TalonFX(ElevatorConstants.IDs.ELEVATOR_ID);
+    public final TalonFX elevator = new TalonFX(ElevatorConstants.ELEVATOR_ID.id);
     void configureDriveMotorControllers() {}
         
 }

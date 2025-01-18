@@ -19,13 +19,10 @@ public class Elevator extends SubsystemBase {
   public Elevator(TalonFX elevatorTalonFX) {
     elevatorMotor = elevatorTalonFX;
 
-    elevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     
-    var PIDConfigs = new Slot0Configs();
-    PIDConfigs.kP = 0;
-    PIDConfigs.kI = 0;
-    PIDConfigs.kD = 0;
-    elevatorMotor.getConfigurator().apply(PIDConfigs);
+    
+    elevatorMotor.getConfigurator().apply(ElevatorConstants.ELEVATOR_PID);
   }
 
   //PID methods
