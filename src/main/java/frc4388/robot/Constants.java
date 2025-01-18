@@ -84,7 +84,7 @@ public final class Constants {
         
         public static final double[] GEARS = {SLOW_SPEED, FAST_SPEED, TURBO_SPEED};
         public static final int STARTING_GEAR = 0;
-        // dimensions
+        // Dimensions
         public static final double WIDTH = 18.5; // TODO: validate
         public static final double HEIGHT = 18.5; // TODO: validate
         public static final double HALF_WIDTH = WIDTH / 2.d;
@@ -101,11 +101,17 @@ public final class Constants {
         public static final double MAX_SPEED_FEET_PER_SECOND = MAX_SPEED_MEETERS_PER_SEC * 3.28084;
         public static final double MAX_ANGULAR_SPEED_FEET_PER_SECOND = 2 * 2 * Math.PI;
 
+        // Operation
         public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
+
+        public static final boolean DRIFT_CORRECTION_ENABLED = true;
+        public static final boolean INVERT_X = true;
+        public static final boolean INVERT_Y = false;
+        public static final boolean INVERT_ROTATION = false;
 
         // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
 
-        private static final class ModuleSpecificConstants { //2025
+        /* private static final class ModuleSpecificConstants { //2025
             //Front Left
             private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.229736328125+.25);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
@@ -137,9 +143,9 @@ public final class Constants {
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
             private static final Distance BACK_RIGHT_XPOS = Inches.of(HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-        }
+        } */
 
-        /* private static final class ModuleSpecificConstants { // 2024
+        private static final class ModuleSpecificConstants { // 2024
             //Front Left
             private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
@@ -171,7 +177,7 @@ public final class Constants {
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
             private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-        } */
+        }
 
         public static final class IDs {
             public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 4);
@@ -219,6 +225,8 @@ public final class Constants {
             public static final Slot0Configs PREPROVIDED_DRIVE_GAINS = new Slot0Configs()
                 .withKP(0.1).withKI(0).withKD(0)
                 .withKS(0).withKV(0.124);
+            
+            public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
         }
     
         public static final class AutoConstants {
