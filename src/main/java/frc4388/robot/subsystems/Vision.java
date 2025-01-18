@@ -20,6 +20,7 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.MultiTargetPNPResult;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.Utils;
@@ -80,26 +81,14 @@ public class Vision extends Subsystem {
 
     @Override
     public void periodic() {
-        var result = camera.getLatestResult();
-        // var results = camera.getAllUnreadResults();
-        // if (results.size() == 0) return;
-        // var result = results.get(results.size()-1);
+        // var result = camera.getLatestResult();
+        var results = camera.getAllUnreadResults();
+        if (results.size() == 0) return;
+        var result = results.get(results.size()-1);
+
         isTagDetected = result.hasTargets();
         isTagProcessed = false;
         
-        // Optional<MultiTargetPNPResult> multitag = result.getMultiTagResult();
-
-        // if (multitag.isEmpty()) {
-        //     Transform3d fieldToCamera = result.getMultiTagResult().estimatedPose.best;
-        // }else if()
-
-        
-        // sbTag.setBoolean(isTag);
-        // field.setRobotPose(getPose2d());
-
-        // sbCamConnected.setBoolean(camera);
-
-        // System.out.println(isTag);
 
         if(!isTagDetected){
             // sbTagDetected.setBoolean(isTagDetected);
@@ -107,12 +96,11 @@ public class Vision extends Subsystem {
             return;
         }
 
-        var EstimatedRobotPose = getEstimatedGlobalPose();
+        var EstimatedRobotPose = getEstimatedGlobalPose(result);
 
         // In case the pose estimator fails to estimate the pose, fallback to physical odometry.
         if(EstimatedRobotPose.isEmpty()){
-            // sbTagProcessed.setBoolean(isTagProcessed);
-            field.setRobotPose(lastVisionPose);
+            field.setRobotPose(getPose2d());
             return;
         }
 
@@ -143,9 +131,22 @@ public class Vision extends Subsystem {
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
      *     used for estimation.
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPipelineResult change) {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : camera.getAllUnreadResults()) {
+        // for (var change : camera.getAllUnreadResults()) {
+
+            var targets = change.getTargets();
+            for(int i = targets.size()-1; i >= 0; i--){
+                Transform3d pos = targets.get(i).getBestCameraToTarget();
+                double distance = Math.sqrt(Math.pow(pos.getX(),2) + Math.pow(pos.getY(),2) + Math.pow(pos.getZ(),2));
+                if (distance > VisionConstants.MIN_ESTIMATION_DISTANCE) {
+                    change.targets.remove(i);
+                }
+            }
+
+            if(targets.size() <= 0)
+                return visionEst; // Will be empty
+
             visionEst = photonEstimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
@@ -159,14 +160,9 @@ public class Vision extends Subsystem {
             //                 getSimDebugField().getObject("VisionEstimation").setPoses();
             //             });
             // }
-        }
+        // }
         return visionEst;
     }
-
-
-
-
-
 
 
     /**
@@ -192,13 +188,17 @@ public class Vision extends Subsystem {
             for (var tgt : targets) {
                 var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
-                numTags++;
-                avgDist +=
-                        tagPose
-                                .get()
-                                .toPose2d()
-                                .getTranslation()
-                                .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                
+                double distance = tagPose
+                .get()
+                .toPose2d()
+                .getTranslation()
+                .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                
+                if (distance < VisionConstants.MIN_ESTIMATION_DISTANCE) {
+                    numTags++;
+                    avgDist += distance;
+                }
             }
 
             if (numTags == 0) {

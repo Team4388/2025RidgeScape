@@ -306,7 +306,9 @@ public final class Constants {
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
         
+        public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
+        // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
