@@ -124,13 +124,13 @@ public class SwerveDrive extends Subsystem {
 
 	leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
     
-	if (fieldRelative) {
-	    swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
-					.withVelocityX(leftStick.getX()*speedAdjust)
-					.withVelocityY(-leftStick.getY()*speedAdjust)
-					.withRotationalRate(rightStick.getX()*rotSpeedAdjust)
-					);
-	    // double rot = 0;
+    if (fieldRelative) {
+      swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
+        .withVelocityX(leftStick.getX()*speedAdjust)
+        .withVelocityY(-leftStick.getY()*speedAdjust)
+        .withRotationalRate(rightStick.getX()*rotSpeedAdjust)
+      );
+      // double rot = 0;
       
 	    // ! drift correction
 	    // dependant on if the new odomitry system acounts for rotational drift, this may not be needed.
@@ -227,9 +227,9 @@ public class SwerveDrive extends Subsystem {
 	swerveDriveTrain.tareEverything();
     }
 
-    public void stopModules() {
-	swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
-    }
+  public void stopModules() {
+    swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
+  }
 
     @Override
     public void periodic() {

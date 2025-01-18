@@ -46,11 +46,13 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc4388.utility.CanDevice;
 import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
+import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Trim;
 
 /**
@@ -101,41 +103,75 @@ public final class Constants {
 
         public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
 
-        public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 1.d, 10);
+        // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
 
         private static final class ModuleSpecificConstants { //2025
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.229736328125);
-            private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = true;
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.229736328125+.25);
+            private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_HEIGHT);
-            private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_WIDTH);
+            private static final Distance FRONT_LEFT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(-0.371337890625+.5);
-            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = true;
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(-0.371337890625+.5+.25);
+            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_HEIGHT);
-            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance FRONT_RIGHT_YPOS = Inches.of(HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.3828125+.5);
-            private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = true;
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.3828125+.25+.5);
+            private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
-            private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_HEIGHT);
-            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_WIDTH);
+            private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance BACK_LEFT_YPOS = Inches.of(-HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.07666015625);
-            private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = true;
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.01904296875+.25);
+            private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_HEIGHT);
-            private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance BACK_RIGHT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
         }
+
+        /* private static final class ModuleSpecificConstants { // 2024
+            //Front Left
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
+            private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
+            private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
+            private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
+            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
+            
+            //Front Right
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.133056640625);
+            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
+            private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
+            private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
+            private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
+
+            //Back Left
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.47705078125 + 0.5);
+            private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
+            private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
+            private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
+            private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
+            
+            //Back Right
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.355224609375 + 0.5);
+            private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
+            private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
+            private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
+            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
+        } */
 
         public static final class IDs {
             public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 4);
@@ -189,11 +225,14 @@ public final class Constants {
             public static final Gains XY_GAINS = new Gains(3,0,0);
             public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
+            public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
+
                     
             public static final double XY_TOLERANCE = 0.05;
             public static final double ROT_TOLERANCE = 1;
                     
-            public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
+            // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
+            // public static final Pose2d targetpos = 
         }
     
     
@@ -292,21 +331,30 @@ public final class Constants {
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
         
-        // public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
-
-        // Test april tag field layout
-        public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
-            Arrays.asList(new AprilTag[] {
-                new AprilTag(1, new Pose3d(
-                    new Translation3d(0.,0.,0.26035), new Rotation3d(0.,0.,0.)
-                )),
-            }), 100, 100);
-
+        // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    }
+
+    public static final class FieldConstants {
+        public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
+        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
+
+
+
+        // Test april tag field layout
+        // public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
+        //     Arrays.asList(new AprilTag[] {
+        //         new AprilTag(1, new Pose3d(
+        //             new Translation3d(0.,0.,0.26035), new Rotation3d(0.,0.,0.)
+        //         )),
+        //     }), 100, 100);
+
     }
 
     public static final class DriveConstants {

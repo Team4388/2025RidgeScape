@@ -43,7 +43,9 @@ import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
 import frc4388.utility.DeferredBlock;
+import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Subsystem;
+import frc4388.utility.ReefPositionHelper.Side;
 import frc4388.utility.configurable.ConfigurableString;
 
 /**
@@ -90,6 +92,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        
         configureButtonBindings();        
         configureVirtualButtonBindings();
         new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
@@ -153,7 +156,7 @@ public class RobotContainer {
 
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
-            
+
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
@@ -170,7 +173,7 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos));
+            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision));
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
@@ -231,7 +234,7 @@ public class RobotContainer {
 	    // Load the path you want to follow using its name in the GUI
 	    return new PathPlannerAuto("New Auto");
 	} catch (Exception e) {
-	    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+	    DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
 	    return Commands.none();
 	}
 	// zach told me to do the below comment

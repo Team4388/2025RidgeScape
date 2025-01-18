@@ -3,6 +3,7 @@ package frc4388.robot.subsystems;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -19,6 +20,7 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.MultiTargetPNPResult;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.Utils;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc4388.robot.Constants.FieldConstants;
 import frc4388.robot.Constants.VisionConstants;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
@@ -38,7 +41,8 @@ public class Vision extends Subsystem {
 
     private PhotonCamera camera;
 
-    private boolean isTag = false;
+    private boolean isTagDetected = false;
+    private boolean isTagProcessed = false;
     private Pose2d lastVisionPose = new Pose2d();
     private Pose2d lastPhysOdomPose = new Pose2d();
 
@@ -52,8 +56,13 @@ public class Vision extends Subsystem {
     .getLayout(getSubsystemName(), BuiltInLayouts.kList)
     .withSize(2, 2);
 
-    GenericEntry sbTag = subsystemLayout
+    GenericEntry sbTagDetected = subsystemLayout
     .add("Tag Detected", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
+
+    GenericEntry sbTagProcessed = subsystemLayout
+    .add("Tag Processed", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
     
@@ -66,47 +75,39 @@ public class Vision extends Subsystem {
         this.camera = camera;
         SmartDashboard.putData(field);
 
-        photonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.CAMERA_POS);
+        photonEstimator = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.CAMERA_POS);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     @Override
     public void periodic() {
-        var result = camera.getLatestResult();
-        isTag = result.hasTargets();
+        // var result = camera.getLatestResult();
+        var results = camera.getAllUnreadResults();
+        if (results.size() == 0) return;
+        var result = results.get(results.size()-1);
+
+        isTagDetected = result.hasTargets();
+        isTagProcessed = false;
         
-        // Optional<MultiTargetPNPResult> multitag = result.getMultiTagResult();
 
-        // if (multitag.isEmpty()) {
-        //     Transform3d fieldToCamera = result.getMultiTagResult().estimatedPose.best;
-        // }else if()
-
-        
-        // sbTag.setBoolean(isTag);
-        // field.setRobotPose(getPose2d());
-
-        // sbCamConnected.setBoolean(camera);
-
-        // System.out.println(isTag);
-
-        if(!isTag){
-            sbTag.setBoolean(isTag);
+        if(!isTagDetected){
+            // sbTagDetected.setBoolean(isTagDetected);
             field.setRobotPose(getPose2d());
             return;
         }
 
-        var EstimatedRobotPose = getEstimatedGlobalPose();
+        var EstimatedRobotPose = getEstimatedGlobalPose(result);
 
         // In case the pose estimator fails to estimate the pose, fallback to physical odometry.
         if(EstimatedRobotPose.isEmpty()){
-            isTag = false;
-            sbTag.setBoolean(isTag);
             field.setRobotPose(getPose2d());
             return;
         }
 
+        isTagProcessed = true;
+
         lastVisionPose = EstimatedRobotPose.get().estimatedPose.toPose2d();
-        // lastVisionPose.rotateBy(lastVisionPose.getRotation().minus(lastPhysOdomPose.getRotation()));
+        // lastVisionPose.rotateBy(Rotation2d.k180deg);
         // lastVisionPose = new Pose2d(
         //     lastVisionPose.getTranslation(),
         //     lastPhysOdomPose.getRotation()
@@ -130,9 +131,22 @@ public class Vision extends Subsystem {
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
      *     used for estimation.
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPipelineResult change) {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : camera.getAllUnreadResults()) {
+        // for (var change : camera.getAllUnreadResults()) {
+
+            var targets = change.getTargets();
+            for(int i = targets.size()-1; i >= 0; i--){
+                Transform3d pos = targets.get(i).getBestCameraToTarget();
+                double distance = Math.sqrt(Math.pow(pos.getX(),2) + Math.pow(pos.getY(),2) + Math.pow(pos.getZ(),2));
+                if (distance > VisionConstants.MIN_ESTIMATION_DISTANCE) {
+                    change.targets.remove(i);
+                }
+            }
+
+            if(targets.size() <= 0)
+                return visionEst; // Will be empty
+
             visionEst = photonEstimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
@@ -146,14 +160,9 @@ public class Vision extends Subsystem {
             //                 getSimDebugField().getObject("VisionEstimation").setPoses();
             //             });
             // }
-        }
+        // }
         return visionEst;
     }
-
-
-
-
-
 
 
     /**
@@ -179,13 +188,17 @@ public class Vision extends Subsystem {
             for (var tgt : targets) {
                 var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
-                numTags++;
-                avgDist +=
-                        tagPose
-                                .get()
-                                .toPose2d()
-                                .getTranslation()
-                                .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                
+                double distance = tagPose
+                .get()
+                .toPose2d()
+                .getTranslation()
+                .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                
+                if (distance < VisionConstants.MIN_ESTIMATION_DISTANCE) {
+                    numTags++;
+                    avgDist += distance;
+                }
             }
 
             if (numTags == 0) {
@@ -229,7 +242,7 @@ public class Vision extends Subsystem {
     }
 
     public Pose2d getPose2d() {
-        if(isTag)
+        if(isTagDetected && isTagProcessed)
             return lastVisionPose;
         else
             return lastPhysOdomPose;
@@ -240,7 +253,7 @@ public class Vision extends Subsystem {
     }
 
     public boolean isTag(){
-        return isTag;
+        return isTagDetected && isTagProcessed;
     }
 
 
@@ -266,7 +279,8 @@ public class Vision extends Subsystem {
 
     @Override
     public void queryStatus() {
-        sbTag.setBoolean(isTag);
+        sbTagDetected.setBoolean(isTagDetected);
+        sbTagProcessed.setBoolean(isTagProcessed);
         sbCamConnected.setBoolean(camera.isConnected());
         // field.setRobotPose(getPose2d());
     }
