@@ -40,6 +40,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 // import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.Elevator;
+import frc4388.robot.subsystems.Endeffector;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
@@ -63,6 +64,7 @@ public class RobotContainer {
     public final Vision m_vision = new Vision(m_robotMap.camera);
 
     public final Elevator m_robotELevator= new Elevator(m_robotMap.elevator);
+    public final Endeffector m_robotEndeffector = new Endeffector(m_robotMap.elevator);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -211,6 +213,17 @@ public class RobotContainer {
         new JoystickButton(getDeadbandedOperatorController(), XboxController.RIGHT_BUMPER_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotELevator.elevatorUp()))
             .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
+
+            /*Endeffector Controls*/
+
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotEndeffector.endeffectorTop()));
+
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.B_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotEndeffector.endeffectorMiddle()));
+
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.X_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotEndeffector.endeffectorBottom()));
     }
     
     /**

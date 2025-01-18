@@ -330,16 +330,32 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 724);
         
-        public static final double LEVEL_1 = 123;
-        public static final double LEVEL_2 = 123;
-        public static final double ELEVATOR_MAX_HEIGHT = 123;
-        public static final double ELEVATOR_SPEED_UP = 123;
-        public static final double ELEVATOR_SPEED_DOWN = -123;
+        public static final double GEAR_RATIO = 100.0;
+        public static final double LEVEL_1 = 123 * GEAR_RATIO;
+        public static final double LEVEL_2 = 123 * GEAR_RATIO;
+        public static final double ELEVATOR_MAX_HEIGHT = 123 * GEAR_RATIO;
+        public static final double ELEVATOR_SPEED_UP = 123 * GEAR_RATIO;
+        public static final double ELEVATOR_SPEED_DOWN = -123 * GEAR_RATIO;
 
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()
             .withKP(0)
             .withKI(0)
             .withKD(0);
+    }
+
+    public static class EndeffectorConstants {
+        public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 42);
+        
+        public static final double GEAR_RATIO = 100.0;
+        public static final double TOP = 8.0 * GEAR_RATIO;
+        public static final double MIDDLE = 6.0 * GEAR_RATIO;
+        public static final double BOTTOM = 4.0 * GEAR_RATIO;
+
+        public static final Slot0Configs ENDEFECTOR_PID = new Slot0Configs()
+            .withKP(0)
+            .withKI(0)
+            .withKD(0);
+        
     }
 }
