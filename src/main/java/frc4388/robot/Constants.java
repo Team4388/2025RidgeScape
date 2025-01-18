@@ -341,7 +341,7 @@ public final class Constants {
     }
 
     public static final class FieldConstants {
-        public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+        public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
         public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
 
