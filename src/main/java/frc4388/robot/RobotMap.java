@@ -18,6 +18,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
+import frc4388.robot.Constants.ElevatorConstants;
+import frc4388.robot.Constants.EndeffectorConstants;
 // import edu.wpi.first.wpilibj.motorcontrol.Spark;
 // import frc4388.robot.Constants.LEDConstants;
 import frc4388.robot.Constants.SwerveDriveConstants;
@@ -49,7 +51,11 @@ public class RobotMap {
         Constants.SwerveDriveConstants.BACK_LEFT, Constants.SwerveDriveConstants.BACK_RIGHT
     );
 
-    
+    /* Elevator Subsystem */
+    public final TalonFX elevator = new TalonFX(ElevatorConstants.ELEVATOR_ID.id);
+
+    /*Endeffector Subsystem*/
+    public final TalonFX endeffector = new TalonFX(EndeffectorConstants.ENDEFFECTOR_ID.id);
     void configureDriveMotorControllers() {}
         
 }

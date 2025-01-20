@@ -386,4 +386,36 @@ public final class Constants {
         public static final double LEFT_AXIS_DEADBAND = 0.1;
 
     }
+
+    public static final class ElevatorConstants {
+        public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
+        
+        public static final double GEAR_RATIO = 36.0;
+        public static final double LEVEL_1 = 0 * GEAR_RATIO;
+        public static final double LEVEL_2 = 5 * GEAR_RATIO;
+        public static final double ELEVATOR_MAX_HEIGHT = 5 * GEAR_RATIO;
+        public static final double ELEVATOR_SPEED_UP = 1 * GEAR_RATIO;
+        public static final double ELEVATOR_SPEED_DOWN = -1 * GEAR_RATIO;
+
+
+        public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()
+            .withKP(1)
+            .withKI(0)
+            .withKD(0);
+    }
+
+    public static class EndeffectorConstants {
+        public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
+        
+        public static final double GEAR_RATIO = 100.0;
+        public static final double TOP = 0.25 * GEAR_RATIO;
+        public static final double MIDDLE = 0.0 * GEAR_RATIO;
+        public static final double BOTTOM = -0.25 * GEAR_RATIO;
+
+        public static final Slot0Configs ENDEFECTOR_PID = new Slot0Configs()
+            .withKP(1)
+            .withKI(0)
+            .withKD(0);
+        
+    }
 }
