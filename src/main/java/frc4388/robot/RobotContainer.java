@@ -64,7 +64,7 @@ public class RobotContainer {
     public final Vision m_vision = new Vision(m_robotMap.camera);
 
     public final Elevator m_robotELevator= new Elevator(m_robotMap.elevator);
-    public final Endeffector m_robotEndeffector = new Endeffector(m_robotMap.elevator);
+    public final Endeffector m_robotEndeffector = new Endeffector(m_robotMap.endeffector);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -197,11 +197,11 @@ public class RobotContainer {
             .onFalse(new InstantCommand());
 
             /*DPad for Level 1 and 2*/
-        new Trigger(() -> getDeadbandedOperatorController().getRawAxis(XboxController.TOP_BOTTOM_DPAD_AXIS) > 0.9)
+        new Trigger(() -> getDeadbandedOperatorController().getRawAxis(XboxController.RIGHT_TRIGGER_AXIS) > 0.9)
             .onTrue(new InstantCommand(() -> m_robotELevator.PIDLevel2()))
             .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
 
-        new Trigger(() -> getDeadbandedOperatorController().getRawAxis(XboxController.TOP_BOTTOM_DPAD_AXIS) > -0.9)
+        new Trigger(() -> getDeadbandedOperatorController().getRawAxis(XboxController.LEFT_TRIGGER_AXIS) > 0.9)
             .onTrue(new InstantCommand(() -> m_robotELevator.PIDLevel1()))
             .onFalse(new InstantCommand(() -> m_robotELevator.elevatorStop()));
 
@@ -217,13 +217,16 @@ public class RobotContainer {
             /*Endeffector Controls*/
 
         new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotEndeffector.endeffectorTop()));
+            .onTrue(new InstantCommand(() -> m_robotEndeffector.PIDTop()))
+            .onFalse(new InstantCommand(() -> m_robotEndeffector.endEffectorStop()));
 
         new JoystickButton(getDeadbandedOperatorController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotEndeffector.endeffectorMiddle()));
+            .onTrue(new InstantCommand(() -> m_robotEndeffector.PIDMiddle()))
+            .onFalse(new InstantCommand(() -> m_robotEndeffector.endEffectorStop()));
 
-        new JoystickButton(getDeadbandedOperatorController(), XboxController.X_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotEndeffector.endeffectorBottom()));
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.A_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotEndeffector.PIDBottom()))
+            .onFalse(new InstantCommand(() -> m_robotEndeffector.endEffectorStop()));;
     }
     
     /**

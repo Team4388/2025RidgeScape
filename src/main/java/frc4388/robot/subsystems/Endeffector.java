@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc4388.robot.Constants.ElevatorConstants;
 import frc4388.robot.Constants.EndeffectorConstants;
 
 public class Endeffector extends SubsystemBase {
@@ -18,6 +19,8 @@ public class Endeffector extends SubsystemBase {
     endeffectorMotor = endffectorTalonFX;
 
     endeffectorMotor.setNeutralMode(NeutralModeValue.Brake);
+    endeffectorMotor.getConfigurator().apply(EndeffectorConstants.ENDEFECTOR_PID);
+
   }
 
   public void PIDPosition(double position) {
@@ -37,16 +40,8 @@ public class Endeffector extends SubsystemBase {
     PIDPosition(EndeffectorConstants.BOTTOM);
   }
 
-  public void endeffectorTop() {
-    endeffectorMotor.set(EndeffectorConstants.TOP);
-  }
-  
-  public void endeffectorMiddle() {
-    endeffectorMotor.set(EndeffectorConstants.MIDDLE);
-  }
-
-  public void endeffectorBottom() {
-    endeffectorMotor.set(EndeffectorConstants.BOTTOM);
+  public void endEffectorStop() {
+    endeffectorMotor.set(0);
   }
 
   @Override
