@@ -39,13 +39,16 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
+import frc4388.robot.subsystems.Lidar;
 import frc4388.robot.subsystems.Elevator;
 import frc4388.robot.subsystems.Endeffector;
 import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
 import frc4388.utility.DeferredBlock;
+import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Subsystem;
+import frc4388.utility.ReefPositionHelper.Side;
 import frc4388.utility.configurable.ConfigurableString;
 
 /**
@@ -62,7 +65,7 @@ public class RobotContainer {
     /* Subsystems */
     // private final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.camera);
-
+    public final Lidar m_lidar = new Lidar();
     public final Elevator m_robotELevator= new Elevator(m_robotMap.elevator);
     public final Endeffector m_robotEndeffector = new Endeffector(m_robotMap.endeffector);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
@@ -94,6 +97,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        
         configureButtonBindings();        
         configureVirtualButtonBindings();
         new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
@@ -157,7 +161,7 @@ public class RobotContainer {
 
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
-            
+
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
@@ -174,7 +178,7 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos));
+            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision));
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
@@ -267,7 +271,7 @@ public class RobotContainer {
 	    // Load the path you want to follow using its name in the GUI
 	    return new PathPlannerAuto("New Auto");
 	} catch (Exception e) {
-	    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+	    DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
 	    return Commands.none();
 	}
 	// zach told me to do the below comment
