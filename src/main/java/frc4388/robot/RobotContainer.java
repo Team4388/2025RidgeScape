@@ -35,6 +35,8 @@ import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoPositionCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
+
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
@@ -92,12 +94,15 @@ public class RobotContainer {
     () -> autoplaybackName.get(), // lastAutoName
            new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
            true, false);
+    private Command AutoGotoPosition = new GotoPositionCommand(m_robotSwerveDrive, m_vision);
     
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         
+        NamedCommands.registerCommand("AutoGotoPosition", AutoGotoPosition);
+
         configureButtonBindings();        
         configureVirtualButtonBindings();
         new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
