@@ -341,7 +341,7 @@ public final class Constants {
     public static final class VisionConstants { 
         public static final String CAMERA_NAME = "Camera_Module_v1";
 
-        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
+        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
         
         public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
