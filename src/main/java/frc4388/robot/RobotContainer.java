@@ -16,6 +16,8 @@ import java.util.List;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.OIConstants;
@@ -28,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 // Autos
@@ -35,6 +39,10 @@ import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoPositionCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
@@ -87,17 +95,39 @@ public class RobotContainer {
 
     // ! /*  Autos */
     private String lastAutoName = "defualt.auto";
+    private final SendableChooser<Command> autoChooser;
     private ConfigurableString autoplaybackName = new ConfigurableString("Auto Playback Name", lastAutoName);
     private neoJoystickPlayback autoPlayback = new neoJoystickPlayback(m_robotSwerveDrive, 
     () -> autoplaybackName.get(), // lastAutoName
            new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
            true, false);
+    private Command AutoGotoPosition = new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+
+    private Command placeCoral = new SequentialCommandGroup(
+        new InstantCommand(() -> System.out.println("Placing Some Coral")),
+        new WaitCommand(3)
+    );
+
+    private Command aprilAlign = new SequentialCommandGroup(
+        new InstantCommand(() -> System.out.println("Aligning...")),
+        new WaitCommand(1)
+    );
+
+    private Command grabCoral = new SequentialCommandGroup(
+        new InstantCommand(() -> System.out.println("Yoinking some coral...")),
+        new WaitCommand(2)
+    );
     
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         
+        NamedCommands.registerCommand("AutoGotoPosition", AutoGotoPosition);
+        NamedCommands.registerCommand("april-allign", aprilAlign);
+        NamedCommands.registerCommand("place-coral", placeCoral);
+        NamedCommands.registerCommand("grab-coral", grabCoral);
+
         configureButtonBindings();        
         configureVirtualButtonBindings();
         new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
@@ -115,6 +145,8 @@ public class RobotContainer {
         .withName("SwerveDrive DefaultCommand"));
         m_robotSwerveDrive.setToSlow();
 
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
         // this.subsystems.add(m_robotSwerveDrive);
         // this.subsystems.add(m_robotMap.leftFront);
         // this.subsystems.add(m_robotMap.rightFront);
@@ -265,15 +297,17 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+
         //return autoPlayback;
-        //return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
-	try{
-	    // Load the path you want to follow using its name in the GUI
-	    return new PathPlannerAuto("New Auto");
-	} catch (Exception e) {
-	    DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
-	    return Commands.none();
-	}
+        //return new GotoPositionCommand(m_robotSwerveDrive, m_vision)
+        return autoChooser.getSelected();
+	// try{
+	//     // Load the path you want to follow using its name in the GUI
+	//     return new PathPlannerAuto("New Auto");
+	// } catch (Exception e) {
+	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
+	//     return Commands.none();
+	// }
 	// zach told me to do the below comment
 	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
       //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);

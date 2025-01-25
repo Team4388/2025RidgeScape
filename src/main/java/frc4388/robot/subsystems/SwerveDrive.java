@@ -32,6 +32,7 @@ import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
 import frc4388.utility.Status.ReportLevel;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -51,6 +52,8 @@ public class SwerveDrive extends Subsystem {
     public double rotSpeedAdjust = SwerveDriveConstants.MAX_ROT_SPEED;
     public double autoSpeedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * 0.25; // cap auto performance to
                                                                                            // 25%
+
+    public Pose2d initalPose2d = null;
 
     public double rotTarget = 0.0;
     public Rotation2d orientRotTarget = new Rotation2d();
@@ -75,11 +78,9 @@ public class SwerveDrive extends Subsystem {
         // DoubleSupplier a = () -> 1.d;
         AutoBuilder.configure(
                 () -> {
-                    var pose = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d());
-                    // pose = new Pose2d(pose.getX(), pose.getY(), pose.getRotation().times(-1));
-                    return pose;// getRotation().times(-1)
+                    return swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(initalPose2d);
                 }, // Robot pose supplier
-                swerveDriveTrain::resetPose, // Method to reset odometry (will be called if your auto has a starting
+                this::setOdoPose, // Method to reset odometry (will be called if your auto has a starting
                                              // pose)
                 () -> swerveDriveTrain.getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> swerveDriveTrain.setControl(new SwerveRequest.ApplyRobotSpeeds()
@@ -106,6 +107,11 @@ public class SwerveDrive extends Subsystem {
                 this // Reference to this subsystem to set requirements
         );
 
+    }
+
+    public void setOdoPose(Pose2d pose) {
+        initalPose2d = pose;
+        swerveDriveTrain.resetPose(pose);
     }
 
     // public void oneModuleTest(SwerveModule module, Translation2d leftStick,

@@ -341,7 +341,7 @@ public final class Constants {
     public static final class VisionConstants { 
         public static final String CAMERA_NAME = "Camera_Module_v1";
 
-        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413*0, .2794), new Rotation3d(0,0.52333,Math.PI));
+        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
         
         public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
@@ -354,7 +354,9 @@ public final class Constants {
 
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = 0;
+        // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
+
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
 
 
