@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 // Autos
@@ -100,6 +102,21 @@ public class RobotContainer {
            new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
            true, false);
     private Command AutoGotoPosition = new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+
+    private Command placeCoral = new SequentialCommandGroup(
+        new InstantCommand(() -> System.out.println("Placing Some Coral")),
+        new WaitCommand(3)
+    );
+
+    private Command aprilAlign = new SequentialCommandGroup(
+        new InstantCommand(() -> System.out.println("Aligning...")),
+        new WaitCommand(1)
+    );
+
+    private Command grabCoral = new SequentialCommandGroup(
+        new InstantCommand(() -> System.out.println("Yoinking some coral...")),
+        new WaitCommand(2)
+    );
     
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -107,6 +124,9 @@ public class RobotContainer {
     public RobotContainer() {
         
         NamedCommands.registerCommand("AutoGotoPosition", AutoGotoPosition);
+        NamedCommands.registerCommand("april-allign", aprilAlign);
+        NamedCommands.registerCommand("place-coral", placeCoral);
+        NamedCommands.registerCommand("grab-coral", grabCoral);
 
         configureButtonBindings();        
         configureVirtualButtonBindings();
