@@ -92,6 +92,10 @@ public class RobotContainer {
     // public List<Subsystem> subsystems = new ArrayList<>();
 
     // ! Teleop Commands
+    public void stop() {
+        new InstantCommand(()->{}, m_robotSwerveDrive).schedule();;;;;
+        m_robotSwerveDrive.stopModules();
+    }
 
     // ! /*  Autos */
     private String lastAutoName = "defualt.auto";
@@ -104,8 +108,10 @@ public class RobotContainer {
     private Command AutoGotoPosition = new GotoPositionCommand(m_robotSwerveDrive, m_vision);
 
     private Command placeCoral = new SequentialCommandGroup(
+        new InstantCommand(() -> m_robotSwerveDrive.stopModules()),
         new InstantCommand(() -> System.out.println("Placing Some Coral")),
-        new WaitCommand(3)
+        new WaitCommand(3),
+        new InstantCommand(() -> System.out.println("Done placing Some Coral"))
     );
 
     private Command aprilAlign = new SequentialCommandGroup(
@@ -115,7 +121,8 @@ public class RobotContainer {
 
     private Command grabCoral = new SequentialCommandGroup(
         new InstantCommand(() -> System.out.println("Yoinking some coral...")),
-        new WaitCommand(2)
+        new WaitCommand(2),
+        new InstantCommand(() -> System.out.println("Done yoinking some coral..."))
     );
     
     /**
@@ -210,10 +217,10 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(new GotoPositionCommand(m_robotSwerveDrive, m_vision));
+            .onTrue(AutoGotoPosition);
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
+            .onTrue(new InstantCommand(()->{}, m_robotSwerveDrive)); 
             // creates an empty command & requires the swerve drive, subsystems can run only 1 command at a time
             
         // ? /* Programer Buttons (Controller 3)*/
@@ -300,10 +307,10 @@ public class RobotContainer {
 
         //return autoPlayback;
         //return new GotoPositionCommand(m_robotSwerveDrive, m_vision)
-        return autoChooser.getSelected();
+        return autoChooser.getSelected().andThen(new InstantCommand(() -> System.err.println("Auto Ded!")));
 	// try{
 	//     // Load the path you want to follow using its name in the GUI
-	//     return new PathPlannerAuto("New Auto");
+	    // return new PathPlannerAuto("New Auto");
 	// } catch (Exception e) {
 	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
 	//     return Commands.none();

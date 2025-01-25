@@ -37,14 +37,14 @@ public class GotoPositionCommand extends Command {
     public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
-        addRequirements(swerveDrive);
+        // addRequirements(swerveDrive);
     }
 
     @Override
     public void initialize() {
         xPID.initialize();
         yPID.initialize();
-        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), Side.RIGHT, AutoConstants.X_OFFSET_TRIM.get());
+        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), Side.LEFT, AutoConstants.X_OFFSET_TRIM.get());
     }
     
     double xerr;
@@ -84,7 +84,9 @@ public class GotoPositionCommand extends Command {
 
     @Override
     public final boolean isFinished() {
-        return (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
+        boolean finished = (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
+        // System.out.println(finished);
+        return finished;
                 // this statement is a boolean in and of itself
     }
     

@@ -230,7 +230,7 @@ public final class Constants {
         }
     
         public static final class AutoConstants {
-            public static final Gains XY_GAINS = new Gains(3,0,0);
+            public static final Gains XY_GAINS = new Gains(3,0.01,0);
             public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
             public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
@@ -240,7 +240,7 @@ public final class Constants {
             public static final int LIDAR_MICROS_TO_CM = 10;
             public static final int SECONDS_TO_MICROS = 1000000;
                     
-            public static final double XY_TOLERANCE = 0.05;
+            public static final double XY_TOLERANCE = 0.1;
             public static final double ROT_TOLERANCE = 1;
                     
             // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
@@ -249,8 +249,8 @@ public final class Constants {
     
     
         public static final class Configurations {
-            public static final double OPEN_LOOP_RAMP_RATE = 0.0; // Todo: Test. think this will help.
-            public static final double CLOSED_LOOP_RAMP_RATE = 0.0; // Todo: Test. think this will help.
+            public static final double OPEN_LOOP_RAMP_RATE = 0.2; // Todo: Test. think this will help.
+            public static final double CLOSED_LOOP_RAMP_RATE = 0.2; // Todo: Test. think this will help.
             public static final double NEUTRAL_DEADBAND = 0.04;
 
             // POWER! (limiting)
@@ -282,7 +282,7 @@ public final class Constants {
                     //     new ClosedLoopRampsConfigs()
                     //         .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
             );
-            private static final double SLIP_CURRENT = 100; // TODO: Tune??? 
+            private static final double SLIP_CURRENT = 20; // TODO: Tune??? 
         }
 
         // No mans land
@@ -343,7 +343,7 @@ public final class Constants {
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
         
-        public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
+        public static final double MIN_ESTIMATION_DISTANCE = 0; // Meters
 
         // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate
@@ -354,7 +354,8 @@ public final class Constants {
 
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET = 0;
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = .2794
+        ;
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
