@@ -21,7 +21,7 @@ public class Elevator extends SubsystemBase {
   private DigitalInput basinLimitSwitch;
   private DigitalInput endefectorLimitSwitch;
 
-  public enum CordinationState {
+  public enum CoordinationState {
     Waiting, // for coral into the though 
     Ready, // Has coral in enefector
     ScoringThree, // Arm and elevator in the level three position
@@ -29,7 +29,7 @@ public class Elevator extends SubsystemBase {
 
   }
 
-  private CordinationState currentState;
+  private CoordinationState currentState;
 
   public Elevator(TalonFX elevatorTalonFX, TalonFX endefectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endefectorLimitSwitch) {
     elevatorMotor = elevatorTalonFX;
@@ -43,7 +43,7 @@ public class Elevator extends SubsystemBase {
     
     elevatorMotor.getConfigurator().apply(ElevatorConstants.ELEVATOR_PID);
     endefectorMotor.getConfigurator().apply(ElevatorConstants.ENDEFECTOR_PID);
-    currentState = CordinationState.Ready;
+    currentState = CoordinationState.Ready;
   }
 
   //PID methods
@@ -60,45 +60,51 @@ public class Elevator extends SubsystemBase {
   public void endefectorStop() {
     endefectorMotor.set(0);
   }
-  
-  public void transitionWaiting() {
-    PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
-    PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
-    currentState = CordinationState.Waiting;
+
+  public void transitionState(CoordinationState state) {
+    currentState = state;
+    switch (currentState) {
+      case Waiting: {
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        break;
+      }
+
+      case Ready: {
+        PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        break;
+      }
+
+      case ScoringThree: {
+        PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
+        break;
+      }
+
+      case ScoringFour: {
+        PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
+        break;
+      }
+    }
+
   }
 
   private void periodicWaiting() {
-    if (basinLimitSwitch.get()) transitionReady();
-  }
-
-  public void transitionReady() {
-    PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR);
-    PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
-    currentState = CordinationState.Ready;
-  }
-
-  public void transitionScoringThree() {
-    PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
-    PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
-    currentState = CordinationState.ScoringThree;
+    if (basinLimitSwitch.get()) transitionState(CoordinationState.Ready);
   }
   
   private void periodicScoring() {
-    if (!endefectorLimitSwitch.get()) transitionWaiting();
-  }
-
-  public void transitionScoringFour() {
-    PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
-    PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
-    currentState = CordinationState.ScoringFour;
+    if (!endefectorLimitSwitch.get()) transitionState(CoordinationState.Waiting);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (currentState == CordinationState.Waiting) {
+    if (currentState == CoordinationState.Waiting) {
       periodicWaiting();
-    } else if (currentState == CordinationState.ScoringThree || currentState == CordinationState.ScoringFour) {
+    } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
       periodicScoring();
     }
   }

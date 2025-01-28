@@ -47,6 +47,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 // Subsystems
 // import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
+import frc4388.robot.subsystems.Elevator.CoordinationState;
 import frc4388.robot.subsystems.Lidar;
 import frc4388.robot.subsystems.Elevator;
 // import frc4388.robot.subsystems.Endeffector;
@@ -216,16 +217,16 @@ public class RobotContainer {
 
         
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionWaiting(), m_robotElevator));
+            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator));
         
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionReady(), m_robotElevator));
+            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Ready), m_robotElevator));
         
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.Y_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionScoringThree(), m_robotElevator));
+            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator));
 
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.X_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionScoringFour(), m_robotElevator));
+            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator));
         
             
         // ? /* Programer Buttons (Controller 3)*/
