@@ -282,7 +282,7 @@ public final class Constants {
                     //     new ClosedLoopRampsConfigs()
                     //         .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
             );
-            private static final double SLIP_CURRENT = 20; // TODO: Tune??? 
+            private static final double SLIP_CURRENT = 100; // TODO: Tune??? 
         }
 
         // No mans land
@@ -343,7 +343,7 @@ public final class Constants {
 
         public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
         
-        public static final double MIN_ESTIMATION_DISTANCE = 0; // Meters
+        public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
         // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate

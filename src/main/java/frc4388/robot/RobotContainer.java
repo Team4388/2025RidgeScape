@@ -131,7 +131,7 @@ public class RobotContainer {
     public RobotContainer() {
         
         NamedCommands.registerCommand("AutoGotoPosition", AutoGotoPosition);
-        NamedCommands.registerCommand("april-allign", aprilAlign);
+        NamedCommands.registerCommand("april-allign", AutoGotoPosition);
         NamedCommands.registerCommand("place-coral", placeCoral);
         NamedCommands.registerCommand("grab-coral", grabCoral);
 
@@ -307,10 +307,10 @@ public class RobotContainer {
 
         //return autoPlayback;
         //return new GotoPositionCommand(m_robotSwerveDrive, m_vision)
-        return autoChooser.getSelected().andThen(new InstantCommand(() -> System.err.println("Auto Ded!")));
+        //return autoChooser.getSelected();
 	// try{
 	//     // Load the path you want to follow using its name in the GUI
-	    // return new PathPlannerAuto("New Auto");
+	    return new PathPlannerAuto("Red Center Cage");
 	// } catch (Exception e) {
 	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
 	//     return Commands.none();
