@@ -17,6 +17,7 @@ import com.ctre.phoenix6.CANBus.CANBusStatus;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -85,6 +86,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {   
     m_robotTime.updateTimes();
+    SmartDashboard.putNumber("Time", System.currentTimeMillis());
     //System.out.println(m_robotContainer.limelight.isNearSpeaker());
     //mled.updateLED();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
@@ -143,13 +145,20 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.stop();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().cancel(m_autonomousCommand);
       m_autonomousCommand.cancel();
+      m_autonomousCommand.end(true);
+      System.out.println("NOT Null!!");
+
+    } else {
+      System.out.println("Null!!");
     }
     m_robotTime.startMatchTime();
   }
