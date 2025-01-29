@@ -391,34 +391,33 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
+        public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
-        
-        public static final double GEAR_RATIO = 36.0;
-        public static final double LEVEL_1 = 0 * GEAR_RATIO;
-        public static final double LEVEL_2 = 5 * GEAR_RATIO;
-        public static final double ELEVATOR_MAX_HEIGHT = 5 * GEAR_RATIO;
-        public static final double ELEVATOR_SPEED_UP = 1 * GEAR_RATIO;
-        public static final double ELEVATOR_SPEED_DOWN = -1 * GEAR_RATIO;
 
+        public static final int BASIN_LIMIT_SWITCH = 0; // TODO: FIND
+        public static final int ENDEFFECTOR_LIMIT_SWITCH = 1; // TODO: FIND
+        
+        public static final double GEAR_RATIO_ELEVATOR = 36.0;
+
+        public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
+        public static final double WAITING_POSITION_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find 4-6 off the ground
+        public static final double MAX_POSITION_ELEVATOR = 20 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
+
+        public static final double GEAR_RATIO_ENDEFECTOR = 100.0;
+
+        public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
+        public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
+        public static final double SCORING_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
+        public static final double COMPLETLY_TOP_ENDEFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()
             .withKP(1)
             .withKI(0)
             .withKD(0);
-    }
-
-    public static class EndeffectorConstants {
-        public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         
-        public static final double GEAR_RATIO = 100.0;
-        public static final double TOP = 0.25 * GEAR_RATIO;
-        public static final double MIDDLE = 0.0 * GEAR_RATIO;
-        public static final double BOTTOM = -0.25 * GEAR_RATIO;
-
         public static final Slot0Configs ENDEFECTOR_PID = new Slot0Configs()
             .withKP(1)
             .withKI(0)
             .withKD(0);
-        
     }
 }
