@@ -37,7 +37,7 @@ public class LidarAlign extends Command {
   @Override
   public void initialize() {
     this.currentFinderTick = 0;
-    this.speed = 0.05; // TODO: find good speed for this
+    this.speed = 0.1; // TODO: find good speed for this
     this.foundReef = false;
     this.headedRight = constructedHeadedRight;
   }
@@ -76,10 +76,10 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (foundReef && lidar.withinDistance()) {
+    if (foundReef && lidar.withinDistance()) { // spot on
       swerveDrive.stopModules();
       return true;
-    } else if (foundReef && !lidar.withinDistance()) {
+    } else if (foundReef && !lidar.withinDistance()) { // over shot
       speed = speed / 2;
       headedRight = !headedRight;
       currentFinderTick = 0;

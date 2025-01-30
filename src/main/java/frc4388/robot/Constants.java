@@ -237,7 +237,7 @@ public final class Constants {
             public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
 
             public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-            public static final int LIDAR_DIO_CHANNEL = 0;
+            public static final int LIDAR_DIO_CHANNEL = 2;
             public static final int LIDAR_MICROS_TO_CM = 10;
             public static final int SECONDS_TO_MICROS = 1000000;
                     
