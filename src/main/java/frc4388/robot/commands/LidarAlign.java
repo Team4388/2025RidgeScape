@@ -4,6 +4,8 @@
 
 package frc4388.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc4388.robot.subsystems.Lidar;
 import frc4388.robot.subsystems.SwerveDrive;
@@ -17,6 +19,7 @@ public class LidarAlign extends Command {
   // private int tickFoundPipe;
   private boolean foundReef;
   private boolean headedRight;
+  private double speed;
   private final boolean constructedHeadedRight;
 
   /** Creates a new LidarAlign. */
@@ -26,12 +29,15 @@ public class LidarAlign extends Command {
 
     this.swerveDrive = swerveDrive;
     this.lidar = lidar;
+
+    addRequirements(swerveDrive, lidar);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     this.currentFinderTick = 0;
+    this.speed = 0.05; // TODO: find good speed for this
     this.foundReef = false;
     this.headedRight = constructedHeadedRight;
   }
@@ -40,18 +46,47 @@ public class LidarAlign extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = 0.05; // TODO: find good speed for this
+    if (lidar.withinDistance()) {
+      swerveDrive.softStop(); 
+      foundReef = true;
+      return;
+    }
+
+    if (currentFinderTick > 100) { //arbutrary threshhold for now.
+      headedRight = !headedRight;
+      currentFinderTick *= -1;
+    }
+
     double relAngle = Math.round(swerveDrive.getGyroAngle() / 60.d) * 60; // Relative driving to the side of the reef
-    
+    if (!headedRight) {
+      swerveDrive.driveRelativeLockedAngle(new Translation2d(0, speed), Rotation2d.fromDegrees(relAngle));
+    } else {
+      swerveDrive.driveRelativeLockedAngle(new Translation2d(0, -speed), Rotation2d.fromDegrees(relAngle));
+    }
+
+    currentFinderTick++;
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (foundReef && lidar.withinDistance()) {
+      swerveDrive.stopModules();
+      return true;
+    } else if (foundReef && !lidar.withinDistance()) {
+      speed = speed / 2;
+      headedRight = !headedRight;
+      currentFinderTick = 0;
+      foundReef = false;
+      return false;
+    } else {
+      return false;
+    }
   }
 }

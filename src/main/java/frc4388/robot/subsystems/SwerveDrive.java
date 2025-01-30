@@ -210,6 +210,21 @@ public class SwerveDrive extends Subsystem {
                 .withTargetDirection(rightStick.getAngle()));
     }
 
+    public void driveRelativeLockedAngle(Translation2d leftStick, Rotation2d heading) {
+        leftStick = leftStick.rotateBy(heading);
+
+        var ctrl = new SwerveRequest.FieldCentricFacingAngle()
+            .withVelocityX(leftStick.getX() * speedAdjust)
+            .withVelocityY(leftStick.getY() * speedAdjust)
+            .withTargetDirection(Rotation2d.fromDegrees(rotTarget));
+        ctrl.HeadingController.setPID(
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        );
+        swerveDriveTrain.setControl(ctrl);
+    }
+
     public boolean rotateToTarget(double angle) {
         swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
                 .withVelocityX(0)
@@ -246,6 +261,16 @@ public class SwerveDrive extends Subsystem {
 
     public void resetGyro() {
         swerveDriveTrain.tareEverything();
+    }
+
+
+    public void softStop() {
+        stopped = true;
+        swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
+            .withVelocityX(0)
+            .withVelocityY(0)
+            .withRotationalRate(0)
+        ); // stop the modules without breaking
     }
 
     public void stopModules() {

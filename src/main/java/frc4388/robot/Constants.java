@@ -227,6 +227,7 @@ public final class Constants {
                 .withKS(0).withKV(0.124);
             
             public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
+            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(5, 0, 0.1); // TODO: TEST
         }
     
         public static final class AutoConstants {
