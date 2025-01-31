@@ -65,8 +65,8 @@ public class GotoPositionCommand extends Command {
         double rotoutput = rotPID.update(roterr);
 
         Translation2d leftStick = new Translation2d(
-            Math.max(Math.min(youtput, 1), -1),
-            Math.max(Math.min(xoutput, 1), -1)
+            Math.max(Math.min(-youtput, 1), -1),
+            Math.max(Math.min(-xoutput, 1), -1)
             // 0,0
         );
 

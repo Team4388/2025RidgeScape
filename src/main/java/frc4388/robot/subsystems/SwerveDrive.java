@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -149,6 +150,7 @@ public class SwerveDrive extends Subsystem {
                     .withVelocityX(leftStick.getX() * speedAdjust)
                     .withVelocityY(leftStick.getY() * speedAdjust)
                     .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
+                    // .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
                 SmartDashboard.putBoolean("drift correction", false);
             } else {
                 var ctrl = new SwerveRequest.FieldCentricFacingAngle()

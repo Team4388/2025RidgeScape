@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 // Autos
 import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoPositionCommand;
+import frc4388.robot.commands.LidarAlign;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -106,6 +107,15 @@ public class RobotContainer {
            new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
            true, false);
     private Command AutoGotoPosition = new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+    private Command AprilLidarLeft = new SequentialCommandGroup(
+        AutoGotoPosition.asProxy(),
+        new LidarAlign(m_robotSwerveDrive, m_lidar, false)
+    );
+
+    private Command AprilLidarRight = new SequentialCommandGroup(
+        AutoGotoPosition.asProxy(),
+        new LidarAlign(m_robotSwerveDrive, m_lidar, true)
+    );
 
     private Command placeCoral = new SequentialCommandGroup(
         new InstantCommand(() -> m_robotSwerveDrive.stopModules()),
@@ -217,7 +227,8 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(AutoGotoPosition);
+            // .onTrue(AutoGotoPosition);
+            .onTrue(AprilLidarRight);
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 

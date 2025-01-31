@@ -37,7 +37,7 @@ public class LidarAlign extends Command {
   @Override
   public void initialize() {
     this.currentFinderTick = 0;
-    this.speed = 0.1; // TODO: find good speed for this
+    this.speed = 0.4; // TODO: find good speed for this
     this.foundReef = false;
     this.headedRight = constructedHeadedRight;
   }
@@ -57,11 +57,11 @@ public class LidarAlign extends Command {
       currentFinderTick *= -1;
     }
 
-    double relAngle = Math.round(swerveDrive.getGyroAngle() / 60.d) * 60; // Relative driving to the side of the reef
+    double relAngle = (Math.round(swerveDrive.getGyroAngle() / 60.d) * 60) + 90; // Relative driving to the side of the reef
     if (!headedRight) {
-      swerveDrive.driveRelativeLockedAngle(new Translation2d(0, speed), Rotation2d.fromDegrees(relAngle));
-    } else {
       swerveDrive.driveRelativeLockedAngle(new Translation2d(0, -speed), Rotation2d.fromDegrees(relAngle));
+    } else {
+      swerveDrive.driveRelativeLockedAngle(new Translation2d(0, speed), Rotation2d.fromDegrees(relAngle));
     }
 
     currentFinderTick++;

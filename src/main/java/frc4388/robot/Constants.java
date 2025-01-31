@@ -105,8 +105,8 @@ public final class Constants {
         public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
 
         public static final boolean DRIFT_CORRECTION_ENABLED = true;
-        public static final boolean INVERT_X = true;
-        public static final boolean INVERT_Y = false;
+        public static final boolean INVERT_X = false;
+        public static final boolean INVERT_Y = true;
         public static final boolean INVERT_ROTATION = false;
 
         // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
