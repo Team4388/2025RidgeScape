@@ -15,7 +15,7 @@ import frc4388.utility.UtilityStructs.AutoRecordingControllerFrame;
 import frc4388.utility.UtilityStructs.AutoRecordingFrame;
 import frc4388.utility.controller.VirtualController;
 
-public class GotoPositionCommand extends Command {
+public class GotoLastApril extends Command {
     
 
     // private Translation2d translation2d= new Translation2d(14.579471999999997,0.24587199999999998);
@@ -34,7 +34,7 @@ public class GotoPositionCommand extends Command {
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision) {
+    public GotoLastApril(SwerveDrive swerveDrive, Vision vision) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
         // addRequirements(swerveDrive);

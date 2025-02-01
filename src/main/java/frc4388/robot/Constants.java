@@ -250,8 +250,8 @@ public final class Constants {
     
     
         public static final class Configurations {
-            public static final double OPEN_LOOP_RAMP_RATE = 0.2; // Todo: Test. think this will help.
-            public static final double CLOSED_LOOP_RAMP_RATE = 0.2; // Todo: Test. think this will help.
+            public static final double OPEN_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
+            public static final double CLOSED_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
             public static final double NEUTRAL_DEADBAND = 0.04;
 
             // POWER! (limiting)
@@ -283,7 +283,7 @@ public final class Constants {
                     //     new ClosedLoopRampsConfigs()
                     //         .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
             );
-            private static final double SLIP_CURRENT = 100; // TODO: Tune??? 
+            public static final double SLIP_CURRENT = 60; // TODO: Tune??? 
         }
 
         // No mans land
@@ -355,8 +355,9 @@ public final class Constants {
 
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET = .2794
-        ;
+        // public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(9.5);
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(6.5);
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);

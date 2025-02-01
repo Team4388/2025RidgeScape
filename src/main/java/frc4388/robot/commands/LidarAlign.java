@@ -6,6 +6,7 @@ package frc4388.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc4388.robot.subsystems.Lidar;
 import frc4388.robot.subsystems.SwerveDrive;
@@ -56,8 +57,10 @@ public class LidarAlign extends Command {
       headedRight = !headedRight;
       currentFinderTick *= -1;
     }
-
-    double relAngle = (Math.round(swerveDrive.getGyroAngle() / 60.d) * 60) + 90; // Relative driving to the side of the reef
+    double currentHeading = (swerveDrive.getGyroAngle() * 180) / Math.PI;
+    double relAngle = (Math.round(currentHeading / 60.d) * 60); // Relative driving to the side of the reef
+    SmartDashboard.putNumber("Rel Angle", relAngle);
+    SmartDashboard.putNumber("heading", currentHeading);
     if (!headedRight) {
       swerveDrive.driveRelativeLockedAngle(new Translation2d(0, -speed), Rotation2d.fromDegrees(relAngle));
     } else {
