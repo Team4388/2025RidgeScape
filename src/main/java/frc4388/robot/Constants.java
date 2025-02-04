@@ -241,8 +241,8 @@ public final class Constants {
             public static final int LIDAR_MICROS_TO_CM = 10;
             public static final int SECONDS_TO_MICROS = 1000000;
                     
-            public static final double XY_TOLERANCE = 0.1;
-            public static final double ROT_TOLERANCE = 1;
+            public static final double XY_TOLERANCE = 0.05; // Meters
+            public static final double ROT_TOLERANCE = 1; // Degrees
                     
             // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
             // public static final Pose2d targetpos = 

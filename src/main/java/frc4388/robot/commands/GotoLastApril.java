@@ -75,6 +75,14 @@ public class GotoLastApril extends Command {
            0
         );
 
+        Rotation2d error = new Translation2d(xerr, yerr).getAngle();
+
+        error = error.rotateBy(Rotation2d.fromDegrees(-rotoutput));
+
+        double tagRelativeXError = error.getSin();
+
+        System.out.println(tagRelativeXError);
+
         // SmartDashboard.putNumber("PID X Output", xoutput);
         // SmartDashboard.putNumber("PID Y Output", youtput);
         // // SmartDashboard.putNumber("PID Y Output", youtput);
@@ -86,6 +94,10 @@ public class GotoLastApril extends Command {
     public final boolean isFinished() {
         boolean finished = (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
         // System.out.println(finished);
+
+        if(finished)
+            swerveDrive.softStop();
+
         return finished;
                 // this statement is a boolean in and of itself
     }

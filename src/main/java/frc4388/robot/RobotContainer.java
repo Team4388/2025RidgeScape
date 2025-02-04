@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoLastApril;
 import frc4388.robot.commands.LidarAlign;
+import frc4388.robot.commands.MoveForTimeCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -110,6 +111,7 @@ public class RobotContainer {
     private Command AprilLidarAlign = new SequentialCommandGroup(
         new GotoLastApril(m_robotSwerveDrive, m_vision),
         new InstantCommand(() -> System.out.println("Soup")),
+        new WaitCommand(1),
         new LidarAlign(m_robotSwerveDrive, m_lidar, true)
     );
     private Command AprilLidarLeft = new SequentialCommandGroup(
@@ -120,7 +122,10 @@ public class RobotContainer {
     private Command AprilLidarRight = new SequentialCommandGroup(
         AutoGotoPosition.asProxy(),
         new InstantCommand(() -> System.out.println("Soup")),
-        new LidarAlign(m_robotSwerveDrive, m_lidar, true)
+        new WaitCommand(1),
+        new LidarAlign(m_robotSwerveDrive, m_lidar, true),
+        new MoveForTimeCommand(m_robotSwerveDrive, 
+        new Translation2d(0, 0.5), new Translation2d(), 1000, true)
     );
 
     private Command placeCoral = new SequentialCommandGroup(
