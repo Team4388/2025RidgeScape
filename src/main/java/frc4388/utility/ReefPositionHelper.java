@@ -50,13 +50,10 @@ public class ReefPositionHelper {
         for(int i = 1; i < locations.length; i++){
             double dist = distanceTo(locations[i],position);
             if(dist < minDistance){
-                System.out.println(i);
                 minPos = locations[i];
                 minDistance = dist;
             }
         }
-
-        System.out.println(minPos);
 
         return minPos;
     }

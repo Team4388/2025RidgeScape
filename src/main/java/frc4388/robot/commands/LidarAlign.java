@@ -21,12 +21,11 @@ public class LidarAlign extends Command {
   private boolean foundReef;
   private boolean headedRight;
   private double speed;
-  private final boolean constructedHeadedRight;
+  // private final boolean constructedHeadedRight;
 
   /** Creates a new LidarAlign. */
-  public LidarAlign(SwerveDrive swerveDrive, Lidar lidar, boolean headedRight) {
+  public LidarAlign(SwerveDrive swerveDrive, Lidar lidar) {//, boolean headedRight) {
     // Use addRequirements() here to declare subsystem dependencies.
-    constructedHeadedRight = headedRight;
 
     this.swerveDrive = swerveDrive;
     this.lidar = lidar;
@@ -40,7 +39,7 @@ public class LidarAlign extends Command {
     this.currentFinderTick = 0;
     this.speed = 0.4; // TODO: find good speed for this
     this.foundReef = false;
-    this.headedRight = constructedHeadedRight;
+    this.headedRight = !(GotoLastApril.tagRelativeXError < 0);
   }
 
 

@@ -112,20 +112,20 @@ public class RobotContainer {
         new GotoLastApril(m_robotSwerveDrive, m_vision),
         new InstantCommand(() -> System.out.println("Soup")),
         new WaitCommand(1),
-        new LidarAlign(m_robotSwerveDrive, m_lidar, true)
+        new LidarAlign(m_robotSwerveDrive, m_lidar)
     );
     private Command AprilLidarLeft = new SequentialCommandGroup(
         AutoGotoPosition.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, m_lidar, false)
+        new LidarAlign(m_robotSwerveDrive, m_lidar)
     );
 
     private Command AprilLidarRight = new SequentialCommandGroup(
         AutoGotoPosition.asProxy(),
         new InstantCommand(() -> System.out.println("Soup")),
         new WaitCommand(1),
-        new LidarAlign(m_robotSwerveDrive, m_lidar, true),
-        new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0, 0.5), new Translation2d(), 1000, true)
+        new LidarAlign(m_robotSwerveDrive, m_lidar)//,
+        // new MoveForTimeCommand(m_robotSwerveDrive, 
+        // new Translation2d(0, 0.5), new Translation2d(), 1000, true)
     );
 
     private Command placeCoral = new SequentialCommandGroup(
@@ -251,7 +251,7 @@ public class RobotContainer {
             .onTrue(AprilLidarRight);
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
+            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive, m_lidar)); 
 
         
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)

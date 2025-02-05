@@ -22,6 +22,7 @@ public class MoveForTimeCommand extends Command {
         Translation2d rightStick, 
         long millis,
         boolean robotRelative) {
+            addRequirements(swerveDrive);
 
         this.swerveDrive = swerveDrive;
         this.leftStick = leftStick;

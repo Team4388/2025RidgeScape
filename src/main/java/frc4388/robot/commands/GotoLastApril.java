@@ -40,6 +40,12 @@ public class GotoLastApril extends Command {
         // addRequirements(swerveDrive);
     }
 
+
+    public static double tagRelativeXError = -1;
+    private static void setTagRelativeXError(double val){
+        tagRelativeXError = val;
+    }
+
     @Override
     public void initialize() {
         xPID.initialize();
@@ -75,17 +81,10 @@ public class GotoLastApril extends Command {
            0
         );
 
-        Rotation2d error = new Translation2d(xerr, yerr).getAngle();
-
-        error = error.rotateBy(Rotation2d.fromDegrees(-rotoutput));
-
-        double tagRelativeXError = error.getSin();
-
-        System.out.println(tagRelativeXError);
-
-        // SmartDashboard.putNumber("PID X Output", xoutput);
-        // SmartDashboard.putNumber("PID Y Output", youtput);
-        // // SmartDashboard.putNumber("PID Y Output", youtput);
+        setTagRelativeXError(
+            new Translation2d(xerr, yerr).getAngle()
+            .rotateBy(targetpos.getRotation())
+            .getCos());
 
         swerveDrive.driveWithInput(leftStick, rightStick, true);
     }
