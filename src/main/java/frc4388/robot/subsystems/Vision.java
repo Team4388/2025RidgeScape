@@ -39,7 +39,11 @@ import frc4388.utility.Subsystem;
 
 public class Vision extends Subsystem {
 
-    private PhotonCamera camera;
+    // private PhotonCamera leftCamera;
+    // private PhotonCamera rightCamera;
+
+    private PhotonCamera[] cameras;
+    private PhotonPoseEstimator[] estimators;
 
     private boolean isTagDetected = false;
     private boolean isTagProcessed = false;
@@ -47,7 +51,6 @@ public class Vision extends Subsystem {
     private Pose2d lastPhysOdomPose = new Pose2d();
 
     private Matrix<N3, N1> curStdDevs;
-    private final PhotonPoseEstimator photonEstimator;
 
     private Field2d field = new Field2d();
 
@@ -66,59 +69,87 @@ public class Vision extends Subsystem {
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
     
-    GenericEntry sbCamConnected = subsystemLayout
-    .add("Camera Connnected", false)
+    GenericEntry sbLeftCamConnected = subsystemLayout
+    .add("Left Camera Connnected", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
+
+    GenericEntry sbRightCamConnected = subsystemLayout
+    .add("Right Camera Connnected", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
     
-    public Vision(PhotonCamera camera){
-        this.camera = camera;
+    public Vision(PhotonCamera leftCamera, PhotonCamera rightCamera){
         SmartDashboard.putData(field);
 
-        photonEstimator = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.CAMERA_POS);
-        photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        this.cameras = new PhotonCamera[]{leftCamera, rightCamera};
+
+        PhotonPoseEstimator photonEstimatorLeft = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.LEFT_CAMERA_POS);
+        PhotonPoseEstimator photonEstimatorRight = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.RIGHT_CAMERA_POS);
+
+        photonEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        photonEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+        this.estimators = new PhotonPoseEstimator[]{photonEstimatorLeft, photonEstimatorRight};
     }
 
     @Override
     public void periodic() {
-        // var result = camera.getLatestResult();
-        var results = camera.getAllUnreadResults();
-        if (results.size() == 0) return;
-        var result = results.get(results.size()-1);
-
-        isTagDetected = result.hasTargets();
-        isTagProcessed = false;
-        
-
-        if(!isTagDetected){
-            // sbTagDetected.setBoolean(isTagDetected);
-            field.setRobotPose(getPose2d());
-            return;
-        }
-
-        var EstimatedRobotPose = getEstimatedGlobalPose(result);
-
-        // In case the pose estimator fails to estimate the pose, fallback to physical odometry.
-        if(EstimatedRobotPose.isEmpty()){
-            field.setRobotPose(getPose2d());
-            return;
-        }
-
-        isTagProcessed = true;
-
-        lastVisionPose = EstimatedRobotPose.get().estimatedPose.toPose2d();
-        // lastVisionPose.rotateBy(Rotation2d.k180deg);
-        // lastVisionPose = new Pose2d(
-        //     lastVisionPose.getTranslation(),
-        //     lastPhysOdomPose.getRotation()
-        // );
-
-        
-        
+        update();
         field.setRobotPose(getPose2d());
     }
 
 
+    private void update() {
+        isTagProcessed = false;
+        isTagDetected = false;
+
+
+        int cams = 0;
+
+        double X = 0;
+        double Y = 0;
+        double Yaw = 0;
+
+        for(int i = 0; i < cameras.length; i++){
+            PhotonCamera camera = cameras[i];
+            PhotonPoseEstimator estimator = estimators[i];
+
+            var results = camera.getAllUnreadResults();
+
+            // If there are no more updates from the camera
+            if (results.size() == 0) 
+                continue;
+
+            
+            var result = results.get(results.size()-1);
+
+            isTagDetected = isTagDetected | result.hasTargets();
+
+            // If there are no tags
+            if(!result.hasTargets())
+                continue;
+
+            Optional<EstimatedRobotPose> estimatedRobotPose = getEstimatedGlobalPose(result, estimator);
+
+            // If the tag was failed to be processed
+            if(estimatedRobotPose.isEmpty())
+                continue;
+
+            Pose2d pose = estimatedRobotPose.get().estimatedPose.toPose2d();
+            X += pose.getX();
+            Y += pose.getY();
+            Yaw += pose.getRotation().getDegrees();
+            cams++;
+            isTagProcessed = true;
+        
+            
+        }
+
+        if(isTagProcessed){
+            lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(Yaw/cams));
+        }
+    }
 
 
     /**
@@ -131,36 +162,24 @@ public class Vision extends Subsystem {
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
      *     used for estimation.
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPipelineResult change) {
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPipelineResult change, PhotonPoseEstimator estimator) {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        // for (var change : camera.getAllUnreadResults()) {
 
-            var targets = change.getTargets();
-            for(int i = targets.size()-1; i >= 0; i--){
-                Transform3d pos = targets.get(i).getBestCameraToTarget();
-                double distance = Math.sqrt(Math.pow(pos.getX(),2) + Math.pow(pos.getY(),2) + Math.pow(pos.getZ(),2));
-                if (distance > VisionConstants.MIN_ESTIMATION_DISTANCE) {
-                    change.targets.remove(i);
-                }
+        var targets = change.getTargets();
+        for(int i = targets.size()-1; i >= 0; i--){
+            Transform3d pos = targets.get(i).getBestCameraToTarget();
+            double distance = Math.sqrt(Math.pow(pos.getX(),2) + Math.pow(pos.getY(),2) + Math.pow(pos.getZ(),2));
+            if (distance > VisionConstants.MIN_ESTIMATION_DISTANCE) {
+                change.targets.remove(i);
             }
+        }
 
-            if(targets.size() <= 0)
-                return visionEst; // Will be empty
+        if(targets.size() <= 0)
+            return visionEst; // Will be empty
 
-            visionEst = photonEstimator.update(change);
-            updateEstimationStdDevs(visionEst, change.getTargets());
+        visionEst = estimator.update(change);
+        updateEstimationStdDevs(visionEst, change.getTargets(), estimator);
 
-            // if (Robot.isSimulation()) {
-            //     visionEst.ifPresentOrElse(
-            //             est ->
-            //                     getSimDebugField()
-            //                             .getObject("VisionEstimation")
-            //                             .setPose(est.estimatedPose.toPose2d()),
-            //             () -> {
-            //                 getSimDebugField().getObject("VisionEstimation").setPoses();
-            //             });
-            // }
-        // }
         return visionEst;
     }
 
@@ -173,7 +192,9 @@ public class Vision extends Subsystem {
      * @param targets All targets in this camera frame
      */
     private void updateEstimationStdDevs(
-            Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+            Optional<EstimatedRobotPose> estimatedPose, 
+            List<PhotonTrackedTarget> targets,
+            PhotonPoseEstimator estimator) {
         if (estimatedPose.isEmpty()) {
             // No pose input. Default to single-tag std devs
             curStdDevs = VisionConstants.kSingleTagStdDevs;
@@ -186,7 +207,7 @@ public class Vision extends Subsystem {
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                var tagPose = estimator.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 
                 double distance = tagPose
@@ -281,7 +302,8 @@ public class Vision extends Subsystem {
     public void queryStatus() {
         sbTagDetected.setBoolean(isTagDetected);
         sbTagProcessed.setBoolean(isTagProcessed);
-        sbCamConnected.setBoolean(camera.isConnected());
+        sbLeftCamConnected.setBoolean(cameras[0].isConnected());
+        sbRightCamConnected.setBoolean(cameras[1].isConnected());
         // field.setRobotPose(getPose2d());
     }
 
