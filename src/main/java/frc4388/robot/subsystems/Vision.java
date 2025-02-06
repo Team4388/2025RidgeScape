@@ -51,8 +51,6 @@ public class Vision extends Subsystem {
     private Pose2d lastPhysOdomPose = new Pose2d();
 
     private Matrix<N3, N1> curStdDevs;
-    private final PhotonPoseEstimator photonEstimatorLeft;
-    private final PhotonPoseEstimator photonEstimatorRight;
 
     private Field2d field = new Field2d();
 
@@ -86,8 +84,8 @@ public class Vision extends Subsystem {
 
         this.cameras = new PhotonCamera[]{leftCamera, rightCamera};
 
-        photonEstimatorLeft = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.LEFT_CAMERA_POS);
-        photonEstimatorRight = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.RIGHT_CAMERA_POS);
+        PhotonPoseEstimator photonEstimatorLeft = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.LEFT_CAMERA_POS);
+        PhotonPoseEstimator photonEstimatorRight = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.RIGHT_CAMERA_POS);
 
         photonEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
