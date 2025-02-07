@@ -8,10 +8,13 @@ import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,6 +31,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.robot.Constants.SwerveDriveConstants;
 import frc4388.robot.Constants.VisionConstants;
+import frc4388.robot.commands.GotoLastApril;
+import frc4388.robot.commands.LidarAlign;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
 import frc4388.utility.Status.ReportLevel;
@@ -149,6 +154,7 @@ public class SwerveDrive extends Subsystem {
                     .withVelocityX(leftStick.getX() * speedAdjust)
                     .withVelocityY(leftStick.getY() * speedAdjust)
                     .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
+                    // .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
                 SmartDashboard.putBoolean("drift correction", false);
             } else {
                 var ctrl = new SwerveRequest.FieldCentricFacingAngle()
@@ -210,6 +216,41 @@ public class SwerveDrive extends Subsystem {
                 .withTargetDirection(rightStick.getAngle()));
     }
 
+    public void driveRelativeLockedAngle(Translation2d leftStick, Rotation2d heading) {
+        leftStick = leftStick.rotateBy(heading);
+
+        var ctrl = new SwerveRequest.FieldCentricFacingAngle()
+            .withVelocityX(leftStick.getX() * speedAdjust)
+            .withVelocityY(leftStick.getY() * speedAdjust)
+            .withTargetDirection(Rotation2d.fromDegrees(rotTarget));
+        ctrl.HeadingController.setPID(
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        );
+        swerveDriveTrain.setControl(ctrl);
+    }
+
+    public void setLimits(double limitInAmps) {
+        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : swerveDriveTrain.getModules()) {
+            var talonFXConfigurator = module.getDriveMotor().getConfigurator();
+            var talonFXConfigs = new TalonFXConfiguration();
+
+            talonFXConfigurator.refresh(talonFXConfigs);
+            talonFXConfigs.CurrentLimits.StatorCurrentLimit = limitInAmps;
+            talonFXConfigs.CurrentLimits.SupplyCurrentLimit = limitInAmps+10;
+            talonFXConfigurator.apply(talonFXConfigs);
+        }
+    }
+
+    public void activateLuigiMode() {
+        setLimits(20);
+    }
+
+    public void deactivateLuigiMode() {
+        setLimits(SwerveDriveConstants.Configurations.SLIP_CURRENT);
+    }
+
     public boolean rotateToTarget(double angle) {
         swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
                 .withVelocityX(0)
@@ -241,11 +282,25 @@ public class SwerveDrive extends Subsystem {
     }
 
     public double getGyroAngle() {
-        return swerveDriveTrain.getRotation3d().getAngle();
+        return getPose2d().getRotation().getRadians();
+    }
+
+    public Pose2d getPose2d() {
+        return swerveDriveTrain.samplePoseAt(Vision.getTime()).orElse(initalPose2d);
     }
 
     public void resetGyro() {
         swerveDriveTrain.tareEverything();
+    }
+
+
+    public void softStop() {
+        stopped = true;
+        swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
+            .withVelocityX(0)
+            .withVelocityY(0)
+            .withRotationalRate(0)
+        ); // stop the modules without breaking
     }
 
     public void stopModules() {
@@ -256,10 +311,11 @@ public class SwerveDrive extends Subsystem {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run\
-        SmartDashboard.putNumber("Gyro", getGyroAngle());
+        SmartDashboard.putNumber("Gyro", (getGyroAngle() * 180) / Math.PI);
         SmartDashboard.putNumber("RotTartget", rotTarget);
 
         double time = Vision.getTime();
+        
 
         vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(time));
 

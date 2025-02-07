@@ -35,7 +35,8 @@ public class RobotMap {
     // private Pigeon2 m_pigeon2 = new Pigeon2(SwerveDriveConstants.IDs.DRIVE_PIGEON.id);
     // public RobotGyro gyro = new RobotGyro(m_pigeon2);
 
-    public PhotonCamera camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
+    public PhotonCamera leftCamera = new PhotonCamera(VisionConstants.LEFT_CAMERA_NAME);
+    public PhotonCamera rightCamera = new PhotonCamera(VisionConstants.RIGHT_CAMERA_NAME);
     
     public RobotMap() {
         configureDriveMotorControllers();

@@ -36,7 +36,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 // Autos
 import frc4388.utility.controller.VirtualController;
-import frc4388.robot.commands.GotoPositionCommand;
+import frc4388.robot.commands.GotoLastApril;
+import frc4388.robot.commands.LidarAlign;
+import frc4388.robot.commands.MoveForTimeCommand;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -73,7 +75,7 @@ public class RobotContainer {
     
     /* Subsystems */
     // private final LED m_robotLED = new LED();
-    public final Vision m_vision = new Vision(m_robotMap.camera);
+    public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
     public final Elevator m_robotElevator= new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endefectorLimitSwitch);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
@@ -105,7 +107,26 @@ public class RobotContainer {
     () -> autoplaybackName.get(), // lastAutoName
            new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
            true, false);
-    private Command AutoGotoPosition = new GotoPositionCommand(m_robotSwerveDrive, m_vision);
+    private Command AutoGotoPosition = new GotoLastApril(m_robotSwerveDrive, m_vision);
+    private Command AprilLidarAlign = new SequentialCommandGroup(
+        new GotoLastApril(m_robotSwerveDrive, m_vision),
+        new InstantCommand(() -> System.out.println("Soup")),
+        new WaitCommand(1),
+        new LidarAlign(m_robotSwerveDrive, m_lidar)
+    );
+    private Command AprilLidarLeft = new SequentialCommandGroup(
+        AutoGotoPosition.asProxy(),
+        new LidarAlign(m_robotSwerveDrive, m_lidar)
+    );
+
+    private Command AprilLidarRight = new SequentialCommandGroup(
+        AutoGotoPosition.asProxy(),
+        new InstantCommand(() -> System.out.println("Soup")),
+        new WaitCommand(1),
+        new LidarAlign(m_robotSwerveDrive, m_lidar)//,
+        // new MoveForTimeCommand(m_robotSwerveDrive, 
+        // new Translation2d(0, 0.5), new Translation2d(), 1000, true)
+    );
 
     private Command placeCoral = new SequentialCommandGroup(
         new InstantCommand(() -> m_robotSwerveDrive.stopModules()),
@@ -131,7 +152,7 @@ public class RobotContainer {
     public RobotContainer() {
         
         NamedCommands.registerCommand("AutoGotoPosition", AutoGotoPosition);
-        NamedCommands.registerCommand("april-allign", AutoGotoPosition);
+        NamedCommands.registerCommand("april-allign", AprilLidarAlign);
         NamedCommands.registerCommand("place-coral", placeCoral);
         NamedCommands.registerCommand("grab-coral", grabCoral);
 
@@ -208,6 +229,15 @@ public class RobotContainer {
         new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON) // final
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
 
+        new JoystickButton(getDeadbandedDriverController(), XboxController.START_BUTTON) // final
+            .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.activateLuigiMode()));
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.BACK_BUTTON) // final
+            .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.deactivateLuigiMode()));
+
+        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON) // final
+            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
+
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 270)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDownRot()));
 
@@ -217,10 +247,11 @@ public class RobotContainer {
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-            .onTrue(AutoGotoPosition);
+            // .onTrue(AutoGotoPosition);
+            .onTrue(AprilLidarRight);
         
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive)); 
+            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive, m_lidar)); 
 
         
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)

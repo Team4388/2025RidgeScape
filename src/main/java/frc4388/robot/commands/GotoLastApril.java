@@ -15,7 +15,7 @@ import frc4388.utility.UtilityStructs.AutoRecordingControllerFrame;
 import frc4388.utility.UtilityStructs.AutoRecordingFrame;
 import frc4388.utility.controller.VirtualController;
 
-public class GotoPositionCommand extends Command {
+public class GotoLastApril extends Command {
     
 
     // private Translation2d translation2d= new Translation2d(14.579471999999997,0.24587199999999998);
@@ -34,10 +34,16 @@ public class GotoPositionCommand extends Command {
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoPositionCommand(SwerveDrive swerveDrive, Vision vision) {
+    public GotoLastApril(SwerveDrive swerveDrive, Vision vision) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
         // addRequirements(swerveDrive);
+    }
+
+
+    public static double tagRelativeXError = -1;
+    private static void setTagRelativeXError(double val){
+        tagRelativeXError = val;
     }
 
     @Override
@@ -65,8 +71,8 @@ public class GotoPositionCommand extends Command {
         double rotoutput = rotPID.update(roterr);
 
         Translation2d leftStick = new Translation2d(
-            Math.max(Math.min(youtput, 1), -1),
-            Math.max(Math.min(xoutput, 1), -1)
+            Math.max(Math.min(-youtput, 1), -1),
+            Math.max(Math.min(-xoutput, 1), -1)
             // 0,0
         );
 
@@ -75,9 +81,10 @@ public class GotoPositionCommand extends Command {
            0
         );
 
-        // SmartDashboard.putNumber("PID X Output", xoutput);
-        // SmartDashboard.putNumber("PID Y Output", youtput);
-        // // SmartDashboard.putNumber("PID Y Output", youtput);
+        setTagRelativeXError(
+            new Translation2d(xerr, yerr).getAngle()
+            .rotateBy(targetpos.getRotation())
+            .getCos());
 
         swerveDrive.driveWithInput(leftStick, rightStick, true);
     }
@@ -86,6 +93,10 @@ public class GotoPositionCommand extends Command {
     public final boolean isFinished() {
         boolean finished = (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
         // System.out.println(finished);
+
+        if(finished)
+            swerveDrive.softStop();
+
         return finished;
                 // this statement is a boolean in and of itself
     }

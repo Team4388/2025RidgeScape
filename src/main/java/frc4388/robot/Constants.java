@@ -105,8 +105,8 @@ public final class Constants {
         public static final double FORWARD_OFFSET = 90; // 0, 90, 180, 270
 
         public static final boolean DRIFT_CORRECTION_ENABLED = true;
-        public static final boolean INVERT_X = true;
-        public static final boolean INVERT_Y = false;
+        public static final boolean INVERT_X = false;
+        public static final boolean INVERT_Y = true;
         public static final boolean INVERT_ROTATION = false;
 
         // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
@@ -227,21 +227,22 @@ public final class Constants {
                 .withKS(0).withKV(0.124);
             
             public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
+            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(5, 0, 0.1); // TODO: TEST
         }
     
         public static final class AutoConstants {
-            public static final Gains XY_GAINS = new Gains(3,0.01,0);
+            public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
             public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
             public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
 
             public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-            public static final int LIDAR_DIO_CHANNEL = 0;
+            public static final int LIDAR_DIO_CHANNEL = 2;
             public static final int LIDAR_MICROS_TO_CM = 10;
             public static final int SECONDS_TO_MICROS = 1000000;
                     
-            public static final double XY_TOLERANCE = 0.1;
-            public static final double ROT_TOLERANCE = 1;
+            public static final double XY_TOLERANCE = 0.07; // Meters
+            public static final double ROT_TOLERANCE = 1; // Degrees
                     
             // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
             // public static final Pose2d targetpos = 
@@ -249,8 +250,8 @@ public final class Constants {
     
     
         public static final class Configurations {
-            public static final double OPEN_LOOP_RAMP_RATE = 0.2; // Todo: Test. think this will help.
-            public static final double CLOSED_LOOP_RAMP_RATE = 0.2; // Todo: Test. think this will help.
+            public static final double OPEN_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
+            public static final double CLOSED_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
             public static final double NEUTRAL_DEADBAND = 0.04;
 
             // POWER! (limiting)
@@ -282,7 +283,7 @@ public final class Constants {
                     //     new ClosedLoopRampsConfigs()
                     //         .withDutyCycleClosedLoopRampPeriod(SwerveDriveConstants.Configurations.CLOSED_LOOP_RAMP_RATE)
             );
-            private static final double SLIP_CURRENT = 100; // TODO: Tune??? 
+            public static final double SLIP_CURRENT = 60; // TODO: Tune??? 
         }
 
         // No mans land
@@ -339,9 +340,11 @@ public final class Constants {
       }
     
     public static final class VisionConstants { 
-        public static final String CAMERA_NAME = "Camera_Module_v1";
+        public static final String LEFT_CAMERA_NAME = "CAMERA_LEFT";
+        public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
 
-        public static final Transform3d CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
+        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
+        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
         
         public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
@@ -354,8 +357,9 @@ public final class Constants {
 
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET = .2794
-        ;
+        // public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(9.5);
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(6.5);
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);

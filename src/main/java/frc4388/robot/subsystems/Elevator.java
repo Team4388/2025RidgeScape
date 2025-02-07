@@ -24,9 +24,14 @@ public class Elevator extends SubsystemBase {
   public enum CoordinationState {
     Waiting, // for coral into the though 
     Ready, // Has coral in enefector
+    PrimedThree, // Arm and elevator Waiting to score in the level 3 position
     ScoringThree, // Arm and elevator in the level three position
-    ScoringFour // Arm and elevator in the level four position
-
+    PrimedFour, // Arm and elevator Waiting to score in the level 4 position
+    ScoringFour, // Arm and elevator in the level four position
+    BallRemoverL2Primed, // Arm and elevator ready to remove the ball in the level 2 reef.
+    BallRemoverL2Go, // Arm and elevator removing the ball in the level 2 reef.
+    BallRemoverL3Primed, // Arm and elevator ready to remove the ball in the level 3 reef.
+    BallRemoverL3Go, // Arm and elevator removing the ball in the level 3 reef.
   }
 
   private CoordinationState currentState;
