@@ -24,7 +24,7 @@ public class LidarAlign extends Command {
   // private final boolean constructedHeadedRight;
 
   /** Creates a new LidarAlign. */
-  public LidarAlign(SwerveDrive swerveDrive, Lidar lidar) {//, boolean headedRight) {
+  public LidarAlign(SwerveDrive swerveDrive, Lidar lidar, boolean headedRight) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.swerveDrive = swerveDrive;
