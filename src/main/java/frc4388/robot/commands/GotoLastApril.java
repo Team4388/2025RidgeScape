@@ -29,15 +29,21 @@ public class GotoLastApril extends Command {
     SwerveDrive swerveDrive;
     Vision vision;
 
+    private boolean interrupted;
+    private boolean headedLeft;
+
+
     /**
      * Command to drive robot to position.
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoLastApril(SwerveDrive swerveDrive, Vision vision) {
+    public GotoLastApril(SwerveDrive swerveDrive, Vision vision, boolean headedLeft) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
         // addRequirements(swerveDrive);
+        interrupted = false;
+        this.headedLeft = headedLeft;
     }
 
 
@@ -50,7 +56,8 @@ public class GotoLastApril extends Command {
     public void initialize() {
         xPID.initialize();
         yPID.initialize();
-        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), Side.LEFT, AutoConstants.X_OFFSET_TRIM.get());
+        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), (headedLeft ? Side.LEFT: Side.RIGHT), AutoConstants.X_OFFSET_TRIM.get());
+        interrupted = false;
     }
     
     double xerr;
@@ -101,11 +108,14 @@ public class GotoLastApril extends Command {
                 // this statement is a boolean in and of itself
     }
     
-    // @Override
-    // public void end(boolean interrupted) {
-       
-    // }
+    @Override
+    public void end(boolean interrupted) {
+        this.interrupted = interrupted;
+    }
     
+    public boolean getInterrupted() {
+        return interrupted;
+    }
 
 
     // @Override
