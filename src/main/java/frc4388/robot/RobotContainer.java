@@ -10,6 +10,7 @@ package frc4388.robot;
 // Drive Systems
 import edu.wpi.first.wpilibj.DriverStation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,12 +102,13 @@ public class RobotContainer {
 
     // ! /*  Autos */
     private String lastAutoName = "defualt.auto";
-    private final SendableChooser<Command> autoChooser;
-    private ConfigurableString autoplaybackName = new ConfigurableString("Auto Playback Name", lastAutoName);
-    private neoJoystickPlayback autoPlayback = new neoJoystickPlayback(m_robotSwerveDrive, 
-    () -> autoplaybackName.get(), // lastAutoName
-           new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
-           true, false);
+    private SendableChooser<String> autoChooser;
+    private Command autoCommand;
+    // private ConfigurableString autoplaybackName = new ConfigurableString("Auto Playback Name", lastAutoName);
+    // private neoJoystickPlayback autoPlayback = new neoJoystickPlayback(m_robotSwerveDrive, 
+    // () -> autoplaybackName.get(), // lastAutoName
+    //        new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
+    //        true, false);
     private Command AutoGotoPosition = new GotoLastApril(m_robotSwerveDrive, m_vision);
     private Command AprilLidarAlign = new SequentialCommandGroup(
         new GotoLastApril(m_robotSwerveDrive, m_vision),
@@ -172,8 +174,7 @@ public class RobotContainer {
         }, m_robotSwerveDrive)
         .withName("SwerveDrive DefaultCommand"));
         m_robotSwerveDrive.setToSlow();
-
-        autoChooser = AutoBuilder.buildAutoChooser();
+        makeAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
         // this.subsystems.add(m_robotSwerveDrive);
         // this.subsystems.add(m_robotMap.leftFront);
@@ -270,18 +271,18 @@ public class RobotContainer {
         // ? /* Programer Buttons (Controller 3)*/
 
         // * /* Auto Recording */
-        new JoystickButton(m_autoRecorderXbox, XboxController.LEFT_BUMPER_BUTTON)
-            .whileTrue(new neoJoystickRecorder(m_robotSwerveDrive,
-                        new DeadbandedXboxController[]{getDeadbandedDriverController(), getDeadbandedOperatorController()},
-                                            () -> autoplaybackName.get()))
-            .onFalse(new InstantCommand());
+        // new JoystickButton(m_autoRecorderXbox, XboxController.LEFT_BUMPER_BUTTON)
+        //     .whileTrue(new neoJoystickRecorder(m_robotSwerveDrive,
+        //                 new DeadbandedXboxController[]{getDeadbandedDriverController(), getDeadbandedOperatorController()},
+        //                                     () -> autoplaybackName.get()))
+        //     .onFalse(new InstantCommand());
         
-        new JoystickButton(m_autoRecorderXbox, XboxController.RIGHT_BUMPER_BUTTON)
-            .onTrue(new neoJoystickPlayback(m_robotSwerveDrive,
-            () -> autoplaybackName.get(),
-            new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
-            true, false))
-            .onFalse(new InstantCommand());
+        // new JoystickButton(m_autoRecorderXbox, XboxController.RIGHT_BUMPER_BUTTON)
+        //     .onTrue(new neoJoystickPlayback(m_robotSwerveDrive,
+        //     () -> autoplaybackName.get(),
+        //     new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
+        //     true, false))
+        //     .onFalse(new InstantCommand());
 
     }
     
@@ -323,7 +324,7 @@ public class RobotContainer {
         //return autoChooser.getSelected();
 	// try{
 	//     // Load the path you want to follow using its name in the GUI
-	    return new PathPlannerAuto("Red Center Cage");
+	    return autoCommand;
 	// } catch (Exception e) {
 	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
 	//     return Commands.none();
@@ -333,7 +334,25 @@ public class RobotContainer {
       //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
     }
 
+    public void makeAutoChooser() {
+        autoChooser = new SendableChooser<String>();
+        
+        File dir = new File("/home/lvuser/deploy/pathplanner/autos/");
+        // File dir = new File("C:\\Users\\Ridgebotics\\Documents\\GitHub\\2025RidgeScape\\src\\main\\deploy\\pathplanner\\autos\\");
+        String[] autos = dir.list();
 
+        for (String auto : autos) {
+            if (auto.endsWith(".auto"))
+                autoChooser.addOption(auto.replaceAll(".auto", ""), auto);
+        }
+
+        autoChooser.onChange((filename) -> {
+            autoCommand = new PathPlannerAuto(filename);
+            System.out.println("Robot Auto Changed");
+        });
+        SmartDashboard.putData(autoChooser);
+
+    }
 
     /**
      * A button binding for two controllers, preferably an {@link DeadbandedXboxController Xbox Controller} and {@link VirtualController Virtual Xbox Controller}
