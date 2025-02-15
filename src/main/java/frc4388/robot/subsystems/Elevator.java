@@ -10,8 +10,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.Constants.ElevatorConstants;
+import frc4388.utility.LEDPatterns;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
@@ -68,16 +71,27 @@ public class Elevator extends SubsystemBase {
 
   public void transitionState(CoordinationState state) {
     currentState = state;
+    var currentAlliance = DriverStation.getAlliance();
+    if(currentAlliance.isPresent()){
+        if(currentAlliance.get() == Alliance.Blue) {
+          System.out.println(LEDPatterns.SOLID_BLUE.getValue());
+        } else if(currentAlliance.get() == Alliance.Red){
+          System.out.println(LEDPatterns.SOLID_RED.getValue());
+        }
+    }
+
     switch (currentState) {
       case Waiting: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        System.out.println(LEDPatterns.SOLID_YELLOW.getValue());
         break;
       }
 
       case Ready: {
         PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        System.out.println(LEDPatterns.SOLID_GREEN.getValue());
         break;
       }
 

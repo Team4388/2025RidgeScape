@@ -95,7 +95,7 @@ public final class Constants {
         private static final double DRIVE_RATIO = 6.12;
         private static final double STEER_RATIO = (150/7);
         private static final Distance WHEEL_RADIUS = Inches.of(2);
-        
+         v
         public static final double MAX_SPEED_MEETERS_PER_SEC = 6.22; // TODO: Validate
 
         public static final double MAX_SPEED_FEET_PER_SECOND = MAX_SPEED_MEETERS_PER_SEC * 3.28084;
