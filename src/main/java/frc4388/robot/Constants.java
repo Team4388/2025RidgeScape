@@ -106,46 +106,46 @@ public final class Constants {
 
         public static final boolean DRIFT_CORRECTION_ENABLED = true;
         public static final boolean INVERT_X = false;
-        public static final boolean INVERT_Y = true;
+        public static final boolean INVERT_Y = false;
         public static final boolean INVERT_ROTATION = false;
 
         // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
 
-        /* private static final class ModuleSpecificConstants { //2025
+        private static final class ModuleSpecificConstants { //2025
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.229736328125+.25);
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.4794921875+0.25);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_LEFT_XPOS = Inches.of(-HALF_WIDTH);
+            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_WIDTH);
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(-0.371337890625+.5+.25);
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.25);
             private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
             private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_RIGHT_YPOS = Inches.of(HALF_HEIGHT);
+            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.3828125+.25+.5);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(-0.867431640625+0.25);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
             private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_LEFT_YPOS = Inches.of(-HALF_HEIGHT);
+            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.01904296875+.25);
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.425537109375-0.25+0.25);
             private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance BACK_RIGHT_XPOS = Inches.of(HALF_WIDTH);
+            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-        } */
+        }
 
-        private static final class ModuleSpecificConstants { // 2024
+        /* private static final class ModuleSpecificConstants { // 2024
             //Front Left
             private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
@@ -177,7 +177,7 @@ public final class Constants {
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
             private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-        }
+        } */
 
         public static final class IDs {
             public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 4);
