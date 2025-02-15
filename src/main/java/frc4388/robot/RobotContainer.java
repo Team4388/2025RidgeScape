@@ -166,8 +166,8 @@ public class RobotContainer {
         // ! Swerve Drive Default Command (Regular Rotation)
         // drives the robot with a two-axis input from the driver controller
         m_robotSwerveDrive.setDefaultCommand(new RunCommand(() -> {
-            // m_robotSwerveDrive.driveWithInput(getDeadbandedDriverController().getLeft(),
-            m_robotSwerveDrive.driveWithInput(new Translation2d(.4, 0),
+            m_robotSwerveDrive.driveWithInput(getDeadbandedDriverController().getLeft(),
+            // m_robotSwerveDrive.driveWithInput(new Translation2d(.4, 0),
                                             getDeadbandedDriverController().getRight(),
                                 true);
         }, m_robotSwerveDrive)
