@@ -106,7 +106,7 @@ public final class Constants {
 
         public static final boolean DRIFT_CORRECTION_ENABLED = true;
         public static final boolean INVERT_X = false;
-        public static final boolean INVERT_Y = false;
+        public static final boolean INVERT_Y = true;
         public static final boolean INVERT_ROTATION = false;
 
         // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
@@ -121,8 +121,8 @@ public final class Constants {
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.25);
-            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.5);
+            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
             private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
@@ -401,7 +401,7 @@ public final class Constants {
         public static final int BASIN_LIMIT_SWITCH = 0; // TODO: FIND
         public static final int ENDEFFECTOR_LIMIT_SWITCH = 1; // TODO: FIND
         
-        public static final double GEAR_RATIO_ELEVATOR = 36.0;
+        public static final double GEAR_RATIO_ELEVATOR = 9.0;
 
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
         public static final double WAITING_POSITION_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find 4-6 off the ground
