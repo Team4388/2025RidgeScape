@@ -95,7 +95,7 @@ public final class Constants {
         private static final double DRIVE_RATIO = 6.12;
         private static final double STEER_RATIO = (150/7);
         private static final Distance WHEEL_RADIUS = Inches.of(2);
-         v
+        
         public static final double MAX_SPEED_MEETERS_PER_SEC = 6.22; // TODO: Validate
 
         public static final double MAX_SPEED_FEET_PER_SECOND = MAX_SPEED_MEETERS_PER_SEC * 3.28084;
@@ -389,7 +389,8 @@ public final class Constants {
     public static final class OIConstants {
         public static final int XBOX_DRIVER_ID = 0;
         public static final int XBOX_OPERATOR_ID = 1;
-        public static final int XBOX_PROGRAMMER_ID = 2;
+        public static final int BUTTONBOX_ID = 2;
+        public static final int XBOX_PROGRAMMER_ID = 3;
         public static final double LEFT_AXIS_DEADBAND = 0.1;
 
     }
