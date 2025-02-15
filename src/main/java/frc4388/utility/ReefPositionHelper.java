@@ -87,6 +87,6 @@ public class ReefPositionHelper {
         return new Pose2d(new Translation2d(
             oldTranslation.getX() + Math.cos(rot + Math.PI/2) * xoffset + Math.cos(rot) * yoffset,
             oldTranslation.getY() + Math.sin(rot + Math.PI/2) * xoffset + Math.sin(rot) * yoffset
-        ), oldPose.getRotation());
+        ), oldPose.getRotation().rotateBy(Rotation2d.k180deg));
     }
 }

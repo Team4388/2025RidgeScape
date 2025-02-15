@@ -237,7 +237,7 @@ public final class Constants {
             public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
 
             public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-            public static final int LIDAR_DIO_CHANNEL = 2;
+            public static final int LIDAR_DIO_CHANNEL = 7;
             public static final int LIDAR_MICROS_TO_CM = 10;
             public static final int SECONDS_TO_MICROS = 1000000;
                     
@@ -343,8 +343,8 @@ public final class Constants {
         public static final String LEFT_CAMERA_NAME = "CAMERA_LEFT";
         public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
 
-        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
-        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
+        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
+        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), -Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
         
         public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
@@ -405,7 +405,7 @@ public final class Constants {
 
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
         public static final double WAITING_POSITION_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find 4-6 off the ground
-        public static final double MAX_POSITION_ELEVATOR = 20 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
+        public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
 
         public static final double GEAR_RATIO_ENDEFECTOR = 100.0;
 
@@ -415,7 +415,7 @@ public final class Constants {
         public static final double COMPLETLY_TOP_ENDEFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()
-            .withKP(1)
+            .withKP(.1)
             .withKI(0)
             .withKD(0);
         

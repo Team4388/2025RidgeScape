@@ -107,10 +107,10 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (currentState == CoordinationState.Waiting) {
-      periodicWaiting();
-    } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
-      periodicScoring();
-    }
+    // if (currentState == CoordinationState.Waiting) {
+    //   periodicWaiting();
+    // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
+    //   periodicScoring();
+    // }
   }
 }
