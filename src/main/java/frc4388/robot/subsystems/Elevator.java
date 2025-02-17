@@ -9,7 +9,10 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.Constants.ElevatorConstants;
 
@@ -18,12 +21,13 @@ public class Elevator extends SubsystemBase {
   private TalonFX elevatorMotor;
   private TalonFX endefectorMotor;
 
-  private DigitalInput basinLimitSwitch;
+  private DigitalInput basinBeamBreak;
   private DigitalInput endefectorLimitSwitch;
 
   public enum CoordinationState {
-    Waiting, // for coral into the though 
-    Ready, // Has coral in enefector
+    Waiting, // for coral into the though
+    WatingBeamTriped, //once the beam break trips
+    Ready, // Has coral in endefector
     PrimedThree, // Arm and elevator Waiting to score in the level 3 position
     ScoringThree, // Arm and elevator in the level three position
     PrimedFour, // Arm and elevator Waiting to score in the level 4 position
@@ -40,7 +44,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor = elevatorTalonFX;
     endefectorMotor = endefectorTalonFX;
 
-    this.basinLimitSwitch = basinLimitSwitch;
+    this.basinBeamBreak = basinLimitSwitch;
     this.endefectorLimitSwitch = endefectorLimitSwitch;
 
     elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -75,6 +79,12 @@ public class Elevator extends SubsystemBase {
         break;
       }
 
+      case WatingBeamTriped: {
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_BEAM_BREAK_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        break;
+      }
+
       case Ready: {
         PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
@@ -97,7 +107,11 @@ public class Elevator extends SubsystemBase {
   }
 
   private void periodicWaiting() {
-    if (basinLimitSwitch.get()) transitionState(CoordinationState.Ready);
+    if (basinBeamBreak.get()) transitionState(CoordinationState.WatingBeamTriped);
+  }
+
+  private void periodicWaitingTripped() {
+    if (basinBeamBreak.get()) transitionState(CoordinationState.Ready);
   }
   
   private void periodicScoring() {
@@ -107,8 +121,13 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // if (currentState == CoordinationState.Waiting) {
-    //   periodicWaiting();
+    SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
+    SmartDashboard.putNumber("endefector", basinBeamBreak.get() ? 1 : 0);
+    if (currentState == CoordinationState.Waiting) {
+      periodicWaiting();
+    } else if (currentState == CoordinationState.WatingBeamTriped) {
+      periodicWaitingTripped();
+    }
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
     // }

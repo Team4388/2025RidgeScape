@@ -398,13 +398,14 @@ public final class Constants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
 
-        public static final int BASIN_LIMIT_SWITCH = 0; // TODO: FIND
-        public static final int ENDEFFECTOR_LIMIT_SWITCH = 1; // TODO: FIND
+        public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
+        public static final int ENDEFFECTOR_LIMIT_SWITCH = 9; // TODO: FIND
         
-        public static final double GEAR_RATIO_ELEVATOR = 9.0;
+        public static final double GEAR_RATIO_ELEVATOR = -9.0;
 
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
-        public static final double WAITING_POSITION_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find 4-6 off the ground
+        public static final double WAITING_POSITION_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find 2-4 in off the pipe
+        public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find on the pipe
         public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
 
         public static final double GEAR_RATIO_ENDEFECTOR = 100.0;
