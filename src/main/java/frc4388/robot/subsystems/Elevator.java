@@ -5,10 +5,12 @@
 package frc4388.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -58,8 +60,8 @@ public class Elevator extends SubsystemBase {
   //PID methods
 
   private void PIDPosition(TalonFX motor, double position) {
-    var request = new PositionVoltage(position);
-    elevatorMotor.setControl(request);
+    var request = new PositionDutyCycle(position);
+    motor.setControl(request);
   }
 
   public void elevatorStop() {
@@ -82,6 +84,7 @@ public class Elevator extends SubsystemBase {
       case WatingBeamTriped: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_BEAM_BREAK_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        armShuffle();
         break;
       }
 
@@ -106,6 +109,12 @@ public class Elevator extends SubsystemBase {
 
   }
 
+  // public void driveElevatorStick(Translation2d stick) {
+  //   if (stick.getNorm() > 0.05) {
+  //     elevatorMotor.set(stick.getY());
+  //   }
+  // }
+
   private void periodicWaiting() {
     if (basinBeamBreak.get()) transitionState(CoordinationState.WatingBeamTriped);
   }
@@ -122,14 +131,21 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
-    SmartDashboard.putNumber("endefector", basinBeamBreak.get() ? 1 : 0);
-    if (currentState == CoordinationState.Waiting) {
-      periodicWaiting();
-    } else if (currentState == CoordinationState.WatingBeamTriped) {
-      periodicWaitingTripped();
-    }
+    SmartDashboard.putNumber("endefector", endefectorLimitSwitch.get() ? 1 : 0);
+
+    // if (currentState == CoordinationState.Waiting) {
+    //   periodicWaiting();
+    // } else if (currentState == CoordinationState.WatingBeamTriped) {
+    //   periodicWaitingTripped();
+    // }
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
     // }
+  }
+
+  public void armShuffle(){
+    if(!basinBeamBreak.get()){
+      //shuffle the coral with the arm until coral hits beam break
+    }
   }
 }

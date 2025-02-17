@@ -175,6 +175,12 @@ public class RobotContainer {
         }, m_robotSwerveDrive)
         .withName("SwerveDrive DefaultCommand"));
         m_robotSwerveDrive.setToSlow();
+        // m_robotElevator.setDefaultCommand(new RunCommand(() -> {
+        //     m_robotElevator.driveElevatorStick(m_operatorXbox.getRight());
+        // }, m_robotElevator)
+        // .withName("Elevator"));
+
+
         makeAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
         // this.subsystems.add(m_robotSwerveDrive);
@@ -225,19 +231,19 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
 
         // ! /* Speed */
-        new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON) // final
+        new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON)
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON) // final
+        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
 
-        new JoystickButton(getDeadbandedDriverController(), XboxController.START_BUTTON) // final
+        new JoystickButton(getDeadbandedDriverController(), XboxController.START_BUTTON)
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.activateLuigiMode()));
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.BACK_BUTTON) // final
+        new JoystickButton(getDeadbandedDriverController(), XboxController.BACK_BUTTON)
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.deactivateLuigiMode()));
 
-        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON) // final
+        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
 
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 270)
