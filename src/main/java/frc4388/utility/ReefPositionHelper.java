@@ -72,10 +72,10 @@ public class ReefPositionHelper {
         return new Pose2d();
     }
 
-    public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim) {
+    public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim, double ydistance) {
         return offset(getNearestTag(position), 
         (side == Side.LEFT ? -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET) : (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET)) + xtrim,
-        FieldConstants.VERTICAL_SCORING_POSITION_OFFSET); 
+        ydistance); 
     }
 
 

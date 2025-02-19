@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.utility.controller.XboxController;
 import frc4388.utility.controller.DeadbandedXboxController;
+import frc4388.robot.Constants.FieldConstants;
 import frc4388.robot.Constants.OIConstants;
 import frc4388.robot.Constants.SwerveDriveConstants;
 import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
@@ -40,6 +41,8 @@ import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoLastApril;
 import frc4388.robot.commands.LidarAlign;
 import frc4388.robot.commands.MoveForTimeCommand;
+import frc4388.robot.commands.waitElevatorRefrence;
+import frc4388.robot.commands.waitEndefectorRefrence;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -109,20 +112,29 @@ public class RobotContainer {
     // () -> autoplaybackName.get(), // lastAutoName
     //        new VirtualController[]{getVirtualDriverController(), getVirtualOperatorController()},
     //        true, false);
-    private Command AutoGotoPosition = new GotoLastApril(m_robotSwerveDrive, m_vision);
+    // private Command AutoGotoPosition = new GotoLastApril(m_robotSwerveDrive, m_vision);
     private Command AprilLidarAlign = new SequentialCommandGroup(
-        new GotoLastApril(m_robotSwerveDrive, m_vision),
-        new InstantCommand(() -> System.out.println("Soup")),
-        new WaitCommand(1),
-        new LidarAlign(m_robotSwerveDrive, m_lidar)
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
+        // new InstantCommand(() -> System.out.println("Soup")),
+        // new WaitCommand(1),
+        new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+        new LidarAlign(m_robotSwerveDrive, m_lidar),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1, Side.LEFT),
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
+        new waitEndefectorRefrence(m_robotElevator),
+        new MoveForTimeCommand(m_robotSwerveDrive, 
+        new Translation2d(0,1), new Translation2d(), 500, true),
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator)
     );
     private Command AprilLidarLeft = new SequentialCommandGroup(
-        AutoGotoPosition.asProxy(),
+        AprilLidarAlign.asProxy(),
         new LidarAlign(m_robotSwerveDrive, m_lidar)
     );
 
     private Command AprilLidarRight = new SequentialCommandGroup(
-        AutoGotoPosition.asProxy(),
+        AprilLidarAlign.asProxy(),
         new InstantCommand(() -> System.out.println("Soup")),
         new WaitCommand(1),
         new LidarAlign(m_robotSwerveDrive, m_lidar)//,
@@ -153,7 +165,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         
-        NamedCommands.registerCommand("AutoGotoPosition", AutoGotoPosition);
+        NamedCommands.registerCommand("AutoGotoPosition", AprilLidarAlign);
         NamedCommands.registerCommand("april-allign", AprilLidarAlign);
         NamedCommands.registerCommand("place-coral", placeCoral);
         NamedCommands.registerCommand("grab-coral", grabCoral);
@@ -251,6 +263,13 @@ public class RobotContainer {
 
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 90)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftUpRot()));
+            
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
+            .onTrue(AprilLidarAlign);
+
+        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive));
           
         // ?  /* Operator Buttons */
 
@@ -272,6 +291,9 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator));
 
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.X_BUTTON)
+            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator));
+
+        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.RIGHT_JOYSTICK_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator));
         
             

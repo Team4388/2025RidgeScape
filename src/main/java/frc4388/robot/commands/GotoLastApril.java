@@ -28,15 +28,19 @@ public class GotoLastApril extends Command {
 
     SwerveDrive swerveDrive;
     Vision vision;
+    double distance;
+    Side side;
 
     /**
      * Command to drive robot to position.
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoLastApril(SwerveDrive swerveDrive, Vision vision) {
+    public GotoLastApril(SwerveDrive swerveDrive, Vision vision, double distance, Side side) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
+        this.distance = distance;
+        this.side = side;
         // addRequirements(swerveDrive);
     }
 
@@ -50,7 +54,7 @@ public class GotoLastApril extends Command {
     public void initialize() {
         xPID.initialize();
         yPID.initialize();
-        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), Side.LEFT, AutoConstants.X_OFFSET_TRIM.get());
+        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), side, AutoConstants.X_OFFSET_TRIM.get(), distance);
     }
     
     double xerr;
@@ -69,6 +73,10 @@ public class GotoLastApril extends Command {
         double xoutput = xPID.update(xerr);
         double youtput = yPID.update(yerr);
         double rotoutput = rotPID.update(roterr);
+
+        xoutput *= Math.abs(xerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
+        youtput *= Math.abs(yerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
+        rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
 
         Translation2d leftStick = new Translation2d(
             Math.max(Math.min(-youtput, 1), -1),

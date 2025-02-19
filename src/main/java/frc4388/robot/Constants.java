@@ -358,11 +358,16 @@ public final class Constants {
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(9.5);
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(6.5);
+
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
+
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
+        public static final double L4_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L4_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
 
 
 
@@ -402,17 +407,22 @@ public final class Constants {
         public static final int ENDEFFECTOR_LIMIT_SWITCH = 9; // TODO: FIND
         
         public static final double GEAR_RATIO_ELEVATOR = -9.0;
-
+        //Max for elevator = 50%
+        
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
-        public static final double WAITING_POSITION_ELEVATOR = (2 / 3.d) * GEAR_RATIO_ELEVATOR; // TODO: find 2-4 in off the pipe
-        public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find on the pipe
+        public static final double WAITING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
+        public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
+        public static final double SCORING_THREE_ELEVATOR = -9.25;
         public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
-
+        
         public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
+        public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
+        //Max for endefector = 60%
 
         public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
-        public static final double SCORING_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
+        public static final double SCORING_THREE_ENDEFECTOR = 0.375 * GEAR_RATIO_ENDEFECTOR;
+        public static final double SCORING_FOUR_ENDEFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
         public static final double COMPLETLY_TOP_ENDEFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()

@@ -4,6 +4,8 @@
 
 package frc4388.robot.subsystems;
 
+import java.time.Instant;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -23,6 +25,9 @@ public class Elevator extends SubsystemBase {
   private TalonFX elevatorMotor;
   private TalonFX endefectorMotor;
 
+  private long wait = 0;
+  private long maxWait = 1000;
+
   private DigitalInput basinBeamBreak;
   private DigitalInput endefectorLimitSwitch;
 
@@ -30,6 +35,7 @@ public class Elevator extends SubsystemBase {
     Waiting, // for coral into the though
     WatingBeamTriped, //once the beam break trips
     Ready, // Has coral in endefector
+    Hovering, // Has coral in endefector
     PrimedThree, // Arm and elevator Waiting to score in the level 3 position
     ScoringThree, // Arm and elevator in the level three position
     PrimedFour, // Arm and elevator Waiting to score in the level 4 position
@@ -76,6 +82,7 @@ public class Elevator extends SubsystemBase {
     currentState = state;
     switch (currentState) {
       case Waiting: {
+        wait = System.currentTimeMillis() + maxWait;
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
         break;
@@ -84,7 +91,6 @@ public class Elevator extends SubsystemBase {
       case WatingBeamTriped: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_BEAM_BREAK_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
-        armShuffle();
         break;
       }
 
@@ -94,7 +100,19 @@ public class Elevator extends SubsystemBase {
         break;
       }
 
+      case Hovering: {
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        break;
+      }
+
       case ScoringThree: {
+        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.SCORING_THREE_ENDEFECTOR);
+        break;
+      }
+
+      case PrimedFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
         break;
@@ -102,13 +120,26 @@ public class Elevator extends SubsystemBase {
 
       case ScoringFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFECTOR);
         break;
       }
     }
 
   }
 
+  public boolean elevatorAtRefrence() {
+    double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
+    double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
+
+    return Math.abs(elevatorRefrence - elevatorPosition) <= 0.1;
+  }
+
+  public boolean endefectorAtRefrence() {
+    double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
+    double elevatorPosition = endefectorMotor.getPosition().getValueAsDouble();
+
+    return Math.abs(elevatorRefrence - elevatorPosition) <= 0.2;
+  }
   // public void driveElevatorStick(Translation2d stick) {
   //   if (stick.getNorm() > 0.05) {
   //     elevatorMotor.set(stick.getY());
@@ -116,28 +147,38 @@ public class Elevator extends SubsystemBase {
   // }
 
   private void periodicWaiting() {
-    if (basinBeamBreak.get()) transitionState(CoordinationState.WatingBeamTriped);
+    if (!basinBeamBreak.get()) 
+      transitionState(CoordinationState.WatingBeamTriped);
   }
 
   private void periodicWaitingTripped() {
-    if (basinBeamBreak.get()) transitionState(CoordinationState.Ready);
+    if (!basinBeamBreak.get() && System.currentTimeMillis() > wait) 
+      transitionState(CoordinationState.Ready);
   }
   
+  private void periodicReady() {
+    if (elevatorAtRefrence())
+      transitionState(CoordinationState.Hovering);
+  }
+
   private void periodicScoring() {
     if (!endefectorLimitSwitch.get()) transitionState(CoordinationState.Waiting);
   }
 
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
     SmartDashboard.putNumber("endefector", endefectorLimitSwitch.get() ? 1 : 0);
 
-    // if (currentState == CoordinationState.Waiting) {
-    //   periodicWaiting();
-    // } else if (currentState == CoordinationState.WatingBeamTriped) {
-    //   periodicWaitingTripped();
-    // }
+    if (currentState == CoordinationState.Waiting) {
+      periodicWaiting();
+    } else if (currentState == CoordinationState.WatingBeamTriped) {
+      periodicWaitingTripped();
+    } else if (currentState == CoordinationState.Ready) {
+      periodicReady();
+    }
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
     // }
