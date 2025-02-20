@@ -106,12 +106,6 @@ public class Elevator extends SubsystemBase {
         break;
       }
 
-      case ScoringThree: {
-        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.SCORING_THREE_ENDEFECTOR);
-        break;
-      }
-
       case PrimedFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
@@ -122,6 +116,22 @@ public class Elevator extends SubsystemBase {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
         PIDPosition(endefectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFECTOR);
         break;
+      }
+
+      case PrimedThree: {
+        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.PRIMED_THREE_ENDEFECTOR);
+        break;
+      }
+      
+      case ScoringThree: {
+        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        break;
+      }
+
+      default: {
+        assert false;
       }
     }
 
@@ -148,7 +158,7 @@ public class Elevator extends SubsystemBase {
 
   private void periodicWaiting() {
     if (!basinBeamBreak.get()) 
-      transitionState(CoordinationState.WatingBeamTriped);
+      transitionState(CoordinationState.Ready);
   }
 
   private void periodicWaitingTripped() {
@@ -157,8 +167,8 @@ public class Elevator extends SubsystemBase {
   }
   
   private void periodicReady() {
-    if (elevatorAtRefrence())
-      transitionState(CoordinationState.Hovering);
+    // if (elevatorAtRefrence())
+    //   transitionState(CoordinationState.Hovering);
   }
 
   private void periodicScoring() {
@@ -173,11 +183,11 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("endefector", endefectorLimitSwitch.get() ? 1 : 0);
 
     if (currentState == CoordinationState.Waiting) {
-      periodicWaiting();
+      // periodicWaiting();
     } else if (currentState == CoordinationState.WatingBeamTriped) {
-      periodicWaitingTripped();
+      // periodicWaitingTripped();
     } else if (currentState == CoordinationState.Ready) {
-      periodicReady();
+      // periodicReady();
     }
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();

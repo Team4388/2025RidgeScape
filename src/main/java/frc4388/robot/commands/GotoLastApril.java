@@ -78,6 +78,8 @@ public class GotoLastApril extends Command {
         youtput *= Math.abs(yerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
         rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
 
+        // System.out.println(xerr + ", " + yerr + ", " + roterr + ", " + rotoutput);
+
         Translation2d leftStick = new Translation2d(
             Math.max(Math.min(-youtput, 1), -1),
             Math.max(Math.min(-xoutput, 1), -1)

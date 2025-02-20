@@ -16,6 +16,7 @@ import java.util.List;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -115,19 +116,74 @@ public class RobotContainer {
     // private Command AutoGotoPosition = new GotoLastApril(m_robotSwerveDrive, m_vision);
     private Command AprilLidarAlign = new SequentialCommandGroup(
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT),
         // new InstantCommand(() -> System.out.println("Soup")),
         // new WaitCommand(1),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1 - Units.inchesToMeters(0), Side.RIGHT),
         new LidarAlign(m_robotSwerveDrive, m_lidar),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1, Side.LEFT),
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
         new Translation2d(0,1), new Translation2d(), 500, true),
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator)
     );
+
+    private Command AprilLidarAlignLeft = new SequentialCommandGroup(
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
+        // new InstantCommand(() -> System.out.println("Soup")),
+        // new WaitCommand(1),
+        new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1 - Units.inchesToMeters(0), Side.LEFT),
+        new LidarAlign(m_robotSwerveDrive, m_lidar),
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
+        new waitEndefectorRefrence(m_robotElevator),
+        new MoveForTimeCommand(m_robotSwerveDrive, 
+        new Translation2d(0,1), new Translation2d(), 500, true),
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator)
+    );
+
+    private Command AprilLidarAlignL3Left = new SequentialCommandGroup(
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.LEFT),
+        // new InstantCommand(() -> System.out.println("Soup")),
+        // new WaitCommand(1),
+        new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_1 - Units.inchesToMeters(0), Side.LEFT),
+        new LidarAlign(m_robotSwerveDrive, m_lidar),
+        // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
+        new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+        // new MoveForTimeCommand(m_robotSwerveDrive, 
+        // new Translation2d(0,1), new Translation2d(), 500, true),
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator)
+    );
+
+    private Command AprilLidarAlignL3 = new SequentialCommandGroup(
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
+
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT),
+
+        new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+
+        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_1 - Units.inchesToMeters(0), Side.RIGHT),
+        
+        new LidarAlign(m_robotSwerveDrive, m_lidar),
+
+        // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
+
+        new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+        // new MoveForTimeCommand(m_robotSwerveDrive, 
+        // new Translation2d(0,1), new Translation2d(), 500, true),
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator)
+    );
+
     private Command AprilLidarLeft = new SequentialCommandGroup(
         AprilLidarAlign.asProxy(),
         new LidarAlign(m_robotSwerveDrive, m_lidar)
@@ -265,12 +321,22 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftUpRot()));
             
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.LEFT_BUMPER_BUTTON)
+            .onTrue(AprilLidarAlignLeft);
+        
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.RIGHT_BUMPER_BUTTON)
             .onTrue(AprilLidarAlign);
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive));
           
+
+        new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
+            .onTrue(AprilLidarAlign);
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+            .onTrue(AprilLidarAlign);
+
         // ?  /* Operator Buttons */
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
@@ -281,17 +347,17 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive, m_lidar)); 
 
         
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)
+        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.B_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator));
         
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.B_BUTTON)
+        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Ready), m_robotElevator));
         
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.Y_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator));
-
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.X_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator));
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.X_BUTTON)
+            .onTrue(AprilLidarAlignL3Left);
+        
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
+            .onTrue(AprilLidarAlignL3);
 
         DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.RIGHT_JOYSTICK_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator));

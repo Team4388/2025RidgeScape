@@ -242,7 +242,7 @@ public final class Constants {
             public static final int SECONDS_TO_MICROS = 1000000;
                     
             public static final double XY_TOLERANCE = 0.07; // Meters
-            public static final double ROT_TOLERANCE = 1; // Degrees
+            public static final double ROT_TOLERANCE = 5; // Degrees
                     
             // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
             // public static final Pose2d targetpos = 
@@ -365,9 +365,11 @@ public final class Constants {
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
-        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
+        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(17);
         public static final double L4_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         public static final double L4_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+        public static final double L3_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L3_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
 
 
 
@@ -413,6 +415,7 @@ public final class Constants {
         public static final double WAITING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;
+        public static final double DEALGAE_L2_ELEVATOR = -23.5;
         public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
         
         public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
@@ -421,7 +424,7 @@ public final class Constants {
 
         public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
-        public static final double SCORING_THREE_ENDEFECTOR = 0.375 * GEAR_RATIO_ENDEFECTOR;
+        public static final double PRIMED_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
         public static final double SCORING_FOUR_ENDEFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
         public static final double COMPLETLY_TOP_ENDEFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
