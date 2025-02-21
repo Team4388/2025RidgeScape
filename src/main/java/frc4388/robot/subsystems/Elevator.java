@@ -130,6 +130,18 @@ public class Elevator extends SubsystemBase {
         break;
       }
 
+      case BallRemoverL2Primed: {
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFECTOR);
+        break;
+      }
+
+      case BallRemoverL2Go: {
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
+        PIDPosition(endefectorMotor, ElevatorConstants.DEALGAE_L2_EENDEFECTOR);
+        break;
+      }
+
       default: {
         assert false;
       }

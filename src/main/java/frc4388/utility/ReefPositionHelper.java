@@ -12,7 +12,8 @@ import frc4388.robot.Constants.FieldConstants;
 public class ReefPositionHelper {
     public enum Side {
         LEFT,
-        RIGHT
+        RIGHT,
+        CENTER
     }
 
     public static final Pose2d[] RED_TAGS = {
@@ -74,8 +75,20 @@ public class ReefPositionHelper {
 
     public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim, double ydistance) {
         return offset(getNearestTag(position), 
-        (side == Side.LEFT ? -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET) : (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET)) + xtrim,
+        getSide(side) + xtrim,
         ydistance); 
+    }
+
+    public static double getSide(Side side){
+        switch(side) {
+            case LEFT:
+                return -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET);
+            case RIGHT:
+                return (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET);
+            case CENTER:
+                return 0;
+        }
+        return 0;
     }
 
 

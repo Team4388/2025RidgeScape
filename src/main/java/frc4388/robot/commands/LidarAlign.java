@@ -39,7 +39,7 @@ public class LidarAlign extends Command {
     this.currentFinderTick = 0;
     this.speed = 0.4; // TODO: find good speed for this
     this.foundReef = false;
-    this.headedRight = (GotoLastApril.tagRelativeXError < 0);
+    this.headedRight = !(GotoLastApril.tagRelativeXError < 0);
   }
 
 
@@ -52,7 +52,7 @@ public class LidarAlign extends Command {
       return;
     }
 
-    if (currentFinderTick > 40) { //arbutrary threshhold for now.
+    if (currentFinderTick > 10) { //arbutrary threshhold for now.
       headedRight = !headedRight;
       currentFinderTick *= -1;
     }

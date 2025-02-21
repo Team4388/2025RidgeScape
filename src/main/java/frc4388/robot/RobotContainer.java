@@ -334,6 +334,7 @@ public class RobotContainer {
         new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
             .onTrue(AprilLidarAlign);
         
+
         new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
             .onTrue(AprilLidarAlign);
 
@@ -359,8 +360,17 @@ public class RobotContainer {
         new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
             .onTrue(AprilLidarAlignL3);
 
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.RIGHT_JOYSTICK_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator));
+        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.LEFT_JOYSTICK_BUTTON)
+            .onTrue(new SequentialCommandGroup(
+                new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Primed);}, m_robotElevator),
+                new waitEndefectorRefrence(m_robotElevator),
+                new waitElevatorRefrence(m_robotElevator),
+                new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L2_ALGAE_REMOVAL - Units.inchesToMeters(1), Side.LEFT),
+                new LidarAlign(m_robotSwerveDrive, m_lidar),
+                new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
+                new MoveForTimeCommand(m_robotSwerveDrive, 
+                    new Translation2d(0,1), new Translation2d(), 500, true)
+            ));
         
             
         // ? /* Programer Buttons (Controller 3)*/

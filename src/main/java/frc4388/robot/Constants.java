@@ -371,6 +371,8 @@ public final class Constants {
         public static final double L3_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         public static final double L3_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
 
+        public static final double L2_ALGAE_REMOVAL = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(3);
+
 
 
         // Test april tag field layout
@@ -423,6 +425,7 @@ public final class Constants {
         //Max for endefector = 60%
 
         public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
+        public static final double DEALGAE_L2_EENDEFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
         public static final double PRIMED_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
         public static final double SCORING_FOUR_ENDEFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value

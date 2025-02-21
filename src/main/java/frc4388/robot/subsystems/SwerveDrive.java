@@ -304,8 +304,9 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void stopModules() {
-        stopped = true;
-        swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
+        // stopped = true;
+        // swerveDriveTrain.setControl(new SwerveRequest.SwerveDriveBrake());
+        softStop();
     }
 
     @Override
