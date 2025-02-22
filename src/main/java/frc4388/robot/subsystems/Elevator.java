@@ -178,7 +178,7 @@ public class Elevator extends SubsystemBase {
   public boolean elevatorAtRefrence() {
     // double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
     double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
-    boolean atPos = Math.abs(elevatorRefrence - elevatorPosition) <= 0.1;
+    boolean atPos = Math.abs(elevatorRefrence - elevatorPosition) <= 0.5;
     if (atPos) {
       SmartDashboard.putNumber("Elevator Refrence", elevatorRefrence);
       SmartDashboard.putNumber("Elevator Pos", elevatorPosition);

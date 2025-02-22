@@ -374,6 +374,9 @@ public final class Constants {
 
         public static final double L2_ALGAE_REMOVAL = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(3);
 
+        
+        public static final double L2_SCORE_DISTANCE = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
+
 
 
         // Test april tag field layout
