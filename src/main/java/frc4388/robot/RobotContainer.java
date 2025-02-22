@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.utility.controller.XboxController;
+import frc4388.utility.controller.ButtonBox;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.FieldConstants;
 import frc4388.robot.Constants.OIConstants;
@@ -89,7 +90,8 @@ public class RobotContainer {
 
     /* Controllers */
     private final DeadbandedXboxController m_driverXbox   = new DeadbandedXboxController(OIConstants.XBOX_DRIVER_ID);
-    private final DeadbandedXboxController m_operatorXbox = new DeadbandedXboxController(OIConstants.XBOX_OPERATOR_ID);    
+    private final DeadbandedXboxController m_operatorXbox = new DeadbandedXboxController(OIConstants.XBOX_OPERATOR_ID);
+    private final ButtonBox m_buttonBox = new ButtonBox(OIConstants.BUTTONBOX_ID);
     private final DeadbandedXboxController m_autoRecorderXbox = new DeadbandedXboxController(OIConstants.XBOX_PROGRAMMER_ID);
 
     /* Virtual Controllers */
@@ -293,8 +295,11 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        // ? /* Driver Buttons */
+        // ? /* Test button box bindings */
+        new JoystickButton(getButtonBox(), ButtonBox.White)
+            .onTrue(new InstantCommand(() -> System.out.println("White!")));
 
+        // ? /* Driver Buttons */
         DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
 
@@ -514,6 +519,10 @@ public class RobotContainer {
 
     public DeadbandedXboxController getDeadbandedOperatorController() {
         return this.m_operatorXbox;
+    }
+
+    public ButtonBox getButtonBox() {
+        return this.m_buttonBox;
     }
 
     public VirtualController getVirtualDriverController() {
