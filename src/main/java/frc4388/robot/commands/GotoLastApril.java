@@ -3,6 +3,7 @@ package frc4388.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
@@ -54,7 +55,9 @@ public class GotoLastApril extends Command {
     public void initialize() {
         xPID.initialize();
         yPID.initialize();
-        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), side, AutoConstants.X_OFFSET_TRIM.get(), distance);
+        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), side, 
+        Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
+        distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get()));
     }
     
     double xerr;

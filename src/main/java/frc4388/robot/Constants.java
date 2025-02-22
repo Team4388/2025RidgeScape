@@ -234,7 +234,10 @@ public final class Constants {
             public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
             public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
-            public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
+            public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
+            public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
+            public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
+            public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR, 1, 0);
 
             public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
             public static final int LIDAR_DIO_CHANNEL = 7;
@@ -361,8 +364,6 @@ public final class Constants {
 
         public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
 
-
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
         public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(17);
@@ -418,11 +419,14 @@ public final class Constants {
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;
         public static final double DEALGAE_L2_ELEVATOR = -23.5;
+        public static final double DEALGAE_L3_ELEVATOR = -33.75;
         public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
         
         public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
         public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
         //Max for endefector = 60%
+
+        public static final double L2_SCORE_ENDEFECTOR = -19;
 
         public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
         public static final double DEALGAE_L2_EENDEFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;

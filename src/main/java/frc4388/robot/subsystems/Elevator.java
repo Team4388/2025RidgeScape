@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.Constants.ElevatorConstants;
+import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
@@ -28,6 +29,9 @@ public class Elevator extends SubsystemBase {
   private long wait = 0;
   private long maxWait = 1000;
 
+  private double elevatorRefrence = 0;
+  private double endefectorRefrence = 0;
+
   private DigitalInput basinBeamBreak;
   private DigitalInput endefectorLimitSwitch;
 
@@ -36,6 +40,7 @@ public class Elevator extends SubsystemBase {
     WatingBeamTriped, //once the beam break trips
     Ready, // Has coral in endefector
     Hovering, // Has coral in endefector
+    L2Score,
     PrimedThree, // Arm and elevator Waiting to score in the level 3 position
     ScoringThree, // Arm and elevator in the level three position
     PrimedFour, // Arm and elevator Waiting to score in the level 4 position
@@ -66,6 +71,9 @@ public class Elevator extends SubsystemBase {
   //PID methods
 
   private void PIDPosition(TalonFX motor, double position) {
+    if (motor == elevatorMotor) elevatorRefrence = position;
+    else endefectorRefrence = position;
+
     var request = new PositionDutyCycle(position);
     motor.setControl(request);
   }
@@ -106,39 +114,57 @@ public class Elevator extends SubsystemBase {
         break;
       }
 
+      case L2Score: {
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endefectorMotor, ElevatorConstants.L2_SCORE_ENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        break;
+      }
+      
       case PrimedFour: {
-        PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
         break;
       }
 
       case ScoringFour: {
-        PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFECTOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endefectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         break;
       }
 
       case PrimedThree: {
-        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endefectorMotor, ElevatorConstants.PRIMED_THREE_ENDEFECTOR);
         break;
       }
       
       case ScoringThree: {
-        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         break;
       }
 
       case BallRemoverL2Primed: {
-        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFECTOR);
         break;
       }
 
       case BallRemoverL2Go: {
-        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.DEALGAE_L2_EENDEFECTOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endefectorMotor, ElevatorConstants.DEALGAE_L2_EENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        break;
+      }
+
+      case BallRemoverL3Primed: {
+        PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L3_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFECTOR);
+        break;
+      }
+
+      case BallRemoverL3Go: {
+        PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L3_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endefectorMotor, ElevatorConstants.DEALGAE_L2_EENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         break;
       }
 
@@ -150,17 +176,22 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean elevatorAtRefrence() {
-    double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
+    // double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
     double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
+    boolean atPos = Math.abs(elevatorRefrence - elevatorPosition) <= 0.1;
+    if (atPos) {
+      SmartDashboard.putNumber("Elevator Refrence", elevatorRefrence);
+      SmartDashboard.putNumber("Elevator Pos", elevatorPosition);
+    }
 
-    return Math.abs(elevatorRefrence - elevatorPosition) <= 0.1;
+    return atPos;
   }
 
   public boolean endefectorAtRefrence() {
-    double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
-    double elevatorPosition = endefectorMotor.getPosition().getValueAsDouble();
+    // double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
+    double endefectorPosition = endefectorMotor.getPosition().getValueAsDouble();
 
-    return Math.abs(elevatorRefrence - elevatorPosition) <= 0.2;
+    return Math.abs(endefectorRefrence - endefectorPosition) <= 0.2;
   }
   // public void driveElevatorStick(Translation2d stick) {
   //   if (stick.getNorm() > 0.05) {
@@ -173,14 +204,14 @@ public class Elevator extends SubsystemBase {
       transitionState(CoordinationState.Ready);
   }
 
-  private void periodicWaitingTripped() {
-    if (!basinBeamBreak.get() && System.currentTimeMillis() > wait) 
-      transitionState(CoordinationState.Ready);
-  }
+  // private void periodicWaitingTripped() {
+  //   if (!basinBeamBreak.get() && System.currentTimeMillis() > wait) 
+  //     transitionState(CoordinationState.Ready);
+  // }
   
   private void periodicReady() {
-    // if (elevatorAtRefrence())
-    //   transitionState(CoordinationState.Hovering);
+    if (elevatorAtRefrence())
+      transitionState(CoordinationState.Hovering);
   }
 
   private void periodicScoring() {
@@ -193,13 +224,14 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
     SmartDashboard.putNumber("endefector", endefectorLimitSwitch.get() ? 1 : 0);
+    SmartDashboard.putString("State", currentState.toString());
 
     if (currentState == CoordinationState.Waiting) {
-      // periodicWaiting();
+      periodicWaiting();
     } else if (currentState == CoordinationState.WatingBeamTriped) {
       // periodicWaitingTripped();
     } else if (currentState == CoordinationState.Ready) {
-      // periodicReady();
+      periodicReady();
     }
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
