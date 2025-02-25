@@ -2,6 +2,7 @@ package frc4388.utility;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -14,6 +15,7 @@ public class TimesNegativeOne {
     public static boolean YAxis = SwerveDriveConstants.INVERT_Y;
     public static boolean RotAxis = SwerveDriveConstants.INVERT_ROTATION;
     public static boolean isRed = false;
+    public static Rotation2d ForwardOffset = Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET);
 
     private static boolean isRed() {
         Optional<Alliance> alliance = DriverStation.getAlliance();
@@ -23,9 +25,10 @@ public class TimesNegativeOne {
 
     public static void update(){
         isRed = isRed();
-        XAxis = SwerveDriveConstants.INVERT_X ^ isRed;
-        YAxis = SwerveDriveConstants.INVERT_Y ^ isRed;
+        XAxis = SwerveDriveConstants.INVERT_X;// ^ isRed;
+        YAxis = SwerveDriveConstants.INVERT_Y;// ^ isRed;
         RotAxis = SwerveDriveConstants.INVERT_ROTATION;
+        ForwardOffset = Rotation2d.fromDegrees((SwerveDriveConstants.FORWARD_OFFSET + (isRed ? 180 : 0)));
     }
 
     public static double invert(double num, boolean invert){

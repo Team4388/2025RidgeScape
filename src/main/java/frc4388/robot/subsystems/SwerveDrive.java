@@ -139,7 +139,7 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-        leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
         leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
         leftStick = TimesNegativeOne.invert(rightStick, TimesNegativeOne.RotAxis);    
 
@@ -207,7 +207,7 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-        leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+        leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
 
         swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
                 .withVelocityX(leftStick.getX() * speedAdjust)
@@ -271,7 +271,7 @@ public class SwerveDrive extends Subsystem {
         // if (leftStick.getNorm() < 0.05) //if no imput
         // return; // don't bother doing swerve drive math and return early.
 
-        leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
 
         swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
                 .withVelocityX(leftStick.getX() * -speedAdjust)
