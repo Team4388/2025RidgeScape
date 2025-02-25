@@ -1,9 +1,13 @@
 package frc4388.robot.commands;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
@@ -51,6 +55,8 @@ public class GotoLastApril extends Command {
         tagRelativeXError = val;
     }
 
+    Alliance alliance = null;
+
     @Override
     public void initialize() {
         xPID.initialize();
@@ -58,6 +64,9 @@ public class GotoLastApril extends Command {
         this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), side, 
         Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
         distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get()));
+        Optional<Alliance> a = DriverStation.getAlliance();
+        if(!a.isEmpty())
+            alliance = a.get();
     }
     
     double xerr;
@@ -66,8 +75,18 @@ public class GotoLastApril extends Command {
 
     @Override
     public void execute() {
-        xerr = targetpos.getX() - vision.getPose2d().getX();
-        yerr = targetpos.getY() - vision.getPose2d().getY();
+        
+        if (alliance == Alliance.Red) {
+            xerr = -(targetpos.getX() - vision.getPose2d().getX());
+            yerr = (targetpos.getY() - vision.getPose2d().getY());
+        }
+        else{
+            
+            xerr = targetpos.getX() - vision.getPose2d().getX();
+            yerr = targetpos.getY() - vision.getPose2d().getY();
+        }
+
+            
         roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
 
         // SmartDashboard.putNumber("PID X Error", xerr);
@@ -80,8 +99,8 @@ public class GotoLastApril extends Command {
         xoutput *= Math.abs(xerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
         youtput *= Math.abs(yerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
         rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
+        
 
-        // System.out.println(xerr + ", " + yerr + ", " + roterr + ", " + rotoutput);
 
         Translation2d leftStick = new Translation2d(
             Math.max(Math.min(-youtput, 1), -1),
@@ -93,6 +112,8 @@ public class GotoLastApril extends Command {
             Math.max(Math.min(rotoutput, 1), -1), 
            0
         );
+
+
 
         setTagRelativeXError(
             new Translation2d(xerr, yerr).getAngle()

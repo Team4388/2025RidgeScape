@@ -227,7 +227,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putString("State", currentState.toString());
 
     if (currentState == CoordinationState.Waiting) {
-      periodicWaiting();
+      // periodicWaiting();
     } else if (currentState == CoordinationState.WatingBeamTriped) {
       // periodicWaitingTripped();
     } else if (currentState == CoordinationState.Ready) {

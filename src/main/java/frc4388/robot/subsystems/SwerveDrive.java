@@ -141,10 +141,20 @@ public class SwerveDrive extends Subsystem {
             return; // don't bother doing swerve drive math and return early.
 
         leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
-		
-        if (SwerveDriveConstants.INVERT_X) leftStick = new Translation2d(-leftStick.getX(), leftStick.getY());
-        if (SwerveDriveConstants.INVERT_Y) leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
+
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        
+        if(!alliance.isEmpty()){
+            if (alliance.get() == Alliance.Red) 
+                leftStick = new Translation2d(-leftStick.getX(), leftStick.getY());
+            else 
+                leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
+            // if (alliance.get() != Alliance.Red) leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
+        }
         if (SwerveDriveConstants.INVERT_ROTATION) rightStick.times(-1);
+
+
+        
         stopped = false;
         if (fieldRelative) {
             // ! drift correction
