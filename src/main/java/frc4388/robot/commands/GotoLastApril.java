@@ -15,6 +15,7 @@ import frc4388.robot.subsystems.SwerveDrive;
 import frc4388.robot.subsystems.Vision;
 import frc4388.utility.Gains;
 import frc4388.utility.ReefPositionHelper;
+import frc4388.utility.TimesNegativeOne;
 import frc4388.utility.ReefPositionHelper.Side;
 import frc4388.utility.UtilityStructs.AutoRecordingControllerFrame;
 import frc4388.utility.UtilityStructs.AutoRecordingFrame;
@@ -75,18 +76,9 @@ public class GotoLastApril extends Command {
 
     @Override
     public void execute() {
-        
-        if (alliance == Alliance.Red) {
-            xerr = -(targetpos.getX() - vision.getPose2d().getX());
-            yerr = (targetpos.getY() - vision.getPose2d().getY());
-        }
-        else{
-            
-            xerr = targetpos.getX() - vision.getPose2d().getX();
-            yerr = targetpos.getY() - vision.getPose2d().getY();
-        }
+        xerr = TimesNegativeOne.invert(targetpos.getX() - vision.getPose2d().getX(), TimesNegativeOne.XAxis);
+        yerr = TimesNegativeOne.invert(targetpos.getX() - vision.getPose2d().getX(), TimesNegativeOne.YAxis);
 
-            
         roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
 
         // SmartDashboard.putNumber("PID X Error", xerr);

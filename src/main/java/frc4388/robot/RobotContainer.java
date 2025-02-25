@@ -65,6 +65,7 @@ import frc4388.robot.subsystems.SwerveDrive;
 import frc4388.utility.DeferredBlock;
 import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Subsystem;
+import frc4388.utility.TimesNegativeOne;
 import frc4388.utility.ReefPositionHelper.Side;
 import frc4388.utility.configurable.ConfigurableString;
 
@@ -292,7 +293,10 @@ public class RobotContainer {
 
         configureButtonBindings();        
         configureVirtualButtonBindings();
-        new DeferredBlock(() -> m_robotSwerveDrive.resetGyro());
+        new DeferredBlock(() -> { // Called on robot enable
+            TimesNegativeOne.update();
+            m_robotSwerveDrive.resetGyro();
+        });
         DriverStation.silenceJoystickConnectionWarning(true);
         // CameraServer.startAutomaticCapture();
 
@@ -461,7 +465,6 @@ public class RobotContainer {
 
         new Trigger(() -> getDeadbandedOperatorController().getPOV() == 180)
             .onTrue(new InstantCommand(() -> AutoConstants.ELEVATOR_OFFSET_TRIM.stepDown()));
-
 
         new Trigger(() -> getDeadbandedOperatorController().getPOV() == 90)
             .onTrue(new InstantCommand(() -> AutoConstants.ARM_OFFSET_TRIM.stepUp()));

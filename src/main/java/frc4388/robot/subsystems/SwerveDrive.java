@@ -35,9 +35,8 @@ import frc4388.robot.commands.GotoLastApril;
 import frc4388.robot.commands.LidarAlign;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
+import frc4388.utility.TimesNegativeOne;
 import frc4388.utility.Status.ReportLevel;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -103,11 +102,11 @@ public class SwerveDrive extends Subsystem {
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
+                    // var alliance = DriverStation.getAlliance();
+                    // if (alliance.isPresent()) {
+                    //     return alliance.get() == DriverStation.Alliance.Red;
+                    // }
+                    return TimesNegativeOne.isRed;
                 },
                 this // Reference to this subsystem to set requirements
         );
@@ -141,18 +140,8 @@ public class SwerveDrive extends Subsystem {
             return; // don't bother doing swerve drive math and return early.
 
         leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
-
-        Optional<Alliance> alliance = DriverStation.getAlliance();
-        
-        if(!alliance.isEmpty()){
-            if (alliance.get() == Alliance.Red) 
-                leftStick = new Translation2d(-leftStick.getX(), leftStick.getY());
-            else 
-                leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
-            // if (alliance.get() != Alliance.Red) leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
-        }
-        if (SwerveDriveConstants.INVERT_ROTATION) rightStick.times(-1);
-
+        leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
+        leftStick = TimesNegativeOne.invert(rightStick, TimesNegativeOne.RotAxis);    
 
         
         stopped = false;
