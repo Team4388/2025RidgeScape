@@ -178,25 +178,25 @@ public class Elevator extends SubsystemBase {
   public boolean elevatorAtRefrence() {
     // double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
     double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
-    double diffrence = Math.abs(elevatorPosition) - Math.abs(elevatorRefrence);
+    double diffrence = elevatorRefrence - elevatorPosition;
 
     boolean headedUp = diffrence < 0;
     boolean forwardLimit = elevatorMotor.getForwardLimit().asSupplier().get().value == 0;
     boolean reverseLimit = elevatorMotor.getReverseLimit().asSupplier().get().value == 0;
 
-    return (Math.abs(diffrence) >= 99999 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
+    return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
   
   public boolean endefectorAtRefrence() {
     // double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
     double endefectorPosition = endefectorMotor.getPosition().getValueAsDouble();
-    double diffrence = Math.abs(endefectorPosition) - Math.abs(endefectorRefrence);
+    double diffrence = endefectorRefrence - endefectorPosition;
 
     boolean headedUp = diffrence < 0;
     boolean forwardLimit = endefectorMotor.getForwardLimit().asSupplier().get().value == 0;
     boolean reverseLimit = endefectorMotor.getReverseLimit().asSupplier().get().value == 0;
 
-    return (Math.abs(diffrence) >= 99999 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
+    return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
   // public void driveElevatorStick(Translation2d stick) {
   //   if (stick.getNorm() > 0.05) {

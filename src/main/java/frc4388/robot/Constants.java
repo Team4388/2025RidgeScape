@@ -366,7 +366,7 @@ public final class Constants {
 
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
-        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(17);
+        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
         public static final double L4_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         public static final double L4_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
         public static final double L3_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
