@@ -106,7 +106,7 @@ public final class Constants {
 
         public static final boolean DRIFT_CORRECTION_ENABLED = true;
         public static final boolean INVERT_X = false;
-        public static final boolean INVERT_Y = false;
+        public static final boolean INVERT_Y = true;
         public static final boolean INVERT_ROTATION = false;
 
         // public static final Trim POINTLESS_TRIM = new Trim("Pointless Trim", Double.MAX_VALUE, Double.MIN_VALUE, 0.1, 0);
@@ -121,8 +121,8 @@ public final class Constants {
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.25);
-            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.5);
+            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
             private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
@@ -234,15 +234,18 @@ public final class Constants {
             public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
             public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
-            public static final Trim X_OFFSET_TRIM = new Trim("X Offset Trim", Double.MAX_VALUE, -Double.MAX_VALUE, 0.05, 0);
+            public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
+            public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
+            public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
+            public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR, 1, 0);
 
             public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-            public static final int LIDAR_DIO_CHANNEL = 2;
+            public static final int LIDAR_DIO_CHANNEL = 7;
             public static final int LIDAR_MICROS_TO_CM = 10;
             public static final int SECONDS_TO_MICROS = 1000000;
                     
             public static final double XY_TOLERANCE = 0.07; // Meters
-            public static final double ROT_TOLERANCE = 1; // Degrees
+            public static final double ROT_TOLERANCE = 5; // Degrees
                     
             // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
             // public static final Pose2d targetpos = 
@@ -343,8 +346,8 @@ public final class Constants {
         public static final String LEFT_CAMERA_NAME = "CAMERA_LEFT";
         public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
 
-        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
-        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(-.3048, 0.2413, .2794), new Rotation3d(0,0.52333,Math.PI));
+        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
+        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), -Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
         
         public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
 
@@ -358,11 +361,21 @@ public final class Constants {
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(9.5);
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(6.5);
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
+
         // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
 
-        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(20);
+        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(17);
+        public static final double L4_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L4_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+        public static final double L3_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L3_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+
+        public static final double L2_ALGAE_REMOVAL = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(3);
+
+        
+        public static final double L2_SCORE_DISTANCE = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
 
 
 
@@ -389,7 +402,8 @@ public final class Constants {
     public static final class OIConstants {
         public static final int XBOX_DRIVER_ID = 0;
         public static final int XBOX_OPERATOR_ID = 1;
-        public static final int XBOX_PROGRAMMER_ID = 2;
+        public static final int BUTTONBOX_ID = 2;
+        public static final int XBOX_PROGRAMMER_ID = 3;
         public static final double LEFT_AXIS_DEADBAND = 0.1;
 
     }
@@ -398,20 +412,31 @@ public final class Constants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
 
-        public static final int BASIN_LIMIT_SWITCH = 0; // TODO: FIND
-        public static final int ENDEFFECTOR_LIMIT_SWITCH = 1; // TODO: FIND
+        public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
+        public static final int ENDEFFECTOR_LIMIT_SWITCH = 9; // TODO: FIND
         
-        public static final double GEAR_RATIO_ELEVATOR = 36.0;
-
+        public static final double GEAR_RATIO_ELEVATOR = -9.0;
+        //Max for elevator = 50%
+        
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
-        public static final double WAITING_POSITION_ELEVATOR = 2 * GEAR_RATIO_ELEVATOR; // TODO: find 4-6 off the ground
-        public static final double MAX_POSITION_ELEVATOR = 20 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
+        public static final double WAITING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
+        public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
+        public static final double SCORING_THREE_ELEVATOR = -9.25;
+        public static final double DEALGAE_L2_ELEVATOR = -23.5;
+        public static final double DEALGAE_L3_ELEVATOR = -33.75;
+        public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
+        
+        public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
+        public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
+        //Max for endefector = 60%
 
-        public static final double GEAR_RATIO_ENDEFECTOR = 100.0;
+        public static final double L2_SCORE_ENDEFECTOR = -19;
 
         public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
+        public static final double DEALGAE_L2_EENDEFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
-        public static final double SCORING_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
+        public static final double PRIMED_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
+        public static final double SCORING_FOUR_ENDEFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
         public static final double COMPLETLY_TOP_ENDEFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()

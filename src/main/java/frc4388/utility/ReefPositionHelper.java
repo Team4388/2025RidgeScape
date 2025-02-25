@@ -12,7 +12,8 @@ import frc4388.robot.Constants.FieldConstants;
 public class ReefPositionHelper {
     public enum Side {
         LEFT,
-        RIGHT
+        RIGHT,
+        CENTER
     }
 
     public static final Pose2d[] RED_TAGS = {
@@ -72,10 +73,22 @@ public class ReefPositionHelper {
         return new Pose2d();
     }
 
-    public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim) {
+    public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim, double ydistance) {
         return offset(getNearestTag(position), 
-        (side == Side.LEFT ? -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET) : (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET)) + xtrim,
-        FieldConstants.VERTICAL_SCORING_POSITION_OFFSET); 
+        getSide(side) + xtrim,
+        ydistance); 
+    }
+
+    public static double getSide(Side side){
+        switch(side) {
+            case LEFT:
+                return -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET);
+            case RIGHT:
+                return (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET);
+            case CENTER:
+                return 0;
+        }
+        return 0;
     }
 
 
@@ -87,6 +100,6 @@ public class ReefPositionHelper {
         return new Pose2d(new Translation2d(
             oldTranslation.getX() + Math.cos(rot + Math.PI/2) * xoffset + Math.cos(rot) * yoffset,
             oldTranslation.getY() + Math.sin(rot + Math.PI/2) * xoffset + Math.sin(rot) * yoffset
-        ), oldPose.getRotation());
+        ), oldPose.getRotation().rotateBy(Rotation2d.k180deg));
     }
 }

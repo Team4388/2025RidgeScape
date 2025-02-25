@@ -52,7 +52,7 @@ public class LidarAlign extends Command {
       return;
     }
 
-    if (currentFinderTick > 100) { //arbutrary threshhold for now.
+    if (currentFinderTick > 10) { //arbutrary threshhold for now.
       headedRight = !headedRight;
       currentFinderTick *= -1;
     }
