@@ -419,7 +419,7 @@ public final class Constants {
         //Max for elevator = 50%
         
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
-        public static final double WAITING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
+        public static final double WAITING_POSITION_ELEVATOR = -9.5; // TODO: find 2-4 in off the pipe
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;
         public static final double DEALGAE_L2_ELEVATOR = -23.5;
@@ -437,7 +437,7 @@ public final class Constants {
         public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
         public static final double PRIMED_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
         public static final double SCORING_FOUR_ENDEFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
-        public static final double COMPLETLY_TOP_ENDEFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
+        public static final double COMPLETLY_TOP_ENDEFECTOR = 0.51 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()
             .withKP(1)
