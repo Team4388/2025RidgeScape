@@ -21,6 +21,7 @@ public class LidarAlign extends Command {
   private boolean foundReef;
   private boolean headedRight;
   private double speed;
+  private int bounces;
   // private final boolean constructedHeadedRight;
 
   /** Creates a new LidarAlign. */
@@ -40,6 +41,7 @@ public class LidarAlign extends Command {
     this.speed = 0.4; // TODO: find good speed for this
     this.foundReef = false;
     this.headedRight = !(GotoLastApril.tagRelativeXError < 0);
+    this.bounces = 0;
   }
 
 
@@ -55,6 +57,8 @@ public class LidarAlign extends Command {
     if (currentFinderTick > 10) { //arbutrary threshhold for now.
       headedRight = !headedRight;
       currentFinderTick *= -1;
+      bounces++;
+      if (bounces == 2) return;
     }
     double currentHeading = (swerveDrive.getGyroAngle() * 180) / Math.PI;
     double relAngle = (Math.round(currentHeading / 60.d) * 60); // Relative driving to the side of the reef
@@ -78,7 +82,10 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (foundReef && lidar.withinDistance()) { // spot on
+    if (lidar.getDistance() < 4) {
+      swerveDrive.stopModules();
+      return true;
+    } else if (foundReef && lidar.withinDistance()) { // spot on
       swerveDrive.stopModules();
       return true;
     } else if (foundReef && !lidar.withinDistance()) { // over shot
@@ -87,6 +94,9 @@ public class LidarAlign extends Command {
       currentFinderTick = 0;
       foundReef = false;
       return false;
+    } else if (bounces == 2) {
+      swerveDrive.stopModules();
+      return true;
     } else {
       return false;
     }

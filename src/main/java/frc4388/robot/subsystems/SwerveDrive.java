@@ -139,13 +139,14 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
-        leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
-        leftStick = TimesNegativeOne.invert(rightStick, TimesNegativeOne.RotAxis);    
-
+            leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
         
         stopped = false;
         if (fieldRelative) {
+            
+            leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
+            rightStick = TimesNegativeOne.invert(rightStick, TimesNegativeOne.RotAxis);    
+
             // ! drift correction
             if (rightStick.getNorm() > 0.05 || !SwerveDriveConstants.DRIFT_CORRECTION_ENABLED) {
                 rotTarget = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d()).getRotation().getDegrees();

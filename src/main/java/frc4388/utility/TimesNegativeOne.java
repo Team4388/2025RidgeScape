@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.robot.Constants.SwerveDriveConstants;
 
 // Class that holds weather the drivers sticks should be inverted
@@ -25,10 +26,11 @@ public class TimesNegativeOne {
 
     public static void update(){
         isRed = isRed();
-        XAxis = SwerveDriveConstants.INVERT_X;// ^ isRed;
-        YAxis = SwerveDriveConstants.INVERT_Y;// ^ isRed;
+        XAxis = SwerveDriveConstants.INVERT_X ^ isRed;
+        YAxis = SwerveDriveConstants.INVERT_Y ^ isRed;
         RotAxis = SwerveDriveConstants.INVERT_ROTATION;
-        ForwardOffset = Rotation2d.fromDegrees((SwerveDriveConstants.FORWARD_OFFSET + (isRed ? 180 : 0)));
+        ForwardOffset = Rotation2d.fromDegrees((SwerveDriveConstants.FORWARD_OFFSET + (isRed ? 0 : 0)));
+        SmartDashboard.putBoolean("Is red alliance", isRed);
     }
 
     public static double invert(double num, boolean invert){

@@ -77,9 +77,25 @@ public class GotoLastApril extends Command {
     @Override
     public void execute() {
         xerr = TimesNegativeOne.invert(targetpos.getX() - vision.getPose2d().getX(), TimesNegativeOne.XAxis);
-        yerr = TimesNegativeOne.invert(targetpos.getX() - vision.getPose2d().getX(), TimesNegativeOne.YAxis);
+        yerr = TimesNegativeOne.invert(targetpos.getY() - vision.getPose2d().getY(), !TimesNegativeOne.YAxis);
+        // xerr = targetpos.getX() - vision.getPose2d().getX();
+        // yerr = targetpos.getX() - vision.getPose2d().getY();
 
-        roterr = targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees();
+        // roterr = TimesNegativeOne.invert(targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees(), TimesNegativeOne.isRed);
+
+        roterr = ((targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees()));
+
+        boolean invert = Math.abs(roterr) > 180;
+
+        if(roterr > 180){
+            roterr -= 360;
+        }else if(roterr < -180){
+            roterr += 360;
+        }
+
+        SmartDashboard.putNumber("Rotational PID target", targetpos.getRotation().getDegrees());
+        SmartDashboard.putNumber("Rotational PID position", vision.getPose2d().getRotation().getDegrees());
+        SmartDashboard.putNumber("Rotational PID error", roterr);
 
         // SmartDashboard.putNumber("PID X Error", xerr);
         // SmartDashboard.putNumber("PID Y Error", yerr);
