@@ -380,6 +380,18 @@ public class SwerveDrive extends Subsystem {
         rotSpeedAdjust = SwerveDriveConstants.MIN_ROT_SPEED;
     }
 
+    private int tmp_gear_index = SwerveDriveConstants.STARTING_GEAR;
+
+    public void startSlowPeriod() {
+        tmp_gear_index = gear_index;
+        setToSlow();
+    }
+
+    public void endSlowPeriod() {
+        setPercentOutput(SwerveDriveConstants.GEARS[tmp_gear_index]);
+        gear_index = tmp_gear_index;
+    }
+
     @Override
     public String getSubsystemName() {
         return "Swerve Drive Controller";
