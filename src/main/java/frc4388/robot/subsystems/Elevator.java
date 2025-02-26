@@ -32,6 +32,9 @@ public class Elevator extends SubsystemBase {
   private double elevatorRefrence = 0;
   private double endeffectorRefrence = 0;
 
+  private boolean elevatorManualStop = true;
+  private boolean endefectorManualStop = true;
+
   private DigitalInput basinBeamBreak;
   private DigitalInput endeffectorLimitSwitch;
 
@@ -219,11 +222,23 @@ public class Elevator extends SubsystemBase {
   }
 
   public void manualElevatorVel(double velocity) {
-    elevatorMotor.set(velocity);
+    if (Math.abs(velocity) > 0.1) {
+      elevatorMotor.set(velocity);
+    }
+    if (!elevatorManualStop) {
+      elevatorManualStop = true;
+      elevatorMotor.set(0);
+    }
   }
 
   public void manualEndeffectorVel(double velocity) {
-    endeffectorMotor.set(velocity);
+    if (Math.abs(velocity) > 0.1) {
+      endeffectorMotor.set(velocity);
+    }
+    if (!endefectorManualStop) {
+      endefectorManualStop = true;
+      endeffectorMotor.set(0);
+    }
   }
 
   @Override
@@ -235,7 +250,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putString("State", currentState.toString());
 
     if (currentState == CoordinationState.Waiting) {
-      // periodicWaiting();
+      periodicWaiting();
     } else if (currentState == CoordinationState.WatingBeamTripped) {
       // periodicWaitingTripped();
     } else if (currentState == CoordinationState.Ready) {
