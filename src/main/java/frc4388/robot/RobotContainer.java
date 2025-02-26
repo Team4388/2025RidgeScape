@@ -141,19 +141,26 @@ public class RobotContainer {
 
     private Command AprilLidarAlignL4Left = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.shiftDown();m_robotSwerveDrive.shiftDown();}),
+
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+
         new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
-        // new InstantCommand(() -> System.out.println("Soup")),
-        // new WaitCommand(1),
         new waitEndefectorRefrence(m_robotElevator),
+
         new waitElevatorRefrence(m_robotElevator),
 
         new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1, Side.LEFT),
+
         new LidarAlign(m_robotSwerveDrive, m_lidar),
+
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
+
         new waitEndefectorRefrence(m_robotElevator),
+
         new MoveForTimeCommand(m_robotSwerveDrive, 
             new Translation2d(0,1), new Translation2d(), 500, true),
+
+
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator)
     );
 
@@ -529,7 +536,7 @@ public class RobotContainer {
     //     return autoCommand;
 	// } catch (Exception e) {
 	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
-	    return Commands.none();
+	    return autoCommand;
 	// }
     // return new PathPlannerAuto("Line-up-no-arm");
 	// zach told me to do the below comment
@@ -551,9 +558,9 @@ public class RobotContainer {
 
         autoChooser.onChange((filename) -> {
             autoCommand = new PathPlannerAuto(filename);
-            System.out.println("Robot Auto Changed");
+            System.out.println("Robot Auto Changed " + filename);
         });
-        SmartDashboard.putData(autoChooser);
+        // SmartDashboard.putData(autoChooser);
 
     }
 
