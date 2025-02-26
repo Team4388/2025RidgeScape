@@ -18,6 +18,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.utility.controller.XboxController;
@@ -83,7 +84,7 @@ public class RobotContainer {
     // private final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
-    public final Elevator m_robotElevator= new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endefectorLimitSwitch);
+    public final Elevator m_robotElevator= new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -452,7 +453,7 @@ public class RobotContainer {
 
             // Cancel button
             new JoystickButton(getButtonBox(), ButtonBox.White)
-                .onTrue(new InstantCommand(() -> {m_robotElevator.elevatorStop(); m_robotElevator.endefectorStop();}, m_robotElevator));
+                .onTrue(new InstantCommand(() -> {m_robotElevator.elevatorStop(); m_robotElevator.endeffectorStop();}, m_robotElevator));
 
             // Score prep        
             // Prime 4
@@ -508,9 +509,12 @@ public class RobotContainer {
                 .onTrue(AprilLidarAlignL2Right);
 
             //Controller Lower Algae Removal
-            
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 0)
+                .onTrue(leftAlgaeRemove);
 
             //Controller Upper Algae Removal
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 180)
+                .onTrue(rightAlgaeRemove);
             
             //Button Box Coral Scoring
             new JoystickButton(getButtonBox(), ButtonBox.Five)
@@ -541,7 +545,14 @@ public class RobotContainer {
 
             // Cancel button
             new JoystickButton(getButtonBox(), ButtonBox.White)
-                .onTrue(new InstantCommand(() -> {m_robotElevator.elevatorStop(); m_robotElevator.endefectorStop();}, m_robotElevator));
+                .onTrue(new InstantCommand(() -> {m_robotElevator.elevatorStop(); m_robotElevator.endeffectorStop();}, m_robotElevator));
+
+            //Manual Controls
+            m_robotElevator.setDefaultCommand(new RunCommand(() -> {
+                m_robotElevator.manualEndeffectorVel(getDeadbandedOperatorController().getLeftY());
+                m_robotElevator.manualElevatorVel(getDeadbandedOperatorController().getRightY());
+            }, m_robotElevator)
+            .withName("Default Manual Controls"));
         
         }
 

@@ -31,6 +31,6 @@ public class waitElevatorRefrence extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.elevatorAtRefrence();
+    return elevator.elevatorAtReference();
   }
 }
