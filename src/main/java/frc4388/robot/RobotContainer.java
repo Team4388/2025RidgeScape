@@ -490,10 +490,10 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Ready), m_robotElevator));
 
             //Controller Coral Scoring
-            new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.5)
+            new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.8)
                 .onTrue(AprilLidarAlignL4Left);
             
-            new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.5)
+            new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.8)
                 .onTrue(AprilLidarAlignL4Right);
 
             new JoystickButton(getDeadbandedOperatorController(), XboxController.LEFT_BUMPER_BUTTON)
