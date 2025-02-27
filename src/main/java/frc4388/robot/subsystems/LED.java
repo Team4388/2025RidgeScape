@@ -22,69 +22,16 @@ import frc4388.utility.LEDPatterns;
  */
 public class LED extends SubsystemBase {
 
-  static AddressableLED m_led;
-  static AddressableLEDBuffer m_ledBuffer;
-  static LED m_self;
-  /**
-   * Add your docs here.
-   */
+  private static Spark LEDController = new Spark(LEDConstants.LED_SPARK_ID);
+  private double mode = LEDConstants.DEFAULT_PATTERN.getValue();
 
-  public LED(){
-    if(m_self != null)
-      return;
-    m_led = new AddressableLED(9);
-    m_ledBuffer = new AddressableLEDBuffer(10);
-    m_led.setLength(m_ledBuffer.getLength());
-    m_led.setData(m_ledBuffer);
-    m_led.start();
-    System.err.println("In the Beginning, there was Joe.\nAnd he said, 'Let there be LEDs.'\nAnd it was good.");
+  public void setMode(LEDPatterns pattern){
+    this.mode = pattern.getValue();
   }
-  public static LED getInstance() {
-    if(m_self == null)
-      m_self = new LED();
-    return m_self;
-  }
+
   @Override
-  public void periodic(){
-    //gamermode();
-    //SmartDashboard.putNumber("LED", m_currentPattern.getValue());
-    return;
-  }
-  static int firstcolor = 0;
-  static void gamermode() {
-      for(int i = 0; i < m_ledBuffer.getLength(); i++) {
-          final int hue = (firstcolor + (i * 180 / m_ledBuffer.getLength())) % 180;
-          setLEDHSV(i, hue, 255, 128);
-      }
-      firstcolor +=3;
-      firstcolor %= 180;
-  }
-  /**
-   * Add your docs here.
-   */
-  public static void updateLED (){
-    gamermode();
-   // m_LEDController.set(m_currentPattern.getValue());
+  public void periodic() {
+    LEDController.set(mode);
   }
 
-  /**
-   * Add your docs here.
-   */
-  public static void setLEDRGB(int lednum, int r, int g, int b){
-    m_ledBuffer.setRGB(lednum, r, g, b);
-    //m_currentPattern = pattern;
-   // m_LEDController.set(m_currentPattern.getValue());
-  }
-  public static void setLEDHSV(int lednum, int hue, int sat, int val){
-    m_ledBuffer.setRGB(lednum, hue, sat, val);
-    //m_currentPattern = pattern;
-   // m_LEDController.set(m_currentPattern.getValue());
-  }
-  /**
-   * Add your docs here.
-   * @return
-   */
-  public AddressableLEDBuffer getBuffer() {
-    return m_ledBuffer;
-  }
 }
