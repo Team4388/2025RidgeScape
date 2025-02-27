@@ -243,6 +243,14 @@ public class Elevator extends SubsystemBase {
     // }
   }
 
+  public boolean isL4Primed(){
+    return currentState == CoordinationState.PrimedFour;
+  }
+
+  public boolean isL3Primed(){
+    return currentState == CoordinationState.PrimedThree;
+  }
+
   public void armShuffle(){
     if(!basinBeamBreak.get()){
       //shuffle the coral with the arm until coral hits beam break

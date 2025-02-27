@@ -63,14 +63,11 @@ public class ReefPositionHelper {
      * Function to find closest tag location based on side
      */
     public static Pose2d getNearestTag(Pose2d position) {
-        Optional<Alliance> ally = DriverStation.getAlliance();
-        if (!ally.isPresent()) 
-            return new Pose2d();
-        if (ally.get() == Alliance.Red) 
+
+        if(TimesNegativeOne.isRed)
             return getNearestTag(RED_TAGS, position);
-        if (ally.get() == Alliance.Blue) 
-            return getNearestTag(BLUE_TAGS, position);   
-        return new Pose2d();
+        else
+            return getNearestTag(BLUE_TAGS, position);
     }
 
     public static Pose2d getNearestPosition(Pose2d position, Side side, double xtrim, double ydistance) {

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc4388.utility.CanDevice;
 import frc4388.utility.DeferredBlock;
+import frc4388.utility.DeferredBlockMulti;
 import frc4388.utility.RobotTime;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
@@ -113,6 +114,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledExit() {
     DeferredBlock.execute();
+    DeferredBlockMulti.execute();
   }
 
   /**
