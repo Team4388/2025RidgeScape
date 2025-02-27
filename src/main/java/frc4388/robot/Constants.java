@@ -237,7 +237,7 @@ public final class Constants {
             public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
             public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
             public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
-            public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR, 1, 0);
+            public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, 1, 0);
 
             public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
             public static final int LIDAR_DIO_CHANNEL = 7;
@@ -437,21 +437,21 @@ public final class Constants {
         public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
         //Max for endefector = 60%
 
-        public static final double L2_SCORE_ENDEFECTOR = -19;
+        public static final double L2_SCORE_ENDEFFECTOR = -19;
 
-        public static final double COMPLETLY_DOWN_ENDEFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
-        public static final double DEALGAE_L2_EENDEFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;
-        public static final double COMPLETLY_MIDDLE_ENDEFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
-        public static final double PRIMED_THREE_ENDEFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
-        public static final double SCORING_FOUR_ENDEFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
-        public static final double COMPLETLY_TOP_ENDEFECTOR = 0.51 * GEAR_RATIO_ENDEFECTOR;
+        public static final double COMPLETLY_DOWN_ENDEFFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
+        public static final double DEALGAE_L2_ENDEFFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;
+        public static final double COMPLETLY_MIDDLE_ENDEFFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
+        public static final double PRIMED_THREE_ENDEFFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
+        public static final double SCORING_FOUR_ENDEFFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
+        public static final double COMPLETLY_TOP_ENDEFFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()
             .withKP(1)
             .withKI(0)
             .withKD(0);
         
-        public static final Slot0Configs ENDEFECTOR_PID = new Slot0Configs()
+        public static final Slot0Configs ENDEFFECTOR_PID = new Slot0Configs()
             .withKP(1)
             .withKI(0)
             .withKD(0);

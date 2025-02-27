@@ -28,21 +28,24 @@ import frc4388.utility.TimesNegativeOne;
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   private TalonFX elevatorMotor;
-  private TalonFX endefectorMotor;
+  private TalonFX endeffectorMotor;
   private LED led;
 
   private long wait = 0;
   private long maxWait = 1000;
 
   private double elevatorRefrence = 0;
-  private double endefectorRefrence = 0;
+  private double endeffectorRefrence = 0;
+
+  private boolean elevatorManualStop = true;
+  private boolean endefectorManualStop = true;
 
   private DigitalInput basinBeamBreak;
-  private DigitalInput endefectorLimitSwitch;
+  private DigitalInput endeffectorLimitSwitch;
 
   public enum CoordinationState {
     Waiting, // for coral into the though
-    WatingBeamTriped, //once the beam break trips
+    WatingBeamTripped, //once the beam break trips
     Ready, // Has coral in endefector
     Hovering, // Has coral in endefector
     L2Score,
@@ -58,19 +61,19 @@ public class Elevator extends SubsystemBase {
 
   private CoordinationState currentState;
 
-  public Elevator(TalonFX elevatorTalonFX, TalonFX endefectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endefectorLimitSwitch, LED led) {
+  public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, LED led) {
     elevatorMotor = elevatorTalonFX;
-    endefectorMotor = endefectorTalonFX;
+    endeffectorMotor = endeffectorTalonFX;
     this.led = led;
 
     this.basinBeamBreak = basinLimitSwitch;
-    this.endefectorLimitSwitch = endefectorLimitSwitch;
+    this.endeffectorLimitSwitch = endeffectorLimitSwitch;
 
     elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-    endefectorMotor.setNeutralMode(NeutralModeValue.Brake);
+    endeffectorMotor.setNeutralMode(NeutralModeValue.Brake);
     
     elevatorMotor.getConfigurator().apply(ElevatorConstants.ELEVATOR_PID);
-    endefectorMotor.getConfigurator().apply(ElevatorConstants.ENDEFECTOR_PID);
+    endeffectorMotor.getConfigurator().apply(ElevatorConstants.ENDEFFECTOR_PID);
     currentState = CoordinationState.Ready;
   }
 
@@ -78,7 +81,7 @@ public class Elevator extends SubsystemBase {
 
   private void PIDPosition(TalonFX motor, double position) {
     if (motor == elevatorMotor) elevatorRefrence = position;
-    else endefectorRefrence = position;
+    else endeffectorRefrence = position;
 
     var request = new PositionDutyCycle(position);
     motor.setControl(request);
@@ -88,8 +91,8 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(0);
   }
 
-  public void endefectorStop() {
-    endefectorMotor.set(0);
+  public void endeffectorStop() {
+    endeffectorMotor.set(0);
   }
 
 
@@ -99,90 +102,90 @@ public class Elevator extends SubsystemBase {
       case Waiting: {
         wait = System.currentTimeMillis() + maxWait;
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
         led.setMode(LEDConstants.WAITING_PATTERN);
         break;
       }
 
-      case WatingBeamTriped: {
+      case WatingBeamTripped: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_BEAM_BREAK_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
         led.setMode(LEDConstants.DOWN_PATTERN);
         break;
       }
 
       case Ready: {
         PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
         led.setMode(LEDConstants.DOWN_PATTERN);
         break;
       }
 
       case Hovering: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
         led.setMode(LEDConstants.READY_PATTERN);
         break;
       }
 
       case L2Score: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.L2_SCORE_ENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.L2_SCORE_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
       
       case PrimedFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR);
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
 
       case ScoringFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
 
       case PrimedThree: {
         PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.PRIMED_THREE_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.PRIMED_THREE_ENDEFFECTOR);
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
       
       case ScoringThree: {
         PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
 
       case BallRemoverL2Primed: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFFECTOR);
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
 
       case BallRemoverL2Go: {
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.DEALGAE_L2_EENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.DEALGAE_L2_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
 
       case BallRemoverL3Primed: {
         PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L3_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFFECTOR);
         break;
       }
 
       case BallRemoverL3Go: {
         PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L3_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endefectorMotor, ElevatorConstants.DEALGAE_L2_EENDEFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.DEALGAE_L2_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
       }
@@ -194,7 +197,7 @@ public class Elevator extends SubsystemBase {
 
   }
 
-  public boolean elevatorAtRefrence() {
+  public boolean elevatorAtReference() {
     // double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
     double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
     double diffrence = elevatorRefrence - elevatorPosition;
@@ -205,15 +208,15 @@ public class Elevator extends SubsystemBase {
 
     return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
-  
-  public boolean endefectorAtRefrence() {
+
+  public boolean endeffectorAtReference() {
     // double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
-    double endefectorPosition = endefectorMotor.getPosition().getValueAsDouble();
-    double diffrence = endefectorRefrence - endefectorPosition;
+    double endeffectorPosition = endeffectorMotor.getPosition().getValueAsDouble();
+    double diffrence = endeffectorRefrence - endeffectorPosition;
 
     boolean headedUp = diffrence < 0;
-    boolean forwardLimit = endefectorMotor.getForwardLimit().asSupplier().get().value == 0;
-    boolean reverseLimit = endefectorMotor.getReverseLimit().asSupplier().get().value == 0;
+    boolean forwardLimit = endeffectorMotor.getForwardLimit().asSupplier().get().value == 0;
+    boolean reverseLimit = endeffectorMotor.getReverseLimit().asSupplier().get().value == 0;
 
     return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
@@ -234,12 +237,32 @@ public class Elevator extends SubsystemBase {
   // }
   
   private void periodicReady() {
-    if (elevatorMotor.getForwardLimit().asSupplier().get().value == 0)
+    if (elevatorAtReference())
       transitionState(CoordinationState.Hovering);
   }
 
   private void periodicScoring() {
-    if (!endefectorLimitSwitch.get()) transitionState(CoordinationState.Waiting);
+    if (!endeffectorLimitSwitch.get()) transitionState(CoordinationState.Waiting);
+  }
+
+  public void manualElevatorVel(double velocity) {
+    if (Math.abs(velocity) > 0.1) {
+      elevatorMotor.set(velocity);
+    }
+    if (!elevatorManualStop) {
+      elevatorManualStop = true;
+      elevatorMotor.set(0);
+    }
+  }
+
+  public void manualEndeffectorVel(double velocity) {
+    if (Math.abs(velocity) > 0.1) {
+      endeffectorMotor.set(velocity);
+    }
+    if (!endefectorManualStop) {
+      endefectorManualStop = true;
+      endeffectorMotor.set(0);
+    }
   }
 
   @Override
@@ -247,12 +270,12 @@ public class Elevator extends SubsystemBase {
 
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
-    SmartDashboard.putNumber("endefector", endefectorLimitSwitch.get() ? 1 : 0);
+    SmartDashboard.putNumber("endefector", endeffectorLimitSwitch.get() ? 1 : 0);
     SmartDashboard.putString("State", currentState.toString());
 
     if (currentState == CoordinationState.Waiting) {
       periodicWaiting();
-    } else if (currentState == CoordinationState.WatingBeamTriped) {
+    } else if (currentState == CoordinationState.WatingBeamTripped) {
       // periodicWaitingTripped();
     } else if (currentState == CoordinationState.Ready) {
       periodicReady();
