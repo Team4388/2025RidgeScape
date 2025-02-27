@@ -193,12 +193,11 @@ public class Elevator extends SubsystemBase {
   public boolean endeffectorAtReference() {
     // double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
     double endeffectorPosition = endeffectorMotor.getPosition().getValueAsDouble();
-    double endefectorPosition = endefectorMotor.getPosition().getValueAsDouble();
-    double diffrence = endefectorRefrence - endefectorPosition;
+    double diffrence = endeffectorRefrence - endeffectorPosition;
 
     boolean headedUp = diffrence < 0;
-    boolean forwardLimit = endefectorMotor.getForwardLimit().asSupplier().get().value == 0;
-    boolean reverseLimit = endefectorMotor.getReverseLimit().asSupplier().get().value == 0;
+    boolean forwardLimit = endeffectorMotor.getForwardLimit().asSupplier().get().value == 0;
+    boolean reverseLimit = endeffectorMotor.getReverseLimit().asSupplier().get().value == 0;
 
     return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
