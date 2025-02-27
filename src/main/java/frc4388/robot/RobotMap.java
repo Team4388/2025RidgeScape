@@ -57,7 +57,7 @@ public class RobotMap {
     public final TalonFX endeffector = new TalonFX(ElevatorConstants.ENDEFFECTOR_ID.id);
 
     public final DigitalInput basinLimitSwitch = new DigitalInput(ElevatorConstants.BASIN_LIMIT_SWITCH);
-    public final DigitalInput endefectorLimitSwitch = new DigitalInput(ElevatorConstants.ENDEFFECTOR_LIMIT_SWITCH);
+    public final DigitalInput endeffectorLimitSwitch = new DigitalInput(ElevatorConstants.ENDEFFECTOR_LIMIT_SWITCH);
 
     void configureDriveMotorControllers() {}
         

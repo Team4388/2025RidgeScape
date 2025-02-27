@@ -19,6 +19,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.utility.controller.XboxController;
@@ -87,7 +88,7 @@ public class RobotContainer {
     // private final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
-    public final Elevator m_robotElevator= new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endefectorLimitSwitch);
+    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -396,121 +397,208 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
+        boolean driverPreferenceControls = false;
+
         // ? /* Driver Buttons */
-        DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
 
-        // ! /* Speed */
-        new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON)
-            .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
-        
-        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
+        if (!driverPreferenceControls) {
+            
+            DualJoystickButton(getDeadbandedDriverController(), getVirtualDriverController(), XboxController.A_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
 
-        new JoystickButton(getDeadbandedDriverController(), XboxController.START_BUTTON)
-            .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.activateLuigiMode()));
-        
-        new JoystickButton(getDeadbandedDriverController(), XboxController.BACK_BUTTON)
-            .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.deactivateLuigiMode()));
+            // ! /* Speed */
+            new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON)
+                .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
+            
+            new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
 
-        new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
-        
+            new JoystickButton(getDeadbandedDriverController(), XboxController.START_BUTTON)
+                .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.activateLuigiMode()));
+            
+            new JoystickButton(getDeadbandedDriverController(), XboxController.BACK_BUTTON)
+                .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.deactivateLuigiMode()));
 
-
-
-        new Trigger(() -> getDeadbandedDriverController().getPOV() == 0)
-            .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepUp()));
-
-        new Trigger(() -> getDeadbandedDriverController().getPOV() == 180)
-            .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepDown()));
-
-        new Trigger(() -> getDeadbandedDriverController().getPOV() == 90)
-            .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepUp()));
-
-        new Trigger(() -> getDeadbandedDriverController().getPOV() == 270)
-            .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
+            new JoystickButton(getDeadbandedDriverController(), XboxController.LEFT_BUMPER_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotSwerveDrive.shiftDown()));
+            
 
 
 
+            new Trigger(() -> getDeadbandedDriverController().getPOV() == 0)
+                .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepUp()));
+
+            new Trigger(() -> getDeadbandedDriverController().getPOV() == 180)
+                .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepDown()));
+
+            new Trigger(() -> getDeadbandedDriverController().getPOV() == 90)
+                .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepUp()));
+
+            new Trigger(() -> getDeadbandedDriverController().getPOV() == 270)
+                .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
 
 
-        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive));
+
+
+            new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+                .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive));
+
+        } else {
+
+        }
           
         // ?  /* Operator Buttons */
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive, m_lidar)); 
+        if (!driverPreferenceControls) {
 
-        
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator));
-        
-        DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Ready), m_robotElevator));
-        
+            new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
+                .onTrue(new InstantCommand(() -> {}, m_robotSwerveDrive, m_lidar)); 
 
-        new JoystickButton(getButtonBox(), ButtonBox.Five)
-            .onTrue(AprilLidarAlignL4Left);
-        
-        new JoystickButton(getButtonBox(), ButtonBox.One)
-            .onTrue(AprilLidarAlignL4Right);
-
-        new JoystickButton(getButtonBox(), ButtonBox.Six)
-            .onTrue(AprilLidarAlignL3Left);
-        
-        new JoystickButton(getButtonBox(), ButtonBox.Two)
-            .onTrue(AprilLidarAlignL3Right);
-        
-        new JoystickButton(getButtonBox(), ButtonBox.Seven)
-            .onTrue(AprilLidarAlignL2Left);
-        
-        new JoystickButton(getButtonBox(), ButtonBox.Three)
-            .onTrue(AprilLidarAlignL2Right);
-        
             
-        // Lower coral removal
-        new JoystickButton(getButtonBox(), ButtonBox.Eight)
-            .onTrue(leftAlgaeRemove);
-        
-        // Upper coral removal
-        new JoystickButton(getButtonBox(), ButtonBox.Four)
-            .onTrue(rightAlgaeRemove);
-        
+            DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.B_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator));
+            
+            DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Ready), m_robotElevator));
+            
+
+            new JoystickButton(getButtonBox(), ButtonBox.Five)
+                .onTrue(AprilLidarAlignL4Left);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.One)
+                .onTrue(AprilLidarAlignL4Right);
+
+            new JoystickButton(getButtonBox(), ButtonBox.Six)
+                .onTrue(AprilLidarAlignL3Left);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.Two)
+                .onTrue(AprilLidarAlignL3Right);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.Seven)
+                .onTrue(AprilLidarAlignL2Left);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.Three)
+                .onTrue(AprilLidarAlignL2Right);
+            
+                
+            // Lower algae removal
+            new JoystickButton(getButtonBox(), ButtonBox.Eight)
+                .onTrue(leftAlgaeRemove);
+            
+            // Upper algae removal
+            new JoystickButton(getButtonBox(), ButtonBox.Four)
+                .onTrue(rightAlgaeRemove);
+            
 
         // Cancel button
         new JoystickButton(getButtonBox(), ButtonBox.White)
             .onTrue(new InstantCommand(() -> {
                 m_robotElevator.elevatorStop(); 
-                m_robotElevator.endefectorStop();
+                m_robotElevator.endeffectorStop();
                 m_robotSwerveDrive.endSlowPeriod();
             }, m_robotElevator));
 
-        // Score prep        
-        // Prime 4
-        new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
-            .onTrue(new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator));
+            // Score prep        
+            // Prime 4
+            new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
+                .onTrue(new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator));
 
-        // Prime 3
-        new JoystickButton(getDeadbandedOperatorController(), XboxController.X_BUTTON)
-            .onTrue(new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator));
+            // Prime 3
+            new JoystickButton(getDeadbandedOperatorController(), XboxController.X_BUTTON)
+                .onTrue(new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator));
 
-        
-
-        //Trims
-        new Trigger(() -> getDeadbandedOperatorController().getPOV() == 0)
-            .onTrue(new InstantCommand(() -> AutoConstants.ELEVATOR_OFFSET_TRIM.stepUp()));
-
-        new Trigger(() -> getDeadbandedOperatorController().getPOV() == 180)
-            .onTrue(new InstantCommand(() -> AutoConstants.ELEVATOR_OFFSET_TRIM.stepDown()));
-
-        new Trigger(() -> getDeadbandedOperatorController().getPOV() == 90)
-            .onTrue(new InstantCommand(() -> AutoConstants.ARM_OFFSET_TRIM.stepUp()));
-
-        new Trigger(() -> getDeadbandedOperatorController().getPOV() == 270)
-            .onTrue(new InstantCommand(() -> AutoConstants.ARM_OFFSET_TRIM.stepDown()));
             
+
+            //Trims
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 0)
+                .onTrue(new InstantCommand(() -> AutoConstants.ELEVATOR_OFFSET_TRIM.stepUp()));
+
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 180)
+                .onTrue(new InstantCommand(() -> AutoConstants.ELEVATOR_OFFSET_TRIM.stepDown()));
+
+
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 90)
+                .onTrue(new InstantCommand(() -> AutoConstants.ARM_OFFSET_TRIM.stepUp()));
+
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 270)
+                .onTrue(new InstantCommand(() -> AutoConstants.ARM_OFFSET_TRIM.stepDown()));
+               
+        } else {
+
+            // States: ready/waiting
+            DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.B_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator));
+            
+            DualJoystickButton(getDeadbandedOperatorController(), getVirtualOperatorController(), XboxController.A_BUTTON)
+                .onTrue(new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Ready), m_robotElevator));
+
+            //Controller Coral Scoring
+            new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.8)
+                .onTrue(AprilLidarAlignL4Left);
+            
+            new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.8)
+                .onTrue(AprilLidarAlignL4Right);
+
+            new JoystickButton(getDeadbandedOperatorController(), XboxController.LEFT_BUMPER_BUTTON)
+                .onTrue(AprilLidarAlignL3Left);
+            
+            new JoystickButton(getDeadbandedOperatorController(), XboxController.RIGHT_BUMPER_BUTTON)
+                .onTrue(AprilLidarAlignL3Right);
+            
+            new JoystickButton(getDeadbandedOperatorController(), XboxController.X_BUTTON)
+                .onTrue(AprilLidarAlignL2Left);
+            
+            new JoystickButton(getDeadbandedOperatorController(), XboxController.Y_BUTTON)
+                .onTrue(AprilLidarAlignL2Right);
+
+            //Controller Lower Algae Removal
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 0)
+                .onTrue(leftAlgaeRemove);
+
+            //Controller Upper Algae Removal
+            new Trigger(() -> getDeadbandedOperatorController().getPOV() == 180)
+                .onTrue(rightAlgaeRemove);
+            
+            //Button Box Coral Scoring
+            new JoystickButton(getButtonBox(), ButtonBox.Five)
+                .onTrue(AprilLidarAlignL4Left);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.One)
+                .onTrue(AprilLidarAlignL4Right);
+
+            new JoystickButton(getButtonBox(), ButtonBox.Six)
+                .onTrue(AprilLidarAlignL3Left);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.Two)
+                .onTrue(AprilLidarAlignL3Right);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.Seven)
+                .onTrue(AprilLidarAlignL2Left);
+            
+            new JoystickButton(getButtonBox(), ButtonBox.Three)
+                .onTrue(AprilLidarAlignL2Right);
+
+            // Button Box Lower algae removal
+            new JoystickButton(getButtonBox(), ButtonBox.Eight)
+                .onTrue(leftAlgaeRemove);
+            
+            // Button Box Upper algae removal
+            new JoystickButton(getButtonBox(), ButtonBox.Four)
+                .onTrue(rightAlgaeRemove);
+
+            // Cancel button
+            new JoystickButton(getButtonBox(), ButtonBox.White)
+                .onTrue(new InstantCommand(() -> {m_robotElevator.elevatorStop(); m_robotElevator.endeffectorStop();}, m_robotElevator));
+
+            //Manual Controls
+            m_robotElevator.setDefaultCommand(new RunCommand(() -> {
+                m_robotElevator.manualEndeffectorVel(getDeadbandedOperatorController().getLeftY());
+                m_robotElevator.manualElevatorVel(getDeadbandedOperatorController().getRightY());
+            }, m_robotElevator)
+            .withName("Default Manual Controls"));
+        
+        }
+
         // ? /* Programer Buttons (Controller 3)*/
 
         // * /* Auto Recording */
