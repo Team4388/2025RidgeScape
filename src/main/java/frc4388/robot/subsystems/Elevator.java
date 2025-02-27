@@ -181,20 +181,26 @@ public class Elevator extends SubsystemBase {
   public boolean elevatorAtReference() {
     // double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
     double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
-    boolean atPos = Math.abs(elevatorRefrence - elevatorPosition) <= 0.5;
-    if (atPos) {
-      SmartDashboard.putNumber("Elevator Refrence", elevatorRefrence);
-      SmartDashboard.putNumber("Elevator Pos", elevatorPosition);
-    }
+    double diffrence = elevatorRefrence - elevatorPosition;
 
-    return atPos;
+    boolean headedUp = diffrence < 0;
+    boolean forwardLimit = elevatorMotor.getForwardLimit().asSupplier().get().value == 0;
+    boolean reverseLimit = elevatorMotor.getReverseLimit().asSupplier().get().value == 0;
+
+    return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
 
   public boolean endeffectorAtReference() {
     // double elevatorRefrence = endefectorMotor.getClosedLoopReference().getValueAsDouble();
     double endeffectorPosition = endeffectorMotor.getPosition().getValueAsDouble();
+    double endefectorPosition = endefectorMotor.getPosition().getValueAsDouble();
+    double diffrence = endefectorRefrence - endefectorPosition;
 
-    return Math.abs(endeffectorRefrence - endeffectorPosition) <= 0.2;
+    boolean headedUp = diffrence < 0;
+    boolean forwardLimit = endefectorMotor.getForwardLimit().asSupplier().get().value == 0;
+    boolean reverseLimit = endefectorMotor.getReverseLimit().asSupplier().get().value == 0;
+
+    return (Math.abs(diffrence) <= 0.5 || (reverseLimit && headedUp) || (forwardLimit && !headedUp));
   }
   // public void driveElevatorStick(Translation2d stick) {
   //   if (stick.getNorm() > 0.05) {
@@ -259,6 +265,14 @@ public class Elevator extends SubsystemBase {
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
     // }
+  }
+
+  public boolean isL4Primed(){
+    return currentState == CoordinationState.PrimedFour;
+  }
+
+  public boolean isL3Primed(){
+    return currentState == CoordinationState.PrimedThree;
   }
 
   public void armShuffle(){

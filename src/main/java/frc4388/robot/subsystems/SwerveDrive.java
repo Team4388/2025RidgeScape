@@ -35,9 +35,8 @@ import frc4388.robot.commands.GotoLastApril;
 import frc4388.robot.commands.LidarAlign;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
+import frc4388.utility.TimesNegativeOne;
 import frc4388.utility.Status.ReportLevel;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -103,11 +102,11 @@ public class SwerveDrive extends Subsystem {
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
+                    // var alliance = DriverStation.getAlliance();
+                    // if (alliance.isPresent()) {
+                    //     return alliance.get() == DriverStation.Alliance.Red;
+                    // }
+                    return TimesNegativeOne.isRed;
                 },
                 this // Reference to this subsystem to set requirements
         );
@@ -140,23 +139,14 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-        leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
-
-        Optional<Alliance> alliance = DriverStation.getAlliance();
-        
-        if(!alliance.isEmpty()){
-            if (alliance.get() == Alliance.Red) 
-                leftStick = new Translation2d(-leftStick.getX(), leftStick.getY());
-            else 
-                leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
-            // if (alliance.get() != Alliance.Red) leftStick = new Translation2d(leftStick.getX(), -leftStick.getY());
-        }
-        if (SwerveDriveConstants.INVERT_ROTATION) rightStick.times(-1);
-
-
+            leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
         
         stopped = false;
         if (fieldRelative) {
+            
+            leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
+            rightStick = TimesNegativeOne.invert(rightStick, TimesNegativeOne.RotAxis);    
+
             // ! drift correction
             if (rightStick.getNorm() > 0.05 || !SwerveDriveConstants.DRIFT_CORRECTION_ENABLED) {
                 rotTarget = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d()).getRotation().getDegrees();
@@ -218,7 +208,7 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-        leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+        leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
 
         swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
                 .withVelocityX(leftStick.getX() * speedAdjust)
@@ -282,7 +272,7 @@ public class SwerveDrive extends Subsystem {
         // if (leftStick.getNorm() < 0.05) //if no imput
         // return; // don't bother doing swerve drive math and return early.
 
-        leftStick = leftStick.rotateBy(Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET));
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
 
         swerveDriveTrain.setControl(new SwerveRequest.FieldCentricFacingAngle()
                 .withVelocityX(leftStick.getX() * -speedAdjust)
@@ -388,6 +378,18 @@ public class SwerveDrive extends Subsystem {
 
     public void shiftDownRot() {
         rotSpeedAdjust = SwerveDriveConstants.MIN_ROT_SPEED;
+    }
+
+    private int tmp_gear_index = SwerveDriveConstants.STARTING_GEAR;
+
+    public void startSlowPeriod() {
+        tmp_gear_index = gear_index;
+        setToSlow();
+    }
+
+    public void endSlowPeriod() {
+        setPercentOutput(SwerveDriveConstants.GEARS[tmp_gear_index]);
+        gear_index = tmp_gear_index;
     }
 
     @Override

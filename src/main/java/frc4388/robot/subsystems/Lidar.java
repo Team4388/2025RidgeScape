@@ -72,7 +72,7 @@ public class Lidar extends Subsystem {
         if(distance == -1){
             s.addReport(ReportLevel.ERROR, "LIDAR DISCONNECTED");
         }else{
-            s.addReport(ReportLevel.ERROR, "LIDAR CONNECTED");
+            s.addReport(ReportLevel.INFO, "LIDAR CONNECTED");
         }
         return s;
     }
