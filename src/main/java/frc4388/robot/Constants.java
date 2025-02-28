@@ -377,6 +377,13 @@ public final class Constants {
         
         public static final double L2_SCORE_DISTANCE = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
 
+        public static final int L4_DRIVE_TIME = 250; //Milliseconds
+        // public static final int L3_DRIVE_TIME = 500;
+        public static final int L2_DRIVE_TIME = 250; //Milliseconds
+
+        
+        public static final int ALGAE_DRIVE_TIME = 500;
+
 
 
         // Test april tag field layout

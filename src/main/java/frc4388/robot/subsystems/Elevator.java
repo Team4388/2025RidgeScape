@@ -229,6 +229,8 @@ public class Elevator extends SubsystemBase {
   private void periodicWaiting() {
     if (!basinBeamBreak.get()) 
       transitionState(CoordinationState.Ready);
+    if(!endeffectorLimitSwitch.get())
+      transitionState(CoordinationState.Hovering);
   }
 
   // private void periodicWaitingTripped() {
@@ -237,12 +239,15 @@ public class Elevator extends SubsystemBase {
   // }
   
   private void periodicReady() {
-    if (elevatorAtReference())
+    if (elevatorAtReference() && !endeffectorLimitSwitch.get())
       transitionState(CoordinationState.Hovering);
+    if(elevatorAtReference() && endeffectorLimitSwitch.get())
+      transitionState(CoordinationState.Waiting);
   }
 
   private void periodicScoring() {
-    if (!endeffectorLimitSwitch.get()) transitionState(CoordinationState.Waiting);
+    if (!endeffectorLimitSwitch.get()) 
+      transitionState(CoordinationState.Waiting);
   }
 
   public void manualElevatorVel(double velocity) {

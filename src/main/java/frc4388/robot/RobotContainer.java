@@ -124,10 +124,10 @@ public class RobotContainer {
     private Command AprilLidarAlignL4Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
 
-        new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
+        // new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT)
-        )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT),
+        // )),
 
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
         // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT),
@@ -143,7 +143,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
 
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), FieldConstants.L4_DRIVE_TIME, true),
         
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
@@ -152,10 +152,10 @@ public class RobotContainer {
     private Command AprilLidarAlignL4Left = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
 
-        new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
+        // new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT)
-        )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
+        // )),
         
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
         // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
@@ -172,7 +172,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
 
         new MoveForTimeCommand(m_robotSwerveDrive, 
-            new Translation2d(0,1), new Translation2d(), 500, true),
+            new Translation2d(0,1), new Translation2d(), FieldConstants.L4_DRIVE_TIME, true),
 
 
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
@@ -182,10 +182,10 @@ public class RobotContainer {
     private Command AprilLidarAlignL3Left = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
 
-        new IfCommand(() -> m_robotElevator.isL3Primed(), new SequentialCommandGroup(
+        // new IfCommand(() -> m_robotElevator.isL3Primed(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.LEFT)
-        )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.LEFT),
+        // )),
 
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
@@ -204,10 +204,10 @@ public class RobotContainer {
     private Command AprilLidarAlignL3Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
         
-        new IfCommand(() -> m_robotElevator.isL3Primed(), new SequentialCommandGroup(
+        // new IfCommand(() -> m_robotElevator.isL3Primed(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT)
-        )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT),
+        // )),
         
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
         new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT),
@@ -238,7 +238,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), FieldConstants.L2_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
 
@@ -253,7 +253,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), FieldConstants.L2_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
@@ -313,10 +313,10 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
         NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL4Right);
-        NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL3Left);
-        NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL3Right);
-        NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL2Left);
-        NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL2Right);
+        NamedCommands.registerCommand("place-coral-left-l3", AprilLidarAlignL3Left);
+        NamedCommands.registerCommand("place-coral-right-l3", AprilLidarAlignL3Right);
+        NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
+        NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
 
         NamedCommands.registerCommand("lineup-no-arm", new SequentialCommandGroup(
             new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
@@ -659,9 +659,9 @@ public class RobotContainer {
     //     return autoCommand;
 	// } catch (Exception e) {
 	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
-	    return autoCommand;
+	    // return autoCommand;
 	// }
-    // return new PathPlannerAuto("Line-up-no-arm");
+    return new PathPlannerAuto("Line-up-no-arm");
 	// zach told me to do the below comment
 	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
       //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
