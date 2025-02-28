@@ -229,29 +229,7 @@ public final class Constants {
             public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
             public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(5, 0, 0.1); // TODO: TEST
         }
-    
-        public static final class AutoConstants {
-            public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
-            public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
-            public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
-            public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
-            public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
-            public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, 1, 0);
-
-            public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-            public static final int LIDAR_DIO_CHANNEL = 7;
-            public static final int LIDAR_MICROS_TO_CM = 10;
-            public static final int SECONDS_TO_MICROS = 1000000;
-                    
-            public static final double XY_TOLERANCE = 0.07; // Meters
-            public static final double ROT_TOLERANCE = 5; // Degrees
-                    
-            // public static final Pose2d targetpos = new Pose2d(new Translation2d(0.3,0), new Rotation2d());
-            // public static final Pose2d targetpos = 
-        }
-    
-    
         public static final class Configurations {
             public static final double OPEN_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
             public static final double CLOSED_LOOP_RAMP_RATE = 0.4; // Todo: Test. think this will help.
@@ -342,6 +320,48 @@ public final class Constants {
         public static final int SMARTDASHBOARD_UPDATE_FRAME = 2;
       }
     
+    public static final class LiDARConstants {
+        public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
+        public static final int LIDAR_DIO_CHANNEL = 7;
+        public static final int LIDAR_MICROS_TO_CM = 10;
+        public static final int SECONDS_TO_MICROS = 1000000;
+    }
+
+    public static final class AutoConstants {
+        public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
+        public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
+
+        public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
+        public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
+        public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
+        public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, 1, 0);
+                
+        public static final double XY_TOLERANCE = 0.07; // Meters
+        public static final double ROT_TOLERANCE = 5; // Degrees
+                
+        // X is tangent to reef side
+        // Y is normal to reef side
+        public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // This is from the field
+        public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
+
+        public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+        public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        
+        public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+        public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        
+        public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
+
+
+        public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(3);
+
+        public static final int L4_DRIVE_TIME = 250; //Milliseconds
+        // public static final int L3_DRIVE_TIME = 500;
+        public static final int L2_DRIVE_TIME = 250; //Milliseconds
+
+        public static final int ALGAE_DRIVE_TIME = 500;
+    }
+
     public static final class VisionConstants { 
         public static final String LEFT_CAMERA_NAME = "CAMERA_LEFT";
         public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
@@ -360,31 +380,6 @@ public final class Constants {
 
     public static final class FieldConstants {
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-        // public static final double HORISONTAL_SCORING_POSITION_OFFSET =  Units.inchesToMeters(9.5);
-
-        public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5);
-
-        // public static final double HORISONTAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // Positive is Right
-
-        public static final double VERTICAL_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
-        public static final double L4_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
-        public static final double L4_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
-        public static final double L3_DISTANCE_1 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
-        public static final double L3_DISTANCE_2 = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
-
-        public static final double L2_ALGAE_REMOVAL = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(3);
-
-        
-        public static final double L2_SCORE_DISTANCE = VERTICAL_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
-
-        public static final int L4_DRIVE_TIME = 250; //Milliseconds
-        // public static final int L3_DRIVE_TIME = 500;
-        public static final int L2_DRIVE_TIME = 250; //Milliseconds
-
-        
-        public static final int ALGAE_DRIVE_TIME = 500;
-
-
 
         // Test april tag field layout
         // public static final AprilTagFieldLayout kTagLayout = new AprilTagFieldLayout(
