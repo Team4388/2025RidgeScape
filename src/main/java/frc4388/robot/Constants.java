@@ -357,7 +357,6 @@ public final class Constants {
         public static final int L4_DRIVE_TIME = 250; //Milliseconds
         // public static final int L3_DRIVE_TIME = 500;
         public static final int L2_DRIVE_TIME = 250; //Milliseconds
-
         public static final int ALGAE_DRIVE_TIME = 500;
     }
 
@@ -372,7 +371,8 @@ public final class Constants {
 
         // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate
-        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+        // X, Y, Theta
+        // https://www.chiefdelphi.com/t/photonvision-finding-standard-deviations-for-swervedriveposeestimator/467802/2
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }

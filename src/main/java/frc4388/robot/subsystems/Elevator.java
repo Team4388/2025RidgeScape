@@ -23,9 +23,12 @@ import frc4388.robot.Constants.LEDConstants;
 import frc4388.robot.Constants.AutoConstants;
 import frc4388.robot.subsystems.LED;
 import frc4388.utility.LEDPatterns;
+import frc4388.utility.Status;
+import frc4388.utility.Subsystem;
 import frc4388.utility.TimesNegativeOne;
+import frc4388.utility.Status.ReportLevel;
 
-public class Elevator extends SubsystemBase {
+public class Elevator extends Subsystem {
   /** Creates a new Elevator. */
   private TalonFX elevatorMotor;
   private TalonFX endeffectorMotor;
@@ -302,5 +305,24 @@ public class Elevator extends SubsystemBase {
     if(!basinBeamBreak.get()){
       //shuffle the coral with the arm until coral hits beam break
     }
+  }
+
+  @Override
+  public String getSubsystemName() {
+    return "Elevator";
+  }
+
+  @Override
+  public void queryStatus() {}
+
+  @Override
+  public Status diagnosticStatus() {
+    Status status = new Status();
+
+    status.addReport(ReportLevel.INFO, "Elevator Mode: " + currentState.name());
+    status.diagnoseHardwareCTRE("Elevator Motor", elevatorMotor);
+    status.diagnoseHardwareCTRE("Endeffector Motor", endeffectorMotor);
+
+    return status;
   }
 }

@@ -69,11 +69,15 @@ public class Lidar extends Subsystem {
     @Override
     public Status diagnosticStatus() {
         Status s = new Status();
+
         if(distance == -1){
-            s.addReport(ReportLevel.ERROR, "LIDAR DISCONNECTED");
+            s.addReport(ReportLevel.ERROR, "LiDAR DISCONNECTED");
         }else{
-            s.addReport(ReportLevel.INFO, "LIDAR CONNECTED");
+            s.addReport(ReportLevel.INFO, "LiDAR Connected");
         }
+
+        s.addReport(ReportLevel.INFO, "LiDAR Distance: " + distance);
+
         return s;
     }
     
