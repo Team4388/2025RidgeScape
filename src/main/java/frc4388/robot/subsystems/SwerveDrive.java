@@ -51,6 +51,7 @@ public class SwerveDrive extends Subsystem {
 
     private int gear_index = SwerveDriveConstants.STARTING_GEAR;
     private boolean stopped = false;
+    private boolean robotKnowsWhereItIs = false;
 
     public double speedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * SwerveDriveConstants.GEARS[gear_index];
     public double rotSpeedAdjust = SwerveDriveConstants.MAX_ROT_SPEED;
@@ -58,6 +59,7 @@ public class SwerveDrive extends Subsystem {
                                                                                            // 25%
 
     public Pose2d initalPose2d = null;
+
 
     public double rotTarget = 0.0;
     public Rotation2d orientRotTarget = new Rotation2d();
@@ -170,24 +172,7 @@ public class SwerveDrive extends Subsystem {
                 SmartDashboard.putBoolean("drift correction", true);
             }
 
-            // // SmartDashboard.putBoolean("drift correction", true);
-
-            // // rot = ((rotTarget - gyro.getAngle()) / 360) *
-            // SwerveDriveConstants.ROT_CORRECTION_SPEED;
-
-            // }
-
-            // // Use the left joystick to set speed. Apply a cubic curve and the set max
-            // speed.
-            // Translation2d speed = leftStick.times(leftStick.getNorm() * speedAdjust);
-            // // Translation2d cubedSpeed = new Translation2d(Math.pow(speed.getX(), 3.00),
-            // Math.pow(speed.getY(), 3.00));
-
-            // // Convert field-relative speeds to robot-relative speeds.
-            // // chassisSpeeds = chassisSpeeds.
-            // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-1 * speed.getX(), -1 *
-            // speed.getY(), (-1 * rightStick.getX() * rotSpeedAdjust) - rot_correction,
-            // gyro.getRotation2d().times(-1));
+           
         } else { // Create robot-relative speeds.
             swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
                     .withVelocityX(leftStick.getX() * speedAdjust)
@@ -195,6 +180,16 @@ public class SwerveDrive extends Subsystem {
                     .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
         }
     }
+
+    public void driveFine(Translation2d leftStick, Translation2d rightStick, double percentOutput) {
+        stopped = false;
+        // Create robot-relative speeds.
+        swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
+            .withVelocityX(leftStick.getX() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
+            .withVelocityY(-leftStick.getY() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
+            .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
+    }
+
 
     public void driveWithInputOrientation(Translation2d leftStick, Translation2d rightStick) { // there is no practical
                                                                                                // reason to have a robot
@@ -291,6 +286,8 @@ public class SwerveDrive extends Subsystem {
 
     public void resetGyro() {
         swerveDriveTrain.tareEverything();
+        robotKnowsWhereItIs = false;
+        rotTarget = 0;
     }
 
 
@@ -321,6 +318,14 @@ public class SwerveDrive extends Subsystem {
         vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(time));
 
         if (vision.isTag()) {
+            Pose2d pose = vision.getPose2d();
+            if (!robotKnowsWhereItIs) {
+                robotKnowsWhereItIs = true;
+                Pose2d currPose = getPose2d();
+                double deltaAngle = pose.getRotation().getDegrees() - currPose.getRotation().getDegrees();
+                rotTarget += deltaAngle;
+            }
+            
             swerveDriveTrain.addVisionMeasurement(vision.getPose2d(), time);
         }
 
