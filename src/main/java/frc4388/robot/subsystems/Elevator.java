@@ -6,6 +6,8 @@ package frc4388.robot.subsystems;
 
 import java.time.Instant;
 
+import org.opencv.ml.RTrees;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -39,6 +41,8 @@ public class Elevator extends SubsystemBase {
 
   private boolean elevatorManualStop = true;
   private boolean endefectorManualStop = true;
+
+  private boolean disableAutoIntake = false;
 
   private DigitalInput basinBeamBreak;
   private DigitalInput endeffectorLimitSwitch;
@@ -197,6 +201,10 @@ public class Elevator extends SubsystemBase {
 
   }
 
+  public void togggleAutoIntaking() {
+    disableAutoIntake = !disableAutoIntake;
+  }
+
   public boolean elevatorAtReference() {
     // double elevatorRefrence = elevatorMotor.getClosedLoopReference().getValueAsDouble();
     double elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
@@ -248,6 +256,8 @@ public class Elevator extends SubsystemBase {
   public void manualElevatorVel(double velocity) {
     if (Math.abs(velocity) > 0.1) {
       elevatorMotor.set(velocity);
+      elevatorManualStop = false;
+      return;
     }
     if (!elevatorManualStop) {
       elevatorManualStop = true;
@@ -258,6 +268,8 @@ public class Elevator extends SubsystemBase {
   public void manualEndeffectorVel(double velocity) {
     if (Math.abs(velocity) > 0.1) {
       endeffectorMotor.set(velocity);
+      endefectorManualStop = false;
+      return;
     }
     if (!endefectorManualStop) {
       endefectorManualStop = true;
@@ -272,6 +284,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
     SmartDashboard.putNumber("endefector", endeffectorLimitSwitch.get() ? 1 : 0);
     SmartDashboard.putString("State", currentState.toString());
+    
+    if (disableAutoIntake) return;
 
     if (currentState == CoordinationState.Waiting) {
       periodicWaiting();

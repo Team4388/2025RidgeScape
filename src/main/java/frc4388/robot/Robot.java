@@ -87,7 +87,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {   
     m_robotTime.updateTimes();
-    SmartDashboard.putNumber("Time", System.currentTimeMillis());
     //System.out.println(m_robotContainer.limelight.isNearSpeaker());
     //mled.updateLED();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
