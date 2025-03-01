@@ -10,7 +10,6 @@ package frc4388.robot;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.logging.Level;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.CANBus.CANBusStatus;
@@ -87,8 +86,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {   
     m_robotTime.updateTimes();
-    //System.out.println(m_robotContainer.limelight.isNearSpeaker());
-    //mled.updateLED();
+    // SmartDashboard.putNumber("Time", System.currentTimeMillis());
+    
+    m_robotContainer.m_robotLED.update();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic

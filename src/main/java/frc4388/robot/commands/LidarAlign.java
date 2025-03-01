@@ -22,6 +22,7 @@ public class LidarAlign extends Command {
   private boolean headedRight;
   private double speed;
   private int bounces;
+  private double additionalDistance = 0;
   // private final boolean constructedHeadedRight;
 
   /** Creates a new LidarAlign. */
@@ -41,6 +42,7 @@ public class LidarAlign extends Command {
     this.speed = 0.4; // TODO: find good speed for this
     this.foundReef = false;
     this.headedRight = !(GotoLastApril.tagRelativeXError < 0);
+    this.additionalDistance = 0;
     this.bounces = 0;
   }
 
@@ -54,11 +56,12 @@ public class LidarAlign extends Command {
       return;
     }
 
-    if (currentFinderTick > 10) { //arbutrary threshhold for now.
+    if (currentFinderTick > (15 + additionalDistance)) { //arbutrary threshhold for now.
       headedRight = !headedRight;
       currentFinderTick *= -1;
       bounces++;
-      if (bounces == 2) return;
+      additionalDistance += 5;
+      if (bounces == 5) return;
     }
     double currentHeading = (swerveDrive.getGyroAngle() * 180) / Math.PI;
     double relAngle = (Math.round(currentHeading / 60.d) * 60); // Relative driving to the side of the reef

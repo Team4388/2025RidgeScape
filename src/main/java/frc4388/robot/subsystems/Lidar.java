@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
+import frc4388.robot.Constants.LiDARConstants;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
 import frc4388.utility.Status.ReportLevel;
@@ -16,7 +16,7 @@ import frc4388.utility.Status.ReportLevel;
 public class Lidar extends Subsystem {
 
     private double distance = -1;
-    Counter LidarPWM = new Counter(AutoConstants.LIDAR_DIO_CHANNEL);
+    Counter LidarPWM = new Counter(LiDARConstants.LIDAR_DIO_CHANNEL);
 
     public Lidar() {
         LidarPWM.setMaxPeriod(1.00); //set the max period that can be measured
@@ -29,7 +29,7 @@ public class Lidar extends Subsystem {
         if(LidarPWM.get() < 1)
             distance = -1;
         else
-            distance = (LidarPWM.getPeriod() * AutoConstants.SECONDS_TO_MICROS) / AutoConstants.LIDAR_MICROS_TO_CM;
+            distance = (LidarPWM.getPeriod() * LiDARConstants.SECONDS_TO_MICROS) / LiDARConstants.LIDAR_MICROS_TO_CM;
     }
 
     public double getDistance(){
@@ -38,7 +38,7 @@ public class Lidar extends Subsystem {
 
     public boolean withinDistance(){
         if(distance == -1) return false;
-        return distance < AutoConstants.LIDAR_DETECT_DISTANCE;
+        return distance < LiDARConstants.LIDAR_DETECT_DISTANCE;
     }
 
     ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
@@ -69,11 +69,15 @@ public class Lidar extends Subsystem {
     @Override
     public Status diagnosticStatus() {
         Status s = new Status();
+
         if(distance == -1){
-            s.addReport(ReportLevel.ERROR, "LIDAR DISCONNECTED");
+            s.addReport(ReportLevel.ERROR, "LiDAR DISCONNECTED");
         }else{
-            s.addReport(ReportLevel.INFO, "LIDAR CONNECTED");
+            s.addReport(ReportLevel.INFO, "LiDAR Connected");
         }
+
+        s.addReport(ReportLevel.INFO, "LiDAR Distance: " + distance);
+
         return s;
     }
     

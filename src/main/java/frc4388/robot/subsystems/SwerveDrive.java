@@ -428,7 +428,7 @@ public class SwerveDrive extends Subsystem {
     public Status diagnosticStatus() {
         Status status = new Status();
 
-        status.addReport(ReportLevel.ERROR,
+        status.addReport(ReportLevel.INFO,
                 "Don't know how to diganose new CTRE swerve systems. please check under the CAN(t) section for more detailed information about the swerves there.");
 
         return status;

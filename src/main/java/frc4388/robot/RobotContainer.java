@@ -29,7 +29,7 @@ import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.robot.Constants.FieldConstants;
 import frc4388.robot.Constants.OIConstants;
 import frc4388.robot.Constants.SwerveDriveConstants;
-import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
+import frc4388.robot.Constants.AutoConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -40,15 +40,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Commands;
-
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 // Autos
 import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoLastApril;
-import frc4388.robot.commands.IfCommand;
 import frc4388.robot.commands.LidarAlign;
 import frc4388.robot.commands.MoveForTimeCommand;
 import frc4388.robot.commands.waitElevatorRefrence;
 import frc4388.robot.commands.waitEndefectorRefrence;
+import frc4388.robot.commands.waitFeedCoral;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -86,7 +86,7 @@ public class RobotContainer {
     public final RobotMap m_robotMap = new RobotMap();
     
     /* Subsystems */
-    private final LED m_robotLED = new LED();
+    public final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
     public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotLED);
@@ -125,11 +125,11 @@ public class RobotContainer {
     // private Command AutoGotoPosition = new GotoLastApril(m_robotSwerveDrive, m_vision);
     private Command AprilLidarAlignL4Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
-
-        // new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
+        
+        new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT),
-        // )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.RIGHT)
+        ), () -> m_robotElevator.isL4Primed()),
 
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
         // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT),
@@ -137,7 +137,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
 
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1, Side.RIGHT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.RIGHT),
         new LidarAlign(m_robotSwerveDrive, m_lidar),
 
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
@@ -145,7 +145,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
 
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
         
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
@@ -155,9 +155,11 @@ public class RobotContainer {
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
 
         // new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
+
+        new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
-        // )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.LEFT)
+        ), () -> m_robotElevator.isL4Primed()),
         
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
         // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
@@ -165,7 +167,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
 
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_1, Side.LEFT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.LEFT),
 
         new LidarAlign(m_robotSwerveDrive, m_lidar),
 
@@ -174,7 +176,7 @@ public class RobotContainer {
         new waitEndefectorRefrence(m_robotElevator),
 
         new MoveForTimeCommand(m_robotSwerveDrive, 
-            new Translation2d(0,1), new Translation2d(), 500, true),
+            new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
 
 
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
@@ -184,15 +186,16 @@ public class RobotContainer {
     private Command AprilLidarAlignL3Left = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
 
+        new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
         // new IfCommand(() -> m_robotElevator.isL3Primed(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.LEFT),
-        // )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_PREP, Side.LEFT)
+        ), () -> m_robotElevator.isL3Primed()),
 
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
 
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_1 - Units.inchesToMeters(0), Side.LEFT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_SCORE, Side.LEFT),
         new LidarAlign(m_robotSwerveDrive, m_lidar),
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
@@ -206,18 +209,19 @@ public class RobotContainer {
     private Command AprilLidarAlignL3Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
         
+        new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
         // new IfCommand(() -> m_robotElevator.isL3Primed(), new SequentialCommandGroup(
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT),
-        // )),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_PREP, Side.RIGHT)
+        ),() -> m_robotElevator.isL3Primed()),
         
-        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT),
+        // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedThree), m_robotElevator),
+        // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_2, Side.RIGHT),
 
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
 
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L3_DISTANCE_1 - Units.inchesToMeters(0), Side.RIGHT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_SCORE, Side.RIGHT),
         
         new LidarAlign(m_robotSwerveDrive, m_lidar),
 
@@ -233,14 +237,14 @@ public class RobotContainer {
     
     private Command AprilLidarAlignL2Left = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L2_SCORE_DISTANCE, Side.LEFT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.LEFT),
         
         new LidarAlign(m_robotSwerveDrive, m_lidar),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), AutoConstants.L2_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
 
@@ -248,34 +252,16 @@ public class RobotContainer {
 
     private Command AprilLidarAlignL2Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L2_SCORE_DISTANCE, Side.RIGHT),
-        
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.RIGHT),
+
         new LidarAlign(m_robotSwerveDrive, m_lidar),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), AutoConstants.L2_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
-    );
-
-    private Command placeCoral = new SequentialCommandGroup(
-        new InstantCommand(() -> m_robotSwerveDrive.stopModules()),
-        new InstantCommand(() -> System.out.println("Placing Some Coral")),
-        new WaitCommand(3),
-        new InstantCommand(() -> System.out.println("Done placing Some Coral"))
-    );
-
-    private Command aprilAlign = new SequentialCommandGroup(
-        new InstantCommand(() -> System.out.println("Aligning...")),
-        new WaitCommand(1)
-    );
-
-    private Command grabCoral = new SequentialCommandGroup(
-        new InstantCommand(() -> System.out.println("Yoinking some coral...")),
-        new WaitCommand(2),
-        new InstantCommand(() -> System.out.println("Done yoinking some coral..."))
     );
 
     private Command leftAlgaeRemove = new SequentialCommandGroup(
@@ -283,11 +269,11 @@ public class RobotContainer {
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Primed);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L2_ALGAE_REMOVAL - Units.inchesToMeters(1), Side.LEFT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.LEFT),
         new LidarAlign(m_robotSwerveDrive, m_lidar),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), AutoConstants.ALGAE_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
@@ -297,11 +283,11 @@ public class RobotContainer {
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL3Primed);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L2_ALGAE_REMOVAL - Units.inchesToMeters(1), Side.LEFT),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.LEFT),
         new LidarAlign(m_robotSwerveDrive, m_lidar),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL3Go);}, m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), 500, true),
+        new Translation2d(0,1), new Translation2d(), AutoConstants.ALGAE_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
@@ -317,20 +303,25 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+        NamedCommands.registerCommand("grab-coral", new waitFeedCoral(m_robotElevator));
+        NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
+            new MoveForTimeCommand(m_robotSwerveDrive, 
+                new Translation2d(0, 1), 
+                new Translation2d(), 200, true
+        ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
         
         NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
         NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL4Right);
-        NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL3Left);
-        NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL3Right);
-        NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL2Left);
-        NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL2Right);
+        NamedCommands.registerCommand("place-coral-left-l3", AprilLidarAlignL3Left);
+        NamedCommands.registerCommand("place-coral-right-l3", AprilLidarAlignL3Right);
+        NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
+        NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
 
         NamedCommands.registerCommand("lineup-no-arm", new SequentialCommandGroup(
-            new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
+            new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.LEFT),
             new LidarAlign(m_robotSwerveDrive, m_lidar)
         ));
-
-        NamedCommands.registerCommand("grab-coral", grabCoral);
 
         configureButtonBindings();        
         configureVirtualButtonBindings();
@@ -628,7 +619,8 @@ public class RobotContainer {
 
         for (String auto : autos) {
             if (auto.endsWith(".auto"))
-                autoChooser.addOption(auto.replaceAll(".auto", ""), auto);
+                autoChooser.addOption(auto.replaceAll(".auto", ""), auto.replaceAll(".auto", ""));
+            // System.out.println(auto);
         }
 
         autoChooser.onChange((filename) -> {

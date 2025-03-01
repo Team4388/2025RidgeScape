@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
+import frc4388.robot.Constants.AutoConstants;
 import frc4388.robot.subsystems.SwerveDrive;
 import frc4388.robot.subsystems.Vision;
 import frc4388.utility.Gains;

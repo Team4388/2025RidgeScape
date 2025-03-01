@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc4388.robot.Constants.AutoConstants;
 import frc4388.robot.Constants.FieldConstants;
 
 public class ReefPositionHelper {
@@ -79,9 +80,9 @@ public class ReefPositionHelper {
     public static double getSide(Side side){
         switch(side) {
             case LEFT:
-                return -(FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET);
+                return -(AutoConstants.X_SCORING_POSITION_OFFSET);
             case RIGHT:
-                return (FieldConstants.HORISONTAL_SCORING_POSITION_OFFSET);
+                return (AutoConstants.X_SCORING_POSITION_OFFSET);
             case CENTER:
                 return 0;
         }

@@ -22,12 +22,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.Constants.ElevatorConstants;
 import frc4388.robot.Constants.LEDConstants;
-import frc4388.robot.Constants.SwerveDriveConstants.AutoConstants;
+import frc4388.robot.Constants.AutoConstants;
 import frc4388.robot.subsystems.LED;
 import frc4388.utility.LEDPatterns;
+import frc4388.utility.Status;
+import frc4388.utility.Subsystem;
 import frc4388.utility.TimesNegativeOne;
+import frc4388.utility.Status.ReportLevel;
 
-public class Elevator extends SubsystemBase {
+public class Elevator extends Subsystem {
   /** Creates a new Elevator. */
   private TalonFX elevatorMotor;
   private TalonFX endeffectorMotor;
@@ -237,6 +240,8 @@ public class Elevator extends SubsystemBase {
   private void periodicWaiting() {
     if (!basinBeamBreak.get()) 
       transitionState(CoordinationState.Ready);
+    if(!endeffectorLimitSwitch.get())
+      transitionState(CoordinationState.Hovering);
   }
 
   // private void periodicWaitingTripped() {
@@ -245,12 +250,15 @@ public class Elevator extends SubsystemBase {
   // }
   
   private void periodicReady() {
-    if (elevatorAtReference())
+    if (elevatorAtReference() && !endeffectorLimitSwitch.get())
       transitionState(CoordinationState.Hovering);
+    if(elevatorAtReference() && endeffectorLimitSwitch.get())
+      transitionState(CoordinationState.Waiting);
   }
 
   private void periodicScoring() {
-    if (!endeffectorLimitSwitch.get()) transitionState(CoordinationState.Waiting);
+    if (!endeffectorLimitSwitch.get()) 
+      transitionState(CoordinationState.Waiting);
   }
 
   public void manualElevatorVel(double velocity) {
@@ -307,9 +315,32 @@ public class Elevator extends SubsystemBase {
     return currentState == CoordinationState.PrimedThree;
   }
 
+  public boolean hasCoral(){
+    return elevatorAtReference() && currentState == CoordinationState.Hovering && !endeffectorLimitSwitch.get();
+  }
+
   public void armShuffle(){
     if(!basinBeamBreak.get()){
       //shuffle the coral with the arm until coral hits beam break
     }
+  }
+
+  @Override
+  public String getSubsystemName() {
+    return "Elevator";
+  }
+
+  @Override
+  public void queryStatus() {}
+
+  @Override
+  public Status diagnosticStatus() {
+    Status status = new Status();
+
+    status.addReport(ReportLevel.INFO, "Elevator Mode: " + currentState.name());
+    status.diagnoseHardwareCTRE("Elevator Motor", elevatorMotor);
+    status.diagnoseHardwareCTRE("Endeffector Motor", endeffectorMotor);
+
+    return status;
   }
 }

@@ -13,19 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-right-l4"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Bottom Reef to Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-feed"
           }
         },
         {
@@ -43,13 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-left-l4"
           }
         }
       ]

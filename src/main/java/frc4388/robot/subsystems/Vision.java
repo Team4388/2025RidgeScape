@@ -36,6 +36,7 @@ import frc4388.robot.Constants.FieldConstants;
 import frc4388.robot.Constants.VisionConstants;
 import frc4388.utility.Status;
 import frc4388.utility.Subsystem;
+import frc4388.utility.Status.ReportLevel;
 
 public class Vision extends Subsystem {
 
@@ -310,6 +311,17 @@ public class Vision extends Subsystem {
     @Override
     public Status diagnosticStatus() {
         Status status = new Status();
+
+        if(cameras[0].isConnected())
+            status.addReport(ReportLevel.INFO, "Left Camera Connected");
+        else
+            status.addReport(ReportLevel.ERROR, "Left Camera DISCONNECTED");
+
+        if(cameras[1].isConnected())
+            status.addReport(ReportLevel.INFO, "Right Camera Connected");
+        else
+            status.addReport(ReportLevel.ERROR, "Right Camera DISCONNECTED");
+
 
         return status;
     }
