@@ -21,6 +21,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -415,7 +416,10 @@ public final class Constants {
         public static final double LEFT_AXIS_DEADBAND = 0.1;
 
     }
-
+    public static final class ClimberConstants {
+        public static final CanDevice CLIMBER_ID = new CanDevice("Climber", 311);
+        public static final double CLIMBER_SPEED = 0.1;
+    }
     public static final class ElevatorConstants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
