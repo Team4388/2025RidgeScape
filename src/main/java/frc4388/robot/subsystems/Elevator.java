@@ -256,6 +256,8 @@ public class Elevator extends SubsystemBase {
   public void manualElevatorVel(double velocity) {
     if (Math.abs(velocity) > 0.1) {
       elevatorMotor.set(velocity);
+      elevatorManualStop = false;
+      return;
     }
     if (!elevatorManualStop) {
       elevatorManualStop = true;
@@ -266,6 +268,8 @@ public class Elevator extends SubsystemBase {
   public void manualEndeffectorVel(double velocity) {
     if (Math.abs(velocity) > 0.1) {
       endeffectorMotor.set(velocity);
+      endefectorManualStop = false;
+      return;
     }
     if (!endefectorManualStop) {
       endefectorManualStop = true;

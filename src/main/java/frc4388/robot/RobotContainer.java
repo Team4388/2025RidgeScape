@@ -438,12 +438,12 @@ public class RobotContainer {
         // While Left Trigger NOT Pressed: Fine Alignment
         new Trigger(() -> getDeadbandedDriverController().getPOV() != -1 && !(getDeadbandedDriverController().getLeftTriggerAxis() > 0.8))
             .whileTrue(new RunCommand(
-                () -> m_robotSwerveDrive.driveWithInput(
+                () -> m_robotSwerveDrive.driveFine(
                     new Translation2d(
                         1, 
-                        Rotation2d.fromDegrees(getDeadbandedDriverController().getPOV()-90)
+                        Rotation2d.fromDegrees(getDeadbandedDriverController().getPOV())
                     ), 
-                    getDeadbandedDriverController().getRight(), false
+                    getDeadbandedDriverController().getRight(), 0.15
                 ), m_robotSwerveDrive))
             .onFalse(new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive));
         
