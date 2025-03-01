@@ -13,13 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-right-l4"
           }
         },
         {
@@ -43,13 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-left-l4"
           }
         }
       ]

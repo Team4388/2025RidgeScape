@@ -301,6 +301,10 @@ public class Elevator extends Subsystem {
     return currentState == CoordinationState.PrimedThree;
   }
 
+  public boolean hasCoral(){
+    return elevatorAtReference() && currentState == CoordinationState.Hovering && !endeffectorLimitSwitch.get();
+  }
+
   public void armShuffle(){
     if(!basinBeamBreak.get()){
       //shuffle the coral with the arm until coral hits beam break

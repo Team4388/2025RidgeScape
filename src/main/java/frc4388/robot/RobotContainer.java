@@ -47,6 +47,7 @@ import frc4388.robot.commands.LidarAlign;
 import frc4388.robot.commands.MoveForTimeCommand;
 import frc4388.robot.commands.waitElevatorRefrence;
 import frc4388.robot.commands.waitEndefectorRefrence;
+import frc4388.robot.commands.waitFeedCoral;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -295,6 +296,13 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+        NamedCommands.registerCommand("grab-coral", new waitFeedCoral(m_robotElevator));
+        NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
+            new MoveForTimeCommand(m_robotSwerveDrive, 
+                new Translation2d(0, 1), 
+                new Translation2d(), 200, true
+        ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
         
         NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
         NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL4Right);
@@ -642,9 +650,9 @@ public class RobotContainer {
     //     return autoCommand;
 	// } catch (Exception e) {
 	//     DriverStation.reportError("Path planner error: " + e.getMessage(), e.getStackTrace());
-	    // return autoCommand;
+	    return autoCommand;
 	// }
-    return new PathPlannerAuto("Line-up-no-arm");
+    // return new PathPlannerAuto("Line-up-no-arm");
 	// zach told me to do the below comment
 	//return new GotoPositionCommand(m_robotSwerveDrive, m_vision);
       //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
@@ -659,7 +667,8 @@ public class RobotContainer {
 
         for (String auto : autos) {
             if (auto.endsWith(".auto"))
-                autoChooser.addOption(auto.replaceAll(".auto", ""), auto);
+                autoChooser.addOption(auto.replaceAll(".auto", ""), auto.replaceAll(".auto", ""));
+            // System.out.println(auto);
         }
 
         autoChooser.onChange((filename) -> {
