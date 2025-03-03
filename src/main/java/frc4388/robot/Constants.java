@@ -69,7 +69,7 @@ public final class Constants {
     
     public static final class SwerveDriveConstants {
 
-        public static final double MAX_ROT_SPEED        = 3.5;
+        public static final double MAX_ROT_SPEED        = Math.PI * 2;
         public static final double AUTO_MAX_ROT_SPEED = 1.5;
         public static final double MIN_ROT_SPEED        = 1.0;
         public static       double ROTATION_SPEED       = MAX_ROT_SPEED;
@@ -329,7 +329,7 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
+        public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
         public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
         public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
@@ -339,6 +339,9 @@ public final class Constants {
                 
         public static final double XY_TOLERANCE = 0.07; // Meters
         public static final double ROT_TOLERANCE = 5; // Degrees
+
+        public static final double MIN_XY_PID_OUTPUT = 0.0;
+        public static final double MIN_ROT_PID_OUTPUT = 0.0;
                 
         // X is tangent to reef side
         // Y is normal to reef side
@@ -346,7 +349,7 @@ public final class Constants {
         public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
 
         public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
-        public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5.5);
         
         public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
         public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
@@ -366,15 +369,15 @@ public final class Constants {
         public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
 
         public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
-        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), -Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
+        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547+(1*-1)), -Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
         
-        public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
+        public static final double MIN_ESTIMATION_DISTANCE = 2; // Meters
 
         // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate
         // X, Y, Theta
         // https://www.chiefdelphi.com/t/photonvision-finding-standard-deviations-for-swervedriveposeestimator/467802/2
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(3, 3, 4);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
@@ -424,6 +427,8 @@ public final class Constants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
 
+        // public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
+        
         public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
         public static final int ENDEFFECTOR_LIMIT_SWITCH = 9; // TODO: FIND
         
@@ -432,6 +437,7 @@ public final class Constants {
         
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
         public static final double WAITING_POSITION_ELEVATOR = -9.5; // TODO: find 2-4 in off the pipe
+        public static final double HOVERING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;
         public static final double DEALGAE_L2_ELEVATOR = -23.5;

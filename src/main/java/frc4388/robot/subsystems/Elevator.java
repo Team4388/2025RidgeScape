@@ -49,6 +49,7 @@ public class Elevator extends Subsystem {
 
   private DigitalInput basinBeamBreak;
   private DigitalInput endeffectorLimitSwitch;
+  // private DigitalInput intakeIR;
 
   public enum CoordinationState {
     Waiting, // for coral into the though
@@ -69,12 +70,14 @@ public class Elevator extends Subsystem {
   private CoordinationState currentState;
 
   public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, LED led) {
+  // public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, DigitalInput intakeDigitalInput, LED led) {
     elevatorMotor = elevatorTalonFX;
     endeffectorMotor = endeffectorTalonFX;
     this.led = led;
 
     this.basinBeamBreak = basinLimitSwitch;
     this.endeffectorLimitSwitch = endeffectorLimitSwitch;
+    // this.intakeIR = intakeDigitalInput;
 
     elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     endeffectorMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -129,14 +132,14 @@ public class Elevator extends Subsystem {
       }
 
       case Hovering: {
-        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.HOVERING_POSITION_ELEVATOR);
         PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
         led.setMode(LEDConstants.READY_PATTERN);
         break;
       }
 
       case L2Score: {
-        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(elevatorMotor, ElevatorConstants.HOVERING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.L2_SCORE_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
@@ -240,8 +243,8 @@ public class Elevator extends Subsystem {
   private void periodicWaiting() {
     if (!basinBeamBreak.get()) 
       transitionState(CoordinationState.Ready);
-    if(!endeffectorLimitSwitch.get())
-      transitionState(CoordinationState.Hovering);
+    // if(!endeffectorLimitSwitch.get())
+    //   transitionState(CoordinationState.Hovering);
   }
 
   // private void periodicWaitingTripped() {
@@ -253,7 +256,7 @@ public class Elevator extends Subsystem {
     if (elevatorAtReference() && !endeffectorLimitSwitch.get())
       transitionState(CoordinationState.Hovering);
     if(elevatorAtReference() && endeffectorLimitSwitch.get())
-      transitionState(CoordinationState.Waiting);
+      transitionState(CoordinationState.Hovering);
   }
 
   private void periodicScoring() {

@@ -48,7 +48,7 @@ public class Vision extends Subsystem {
 
     private boolean isTagDetected = false;
     private boolean isTagProcessed = false;
-    private Pose2d lastVisionPose = new Pose2d();
+    public Pose2d lastVisionPose = new Pose2d();
     private Pose2d lastPhysOdomPose = new Pose2d();
 
     private Matrix<N3, N1> curStdDevs;
@@ -265,7 +265,8 @@ public class Vision extends Subsystem {
 
     public Pose2d getPose2d() {
         if(isTagDetected && isTagProcessed)
-            return lastVisionPose;
+            // return lastVisionPose;
+            return lastPhysOdomPose;
         else
             return lastPhysOdomPose;
     }

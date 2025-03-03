@@ -148,8 +148,12 @@ public class RobotContainer {
 
         new MoveForTimeCommand(m_robotSwerveDrive, 
         new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
-        
-        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
+
+        new ConditionalCommand(
+            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
+             () -> m_robotElevator.hasCoral()),
+
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 
@@ -177,11 +181,17 @@ public class RobotContainer {
 
         new waitEndefectorRefrence(m_robotElevator),
 
+        
         new MoveForTimeCommand(m_robotSwerveDrive, 
             new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
 
+        new ConditionalCommand(
+            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
+                () -> m_robotElevator.hasCoral()),
 
-        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
+
+
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 
@@ -295,8 +305,10 @@ public class RobotContainer {
     );
 
     private Command thrustIntake = new SequentialCommandGroup(
-        new MoveForTimeCommand(m_robotSwerveDrive, new Translation2d(0,-1), new Translation2d(), 100, true),
-        new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive)
+        new InstantCommand(() -> m_robotSwerveDrive.startTurboPeriod(), m_robotSwerveDrive),
+        new MoveForTimeCommand(m_robotSwerveDrive, new Translation2d(0,-1), new Translation2d(), 300, true),
+        new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive),
+        new InstantCommand(() -> m_robotSwerveDrive.endSlowPeriod(), m_robotSwerveDrive)
     );
     
     private Boolean operatorManualMode = false;
@@ -310,7 +322,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
             new MoveForTimeCommand(m_robotSwerveDrive, 
                 new Translation2d(0, 1), 
-                new Translation2d(), 200, true
+                new Translation2d(), 400, true
         ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
         
         NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
@@ -428,6 +440,10 @@ public class RobotContainer {
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 270 && getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
             .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
         
+        new Trigger(() ->getDeadbandedDriverController().getRightTriggerAxis() > 0.8)
+            .onTrue(new InstantCommand(() -> m_robotSwerveDrive.startTurboPeriod()))
+            .onFalse(new InstantCommand(() -> m_robotSwerveDrive.endSlowPeriod()));
+        
         // While Left Trigger NOT Pressed: Fine Alignment
         new Trigger(() -> getDeadbandedDriverController().getPOV() != -1 && !(getDeadbandedDriverController().getLeftTriggerAxis() > 0.8))
             .whileTrue(new RunCommand(
@@ -436,7 +452,7 @@ public class RobotContainer {
                         1, 
                         Rotation2d.fromDegrees(getDeadbandedDriverController().getPOV())
                     ), 
-                    getDeadbandedDriverController().getRight(), 0.15
+                    getDeadbandedDriverController().getRight(), 0.30
                 ), m_robotSwerveDrive))
             .onFalse(new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive));
         
@@ -511,10 +527,10 @@ public class RobotContainer {
             .onTrue (new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.BallRemoverL3Primed), m_robotElevator))
             .onFalse(new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.BallRemoverL3Go), m_robotElevator));
         
-        new JoystickButton(getDeadbandedOperatorController(), XboxController.START_BUTTON)
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.BACK_BUTTON)
             .onTrue(new InstantCommand(() -> {operatorManualMode = !operatorManualMode;}));
         
-        new JoystickButton(getDeadbandedOperatorController(), XboxController.BACK_BUTTON)
+        new JoystickButton(getDeadbandedOperatorController(), XboxController.START_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotElevator.togggleAutoIntaking()));
 
         // Auto Scoring 

@@ -326,7 +326,7 @@ public class SwerveDrive extends Subsystem {
                 rotTarget += deltaAngle;
             }
             
-            swerveDriveTrain.addVisionMeasurement(vision.getPose2d(), time);
+            swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);
         }
 
         // if(e.isPresent())
@@ -390,6 +390,11 @@ public class SwerveDrive extends Subsystem {
     public void startSlowPeriod() {
         tmp_gear_index = gear_index;
         setToSlow();
+    }
+
+    public void startTurboPeriod() {
+        tmp_gear_index = gear_index;
+        setToTurbo();
     }
 
     public void endSlowPeriod() {

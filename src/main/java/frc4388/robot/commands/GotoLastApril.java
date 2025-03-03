@@ -1,5 +1,7 @@
 package frc4388.robot.commands;
 
+import static frc4388.robot.Constants.OIConstants.LEFT_AXIS_DEADBAND;
+
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -74,6 +76,10 @@ public class GotoLastApril extends Command {
     double yerr;
     double roterr;
 
+    double xoutput;
+    double youtput;
+    double rotoutput;
+
     @Override
     public void execute() {
         xerr = TimesNegativeOne.invert(targetpos.getX() - vision.getPose2d().getX(), TimesNegativeOne.XAxis);
@@ -100,9 +106,9 @@ public class GotoLastApril extends Command {
         // SmartDashboard.putNumber("PID X Error", xerr);
         // SmartDashboard.putNumber("PID Y Error", yerr);
 
-        double xoutput = xPID.update(xerr);
-        double youtput = yPID.update(yerr);
-        double rotoutput = rotPID.update(roterr);
+        xoutput = xPID.update(xerr);
+        youtput = yPID.update(yerr);
+        rotoutput = rotPID.update(roterr);
 
         xoutput *= Math.abs(xerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
         youtput *= Math.abs(yerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
@@ -133,7 +139,10 @@ public class GotoLastApril extends Command {
 
     @Override
     public final boolean isFinished() {
-        boolean finished = (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
+        boolean finished = (
+            (Math.abs(xerr) < AutoConstants.XY_TOLERANCE || Math.abs(xoutput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
+            (Math.abs(yerr) < AutoConstants.XY_TOLERANCE || Math.abs(youtput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
+            (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE || Math.abs(rotoutput) <= AutoConstants.MIN_ROT_PID_OUTPUT));
         // System.out.println(finished);
 
         if(finished)
