@@ -61,7 +61,6 @@ import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.Elevator.CoordinationState;
 import frc4388.robot.subsystems.Lidar;
-import frc4388.robot.subsystems.Climber;
 import frc4388.robot.subsystems.Elevator;
 // import frc4388.robot.subsystems.Endeffector;
 import frc4388.robot.subsystems.SwerveDrive;
@@ -92,7 +91,6 @@ public class RobotContainer {
     public final Lidar m_lidar = new Lidar();
     public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_vision, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
-    public final Climber m_robotClimber = new Climber(m_robotMap.climber);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
 
@@ -559,14 +557,6 @@ public class RobotContainer {
         new Trigger(() -> getDeadbandedOperatorController().getPOV() == 0 && !operatorManualMode)
             .onTrue(rightAlgaeRemove);
 
-        new Trigger(() -> getDeadbandedOperatorController().getPOV() == 90)
-            .onTrue(new InstantCommand(() -> m_robotClimber.climberOut()))
-            .onFalse(new InstantCommand(() -> m_robotClimber.stopClimber()));
-
-        new Trigger(() -> getDeadbandedOperatorController().getPOV() == 270)
-            .onTrue(new InstantCommand(() -> m_robotClimber.climberIn()))
-            .onFalse(new InstantCommand(() -> m_robotClimber.stopClimber()));
-        
         // ? /* Programer Buttons (Controller 3)*/
 
         // * /* Auto Recording */
