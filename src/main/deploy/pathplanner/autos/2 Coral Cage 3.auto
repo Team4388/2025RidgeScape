@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Barge to Reef"
+            "pathName": "Cage 3 to Reef"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-right-l4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Center Reef to Bottom Feed"
+            "pathName": "Reef 5 to Top Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-feed"
           }
         },
         {
@@ -37,19 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Feed to Reef"
+            "pathName": "Top Feed to Reef 6"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-right-l4"
           }
         }
       ]

@@ -90,7 +90,7 @@ public class RobotContainer {
     public final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
-    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotLED);
+    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_vision, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     public final Climber m_robotClimber = new Climber(m_robotMap.climber);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
@@ -332,10 +332,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
         NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
 
-        NamedCommands.registerCommand("lineup-no-arm", new SequentialCommandGroup(
-            new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.LEFT),
-            new LidarAlign(m_robotSwerveDrive, m_lidar)
-        ));
+        NamedCommands.registerCommand("enable-preraise-l4", new InstantCommand(() -> {
+            m_robotElevator.enablePreRaiseElevator();
+        }));
 
         configureButtonBindings();        
         configureVirtualButtonBindings();

@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Blue Cage to Reef"
+            "pathName": "Cage 2 to Reef 5"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "place-coral-left-l4"
+            "name": "place-coral-right-l4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Reef to Feed"
+            "pathName": "Reef 5 to Top Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-feed"
           }
         },
         {
@@ -31,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Feed to Reef"
+            "pathName": "Top Feed to Reef 6"
           }
         },
         {

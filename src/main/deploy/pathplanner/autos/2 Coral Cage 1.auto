@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Blue Cage to Reef"
+            "pathName": "Cage 1 to Reef"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-right-l4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Reef to Feed"
+            "pathName": "Reef 5 to Top Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-feed"
           }
         },
         {
@@ -37,19 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Feed to Reef"
+            "pathName": "Top Feed to Reef 6"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "april-allign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral"
+            "name": "place-coral-right-l4"
           }
         }
       ]
