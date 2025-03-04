@@ -329,6 +329,8 @@ public final class Constants {
 
     public static final class AutoConstants {
         public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
+       // public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
+
         public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
         public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
@@ -353,7 +355,7 @@ public final class Constants {
         public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
         public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         
-        public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
+        public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
 
         public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
 
@@ -445,6 +447,7 @@ public final class Constants {
         public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
         public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
         //Max for endefector = 60%
+        public static final double L2_SCORE_ELEVATOR = -5;
 
         public static final double L2_SCORE_ENDEFFECTOR = -19;
 

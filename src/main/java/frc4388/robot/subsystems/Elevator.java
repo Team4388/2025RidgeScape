@@ -139,7 +139,7 @@ public class Elevator extends Subsystem {
       }
 
       case L2Score: {
-        PIDPosition(elevatorMotor, ElevatorConstants.HOVERING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(elevatorMotor, ElevatorConstants.L2_SCORE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.L2_SCORE_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
         break;
