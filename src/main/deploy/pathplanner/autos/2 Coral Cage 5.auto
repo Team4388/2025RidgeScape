@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "prepare-l4"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Cage 5 to Reef"
@@ -38,6 +44,12 @@
           "type": "path",
           "data": {
             "pathName": "Bottom Feed to Reef 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "await-coral"
           }
         },
         {

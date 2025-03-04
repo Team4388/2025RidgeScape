@@ -49,6 +49,7 @@ import frc4388.robot.commands.MoveForTimeCommand;
 import frc4388.robot.commands.waitElevatorRefrence;
 import frc4388.robot.commands.waitEndefectorRefrence;
 import frc4388.robot.commands.waitFeedCoral;
+import frc4388.robot.commands.waitSupplier;
 import frc4388.robot.commands.Swerve.neoJoystickPlayback;
 import frc4388.robot.commands.Swerve.neoJoystickRecorder;
 
@@ -89,7 +90,7 @@ public class RobotContainer {
     public final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
-    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_vision, m_robotLED);
+    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotMap.basinLimitSwitch, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -108,7 +109,7 @@ public class RobotContainer {
 
     // ! Teleop Commands
     public void stop() {
-        new InstantCommand(()->{}, m_robotSwerveDrive).schedule();;;;;
+        new InstantCommand(()->{}, m_robotSwerveDrive).schedule();
         m_robotSwerveDrive.stopModules();
     }
 
@@ -116,6 +117,8 @@ public class RobotContainer {
     private String lastAutoName = "defualt.auto";
     private SendableChooser<String> autoChooser;
     private Command autoCommand;
+
+    private Command waitFeedStation = new waitSupplier(m_robotElevator::readyToMove);
 
     // private ConfigurableString autoplaybackName = new ConfigurableString("Auto Playback Name", lastAutoName);
     // private neoJoystickPlayback autoPlayback = new neoJoystickPlayback(m_robotSwerveDrive, 
@@ -316,7 +319,9 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        NamedCommands.registerCommand("grab-coral", new waitFeedCoral(m_robotElevator));
+        NamedCommands.registerCommand("grab-coral", waitFeedStation.asProxy());
+        NamedCommands.registerCommand("await-coral", new waitFeedCoral(m_robotElevator));
+
         NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
             new MoveForTimeCommand(m_robotSwerveDrive, 
                 new Translation2d(0, 1), 
@@ -330,8 +335,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
         NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
 
-        NamedCommands.registerCommand("enable-preraise-l4", new InstantCommand(() -> {
-            m_robotElevator.enablePreRaiseElevator();
+        NamedCommands.registerCommand("prepare-l4", new InstantCommand(() -> {
+            m_robotElevator.transitionState(CoordinationState.PrimedFour);
         }));
 
         configureButtonBindings();        

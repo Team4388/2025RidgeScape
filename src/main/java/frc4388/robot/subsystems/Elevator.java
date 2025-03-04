@@ -49,7 +49,7 @@ public class Elevator extends Subsystem {
 
   private DigitalInput basinBeamBreak;
   private DigitalInput endeffectorLimitSwitch;
-  // private DigitalInput intakeIR;
+  private DigitalInput intakeIR;
 
   public enum CoordinationState {
     Waiting, // for coral into the though
@@ -69,15 +69,15 @@ public class Elevator extends Subsystem {
 
   private CoordinationState currentState;
 
-  public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, LED led) {
-  // public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, DigitalInput intakeDigitalInput, LED led) {
+  // public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, LED led) {
+  public Elevator(TalonFX elevatorTalonFX, TalonFX endeffectorTalonFX, DigitalInput basinLimitSwitch, DigitalInput endeffectorLimitSwitch, DigitalInput intakeDigitalInput, LED led) {
     elevatorMotor = elevatorTalonFX;
     endeffectorMotor = endeffectorTalonFX;
     this.led = led;
 
     this.basinBeamBreak = basinLimitSwitch;
     this.endeffectorLimitSwitch = endeffectorLimitSwitch;
-    // this.intakeIR = intakeDigitalInput;
+    this.intakeIR = intakeDigitalInput;
 
     elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     endeffectorMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -294,6 +294,7 @@ public class Elevator extends Subsystem {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
     SmartDashboard.putNumber("endefector", endeffectorLimitSwitch.get() ? 1 : 0);
+    SmartDashboard.putNumber("intake", intakeIR.get() ? 1 : 0);
     SmartDashboard.putString("State", currentState.toString());
     
     if (disableAutoIntake) return;
@@ -310,16 +311,21 @@ public class Elevator extends Subsystem {
     // }
   }
 
-  public boolean isL4Primed(){
+  public boolean isL4Primed() {
     return currentState == CoordinationState.PrimedFour;
   }
 
-  public boolean isL3Primed(){
+  public boolean isL3Primed() {
     return currentState == CoordinationState.PrimedThree;
   }
 
-  public boolean hasCoral(){
+  public boolean hasCoral() {
     return elevatorAtReference() && currentState == CoordinationState.Hovering && !endeffectorLimitSwitch.get();
+  }
+
+  public boolean readyToMove() {
+    // return !intakeIR.get() || hasCoral();
+    return hasCoral();
   }
 
   public void armShuffle(){

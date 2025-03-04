@@ -427,6 +427,8 @@ public final class Constants {
         
         public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
         public static final int ENDEFFECTOR_LIMIT_SWITCH = 9; // TODO: FIND
+        public static final int INTAKE_LIMIT_SWITCH = 6; // TODO: FIND
+
         
         public static final double GEAR_RATIO_ELEVATOR = -9.0;
         //Max for elevator = 50%
