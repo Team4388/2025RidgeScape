@@ -46,6 +46,7 @@ import frc4388.utility.controller.VirtualController;
 import frc4388.robot.commands.GotoLastApril;
 import frc4388.robot.commands.LidarAlign;
 import frc4388.robot.commands.MoveForTimeCommand;
+import frc4388.robot.commands.WhileTrueCommand;
 import frc4388.robot.commands.waitElevatorRefrence;
 import frc4388.robot.commands.waitEndefectorRefrence;
 import frc4388.robot.commands.waitFeedCoral;
@@ -316,6 +317,12 @@ public class RobotContainer {
     
     private Boolean operatorManualMode = false;
     
+    public Command LoopAprilLidarAlignL4Left = new WhileTrueCommand(AprilLidarAlignL4Left, () -> !m_robotElevator.hasCoral());
+    public Command LoopAprilLidarAlignL4Right = new WhileTrueCommand(AprilLidarAlignL4Right, () -> !m_robotElevator.hasCoral());
+    public Command LoopAprilLidarAlignL3Left = new WhileTrueCommand(AprilLidarAlignL3Left, () -> !m_robotElevator.hasCoral());
+    public Command LoopAprilLidarAlignL3Right = new WhileTrueCommand(AprilLidarAlignL3Right, () -> !m_robotElevator.hasCoral());
+    public Command LoopAprilLidarAlignL2Left = new WhileTrueCommand(AprilLidarAlignL2Left, () -> !m_robotElevator.hasCoral());
+    public Command LoopAprilLidarAlignL2Right = new WhileTrueCommand(AprilLidarAlignL2Right, () -> !m_robotElevator.hasCoral());
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -330,12 +337,12 @@ public class RobotContainer {
                 new Translation2d(), 400, true
         ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
         
-        NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
-        NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL4Right);
-        NamedCommands.registerCommand("place-coral-left-l3", AprilLidarAlignL3Left);
-        NamedCommands.registerCommand("place-coral-right-l3", AprilLidarAlignL3Right);
-        NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
-        NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
+        NamedCommands.registerCommand("place-coral-left-l4", LoopAprilLidarAlignL4Left);
+        NamedCommands.registerCommand("place-coral-right-l4", LoopAprilLidarAlignL4Right);
+        NamedCommands.registerCommand("place-coral-left-l3", LoopAprilLidarAlignL3Left);
+        NamedCommands.registerCommand("place-coral-right-l3", LoopAprilLidarAlignL3Right);
+        NamedCommands.registerCommand("place-coral-left-l2", LoopAprilLidarAlignL2Left);
+        NamedCommands.registerCommand("place-coral-right-l2", LoopAprilLidarAlignL2Right);
 
         NamedCommands.registerCommand("prepare-l4", new InstantCommand(() -> {
             m_robotElevator.transitionState(CoordinationState.PrimedFour);
@@ -638,6 +645,8 @@ public class RobotContainer {
         File dir = new File("/home/lvuser/deploy/pathplanner/autos/");
         // File dir = new File("C:\\Users\\Ridgebotics\\Documents\\GitHub\\2025RidgeScape\\src\\main\\deploy\\pathplanner\\autos\\");
         String[] autos = dir.list();
+
+        if(autos == null) return;
 
         for (String auto : autos) {
             if (auto.endsWith(".auto"))
