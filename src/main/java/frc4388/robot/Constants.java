@@ -297,7 +297,7 @@ public final class Constants {
         public static final Gains XY_GAINS = new Gains(5,0.4,0.0);
        // public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
 
-        public static final Gains ROT_GAINS = new Gains(0.05,0,0.007);
+        // public static final Gains ROT_GAINS = new Gains(0.05,0,0.007);
         // public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
         public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);

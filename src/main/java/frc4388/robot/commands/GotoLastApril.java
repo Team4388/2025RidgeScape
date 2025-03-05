@@ -31,7 +31,7 @@ public class GotoLastApril extends Command {
 
     private PID xPID = new PID(AutoConstants.XY_GAINS, 0);
     private PID yPID = new PID(AutoConstants.XY_GAINS, 0);
-    private PID rotPID = new PID(AutoConstants.ROT_GAINS, 0);
+    // private PID rotPID = new PID(AutoConstants.ROT_GAINS, 0);
     private Pose2d targetpos;
 
     SwerveDrive swerveDrive;
@@ -58,18 +58,16 @@ public class GotoLastApril extends Command {
         tagRelativeXError = val;
     }
 
-    Alliance alliance = null;
-
     @Override
     public void initialize() {
         xPID.initialize();
         yPID.initialize();
-        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), side, 
-        Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
-        distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get()));
-        Optional<Alliance> a = DriverStation.getAlliance();
-        if(!a.isEmpty())
-            alliance = a.get();
+        this.targetpos = ReefPositionHelper.getNearestPosition(
+            this.vision.getPose2d(), 
+            side, 
+            Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
+            distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get())
+        );
     }
     
     double xerr;
@@ -91,8 +89,6 @@ public class GotoLastApril extends Command {
 
         roterr = ((targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees()));
 
-        boolean invert = Math.abs(roterr) > 180;
-
         if(roterr > 180){
             roterr -= 360;
         }else if(roterr < -180){
@@ -108,11 +104,11 @@ public class GotoLastApril extends Command {
 
         xoutput = xPID.update(xerr);
         youtput = yPID.update(yerr);
-        rotoutput = rotPID.update(roterr);
+        // rotoutput = rotPID.update(roterr);
 
         xoutput *= Math.abs(xerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
         youtput *= Math.abs(yerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
-        rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
+        // rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
         
 
 
@@ -122,19 +118,18 @@ public class GotoLastApril extends Command {
             // 0,0
         );
 
-        Translation2d rightStick = new Translation2d(
-            Math.max(Math.min(rotoutput, 1), -1), 
-           0
-        );
-
-
+        // Translation2d rightStick = new Translation2d(
+        //     Math.max(Math.min(rotoutput, 1), -1), 
+        //    0
+        // );
 
         setTagRelativeXError(
             new Translation2d(xerr, yerr).getAngle()
             .rotateBy(targetpos.getRotation())
             .getCos());
 
-        swerveDrive.driveWithInput(leftStick, rightStick, true);
+        swerveDrive.driveRelativeLockedAngle(leftStick, targetpos.getRotation());
+        // swerveDrive.driveWithInputOrientation(leftStick, rightStick, true);
     }
 
     @Override
@@ -142,7 +137,8 @@ public class GotoLastApril extends Command {
         boolean finished = (
             (Math.abs(xerr) < AutoConstants.XY_TOLERANCE || Math.abs(xoutput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
             (Math.abs(yerr) < AutoConstants.XY_TOLERANCE || Math.abs(youtput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
-            (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE || Math.abs(rotoutput) <= AutoConstants.MIN_ROT_PID_OUTPUT));
+            (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE)
+        );
         // System.out.println(finished);
 
         if(finished)
