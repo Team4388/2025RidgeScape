@@ -56,6 +56,8 @@ public class ReefPositionHelper {
                 minDistance = dist;
             }
         }
+        
+        System.out.println(minPos.getRotation().getDegrees());
 
         return minPos;
     }

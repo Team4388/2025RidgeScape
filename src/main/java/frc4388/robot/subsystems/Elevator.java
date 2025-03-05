@@ -306,6 +306,10 @@ public class Elevator extends Subsystem {
     } else if (currentState == CoordinationState.Ready) {
       periodicReady();
     }
+
+    if(!intakeIR.get()){
+      led.setMode(LEDConstants.DOWN_PATTERN);
+    }
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
     // }
@@ -324,8 +328,8 @@ public class Elevator extends Subsystem {
   }
 
   public boolean readyToMove() {
-    // return !intakeIR.get() || hasCoral();
-    return hasCoral();
+    return !intakeIR.get() || hasCoral() || !endeffectorLimitSwitch.get();
+    // return hasCoral();
   }
 
   public void armShuffle(){

@@ -184,10 +184,12 @@ public class SwerveDrive extends Subsystem {
     public void driveFine(Translation2d leftStick, Translation2d rightStick, double percentOutput) {
         stopped = false;
         // Create robot-relative speeds.
+        if (rightStick.getNorm() > 0.1) rightStick = rightStick.times(0);
         swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
             .withVelocityX(leftStick.getX() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
             .withVelocityY(-leftStick.getY() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
             .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
+        
     }
 
 

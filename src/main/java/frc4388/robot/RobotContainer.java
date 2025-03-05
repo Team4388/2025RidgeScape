@@ -90,7 +90,7 @@ public class RobotContainer {
     public final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Lidar m_lidar = new Lidar();
-    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotMap.basinLimitSwitch, m_robotLED);
+    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotMap.IRIntakeBeam, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
@@ -250,6 +250,7 @@ public class RobotContainer {
     
     private Command AprilLidarAlignL2Left = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L2_PREP_DISTANCE, Side.LEFT),
         new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.LEFT),
         
         new LidarAlign(m_robotSwerveDrive, m_lidar),
@@ -265,6 +266,7 @@ public class RobotContainer {
 
     private Command AprilLidarAlignL2Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L2_PREP_DISTANCE, Side.RIGHT),
         new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.RIGHT),
 
         new LidarAlign(m_robotSwerveDrive, m_lidar),

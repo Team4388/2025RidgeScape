@@ -113,7 +113,7 @@ public final class Constants {
 
         private static final class ModuleSpecificConstants { //2025
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.4794921875+0.25);
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.22705078125+0.5);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
@@ -121,7 +121,7 @@ public final class Constants {
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.5);
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.07666015625);
             private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
@@ -129,7 +129,7 @@ public final class Constants {
             private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(-0.867431640625+0.25);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.37646484375);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
@@ -137,47 +137,13 @@ public final class Constants {
             private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.425537109375-0.25+0.25);
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.219970703125+0.5);
             private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
             private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
         }
-
-        /* private static final class ModuleSpecificConstants { // 2024
-            //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
-            private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
-            private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
-            
-            //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.133056640625);
-            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
-            private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-
-            //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.47705078125 + 0.5);
-            private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
-            private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
-            private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
-            
-            //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.355224609375 + 0.5);
-            private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
-            private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-        } */
 
         public static final class IDs {
             public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 4);
@@ -328,10 +294,11 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
+        public static final Gains XY_GAINS = new Gains(5,0.4,0.0);
        // public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
 
-        public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
+        public static final Gains ROT_GAINS = new Gains(0.05,0,0.007);
+        // public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
         public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
         public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
@@ -355,6 +322,7 @@ public final class Constants {
         public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
         public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         
+        public static final double L2_PREP_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
 
         public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
