@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -107,6 +108,9 @@ public class Elevator extends Subsystem {
 
 
   public void transitionState(CoordinationState state) {
+    // elevatorMotor.enable();
+    
+
     currentState = state;
     switch (currentState) {
       case Waiting: {

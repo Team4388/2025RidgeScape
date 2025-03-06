@@ -330,9 +330,13 @@ public class SwerveDrive extends Subsystem {
         SmartDashboard.putNumber("RotTartget", rotTarget);
 
         double time = Vision.getTime();
-        
+        double freq =  swerveDriveTrain.getOdometryFrequency();
 
-        vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(time));
+        Optional<Pose2d> curpose = swerveDriveTrain.samplePoseAt(time);
+        Optional<Pose2d> lastPose = swerveDriveTrain.samplePoseAt(time - freq);
+        
+        vision.setLastOdomPose(curpose);
+        vision.setLastOdomSpeed(curpose, lastPose, freq);
 
         if (vision.isTag()) {
             Pose2d pose = vision.getPose2d();

@@ -24,6 +24,9 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -48,13 +51,14 @@ public class Vision extends Subsystem {
 
     private boolean isTagDetected = false;
     private boolean isTagProcessed = false;
+
     public Pose2d lastVisionPose = new Pose2d();
     private Pose2d lastPhysOdomPose = new Pose2d();
+    private double lastOdomSpeed;
 
     private Matrix<N3, N1> curStdDevs;
 
     private Field2d field = new Field2d();
-
     
     ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
     .getLayout(getSubsystemName(), BuiltInLayouts.kList)
@@ -253,14 +257,18 @@ public class Vision extends Subsystem {
 
 
 
-
-
-
-
-
     public void setLastOdomPose(Optional<Pose2d> pose){
         if(pose.isPresent())
             lastPhysOdomPose = pose.get();
+    }
+
+    public void setLastOdomSpeed(Optional<Pose2d> curPose, Optional<Pose2d> lastPose, double freq){
+        if(curPose.isPresent() && lastPose.isPresent())
+            this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
+    }
+
+    public double getLastOdomSpeed(){
+        return lastOdomSpeed;
     }
 
     public Pose2d getPose2d() {
