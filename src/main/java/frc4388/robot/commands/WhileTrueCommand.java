@@ -34,23 +34,25 @@ public class WhileTrueCommand extends Command {
    */
   @SuppressWarnings("this-escape")
   public WhileTrueCommand(Command whileTrue, BooleanSupplier condition) {
-    m_whileTrue = requireNonNullParam(whileTrue, "onTrue", "WhileTrueCommand");
+    m_whileTrue = requireNonNullParam(whileTrue, "whileTrue", "WhileTrueCommand");
     m_condition = requireNonNullParam(condition, "condition", "WhileTrueCommand");
 
-    CommandScheduler.getInstance().registerComposedCommands(whileTrue);
+    //CommandScheduler.getInstance().registerComposedCommands(whileTrue);
 
-    addRequirements(whileTrue.getRequirements());
+    // addRequirements(whileTrue.getRequirements());
   }
 
   @Override
   public void initialize() {
     if(m_condition.getAsBoolean())
-     m_whileTrue.initialize();
+      m_whileTrue.initialize();
   }
 
   @Override
   public void execute() {
     m_whileTrue.execute();
+
+    System.out.println("Loop, " + !m_whileTrue.isFinished() + ", " +  m_condition.getAsBoolean());
 
     if(!m_whileTrue.isFinished())
       return;

@@ -141,7 +141,7 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-            leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
         
         stopped = false;
         if (fieldRelative) {
@@ -213,13 +213,28 @@ public class SwerveDrive extends Subsystem {
                 .withTargetDirection(rightStick.getAngle()));
     }
 
+    public void driveRelativeAngle(Translation2d leftStick, Rotation2d heading) {
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
+        leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
+        var ctrl = new SwerveRequest.FieldCentricFacingAngle()
+            .withVelocityX(leftStick.getX() * speedAdjust)
+            .withVelocityY(leftStick.getY() * speedAdjust)
+            .withTargetDirection(heading);
+        ctrl.HeadingController.setPID(
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        );
+        swerveDriveTrain.setControl(ctrl);
+    }
+
     public void driveRelativeLockedAngle(Translation2d leftStick, Rotation2d heading) {
         leftStick = leftStick.rotateBy(heading);
 
         var ctrl = new SwerveRequest.FieldCentricFacingAngle()
             .withVelocityX(leftStick.getX() * speedAdjust)
             .withVelocityY(leftStick.getY() * speedAdjust)
-            .withTargetDirection(Rotation2d.fromDegrees(rotTarget));
+            .withTargetDirection(heading);
         ctrl.HeadingController.setPID(
             SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
             SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,

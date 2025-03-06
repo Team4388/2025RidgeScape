@@ -317,12 +317,19 @@ public class RobotContainer {
     
     private Boolean operatorManualMode = false;
     
-    public Command LoopAprilLidarAlignL4Left = new WhileTrueCommand(AprilLidarAlignL4Left, () -> !m_robotElevator.hasCoral());
-    public Command LoopAprilLidarAlignL4Right = new WhileTrueCommand(AprilLidarAlignL4Right, () -> !m_robotElevator.hasCoral());
-    public Command LoopAprilLidarAlignL3Left = new WhileTrueCommand(AprilLidarAlignL3Left, () -> !m_robotElevator.hasCoral());
-    public Command LoopAprilLidarAlignL3Right = new WhileTrueCommand(AprilLidarAlignL3Right, () -> !m_robotElevator.hasCoral());
-    public Command LoopAprilLidarAlignL2Left = new WhileTrueCommand(AprilLidarAlignL2Left, () -> !m_robotElevator.hasCoral());
-    public Command LoopAprilLidarAlignL2Right = new WhileTrueCommand(AprilLidarAlignL2Right, () -> !m_robotElevator.hasCoral());
+    // public Command LoopAprilLidarAlignL4Left = new WhileTrueCommand(AprilLidarAlignL4Left.asProxy(), () -> !m_robotElevator.hasCoral());
+    // public Command LoopAprilLidarAlignL4Right = new WhileTrueCommand(AprilLidarAlignL4Right.asProxy(), () -> !m_robotElevator.hasCoral());
+    // public Command LoopAprilLidarAlignL3Left = new WhileTrueCommand(AprilLidarAlignL3Left.asProxy(), () -> !m_robotElevator.hasCoral());
+    // public Command LoopAprilLidarAlignL3Right = new WhileTrueCommand(AprilLidarAlignL3Right.asProxy(), () -> !m_robotElevator.hasCoral());
+    // public Command LoopAprilLidarAlignL2Left = new WhileTrueCommand(AprilLidarAlignL2Left.asProxy(), () -> !m_robotElevator.hasCoral());
+    // public Command LoopAprilLidarAlignL2Right = new WhileTrueCommand(AprilLidarAlignL2Right.asProxy(), () -> !m_robotElevator.hasCoral());
+    
+    // public Command LoopAprilLidarAlignL4Left = new SequentialCommandGroup(AprilLidarAlignL4Left.asProxy(), new ConditionalCommand(AprilLidarAlignL4Left.asProxy(), Commands.none(), () -> !m_robotElevator.hasCoral()));
+    // public Command LoopAprilLidarAlignL4Right = new SequentialCommandGroup(AprilLidarAlignL4Right.asProxy(), new ConditionalCommand(AprilLidarAlignL4Right.asProxy(), Commands.none(), () -> !m_robotElevator.hasCoral()));
+    // public Command LoopAprilLidarAlignL3Left = new SequentialCommandGroup(AprilLidarAlignL3Left.asProxy(), new ConditionalCommand(AprilLidarAlignL3Left.asProxy(), Commands.none(), () -> m_robotElevator.hasCoral()));
+    // public Command LoopAprilLidarAlignL3Right = new SequentialCommandGroup(AprilLidarAlignL3Right.asProxy(), new ConditionalCommand(AprilLidarAlignL3Right.asProxy(), Commands.none(), () -> m_robotElevator.hasCoral()));
+    // public Command LoopAprilLidarAlignL2Left = new SequentialCommandGroup(AprilLidarAlignL2Left.asProxy(), new ConditionalCommand(AprilLidarAlignL2Left.asProxy(), Commands.none(), () -> m_robotElevator.hasCoral()));
+    // public Command LoopAprilLidarAlignL2Right = new SequentialCommandGroup(AprilLidarAlignL2Right.asProxy(), new ConditionalCommand(AprilLidarAlignL2Right.asProxy(), Commands.none(), () -> m_robotElevator.hasCoral()));
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -334,15 +341,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
             new MoveForTimeCommand(m_robotSwerveDrive, 
                 new Translation2d(0, 1), 
-                new Translation2d(), 400, true
+                new Translation2d(), 300, true
         ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
         
-        NamedCommands.registerCommand("place-coral-left-l4", LoopAprilLidarAlignL4Left);
-        NamedCommands.registerCommand("place-coral-right-l4", LoopAprilLidarAlignL4Right);
-        NamedCommands.registerCommand("place-coral-left-l3", LoopAprilLidarAlignL3Left);
-        NamedCommands.registerCommand("place-coral-right-l3", LoopAprilLidarAlignL3Right);
-        NamedCommands.registerCommand("place-coral-left-l2", LoopAprilLidarAlignL2Left);
-        NamedCommands.registerCommand("place-coral-right-l2", LoopAprilLidarAlignL2Right);
+        NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
+        NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL4Right);
+        NamedCommands.registerCommand("place-coral-left-l3", AprilLidarAlignL3Left);
+        NamedCommands.registerCommand("place-coral-right-l3", AprilLidarAlignL3Right);
+        NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
+        NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
 
         NamedCommands.registerCommand("prepare-l4", new InstantCommand(() -> {
             m_robotElevator.transitionState(CoordinationState.PrimedFour);

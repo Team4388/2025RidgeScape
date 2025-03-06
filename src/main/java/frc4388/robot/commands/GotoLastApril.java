@@ -95,12 +95,13 @@ public class GotoLastApril extends Command {
             roterr += 360;
         }
 
-        SmartDashboard.putNumber("Rotational PID target", targetpos.getRotation().getDegrees());
-        SmartDashboard.putNumber("Rotational PID position", vision.getPose2d().getRotation().getDegrees());
-        SmartDashboard.putNumber("Rotational PID error", roterr);
+        // SmartDashboard.putNumber("Rotational PID target", targetpos.getRotation().getDegrees());
+        // SmartDashboard.putNumber("Rotational PID position", vision.getPose2d().getRotation().getDegrees());
+        // SmartDashboard.putNumber("Rotational PID error", roterr);
 
-        // SmartDashboard.putNumber("PID X Error", xerr);
-        // SmartDashboard.putNumber("PID Y Error", yerr);
+        SmartDashboard.putNumber("PID X Error", xerr);
+        SmartDashboard.putNumber("PID Y Error", yerr);
+        SmartDashboard.putNumber("PID Rot Error", roterr);
 
         xoutput = xPID.update(xerr);
         youtput = yPID.update(yerr);
@@ -128,7 +129,7 @@ public class GotoLastApril extends Command {
             .rotateBy(targetpos.getRotation())
             .getCos());
 
-        swerveDrive.driveRelativeLockedAngle(leftStick, targetpos.getRotation());
+        swerveDrive.driveRelativeAngle(leftStick, targetpos.getRotation());
         // swerveDrive.driveWithInputOrientation(leftStick, rightStick, true);
     }
 

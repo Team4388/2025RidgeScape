@@ -193,7 +193,7 @@ public final class Constants {
                 .withKS(0).withKV(0.124);
             
             public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
-            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(5, 0, 0.1); // TODO: TEST
+            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(5, 0.2, 0.1); // TODO: TEST
         }
 
         public static final class Configurations {
@@ -294,7 +294,7 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final Gains XY_GAINS = new Gains(5,0.4,0.0);
+        public static final Gains XY_GAINS = new Gains(5,0.6,0.0);
        // public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
 
         // public static final Gains ROT_GAINS = new Gains(0.05,0,0.007);
@@ -316,10 +316,10 @@ public final class Constants {
         public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // This is from the field
         public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
 
-        public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+        public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
         public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5.5);
         
-        public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
+        public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
         public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         
         public static final double L2_PREP_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);

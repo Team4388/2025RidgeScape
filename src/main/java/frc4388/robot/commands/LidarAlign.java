@@ -41,7 +41,7 @@ public class LidarAlign extends Command {
     this.currentFinderTick = 0;
     this.speed = 0.4; // TODO: find good speed for this
     this.foundReef = false;
-    this.headedRight = !(GotoLastApril.tagRelativeXError < 0);
+    this.headedRight = (GotoLastApril.tagRelativeXError < 0);
     this.additionalDistance = 0;
     this.bounces = 0;
   }
