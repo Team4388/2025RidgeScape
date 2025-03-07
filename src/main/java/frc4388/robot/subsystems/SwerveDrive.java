@@ -237,11 +237,11 @@ public class SwerveDrive extends Subsystem {
             .withVelocityX(leftStick.getX() * speedAdjust)
             .withVelocityY(leftStick.getY() * speedAdjust)
             .withTargetDirection(heading);
-        ctrl.HeadingController.setPID(
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
-        );
+        // ctrl.HeadingController.setPID(
+        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        // );
         swerveDriveTrain.setControl(ctrl);
     }
 
@@ -349,7 +349,7 @@ public class SwerveDrive extends Subsystem {
                 rotTarget += deltaAngle;
             }
             
-            swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, vision.getLastLatency());
+            swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);
             //back to the ~~future~~ *past*
         }
 

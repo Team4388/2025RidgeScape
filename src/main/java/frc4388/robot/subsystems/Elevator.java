@@ -302,7 +302,7 @@ public class Elevator extends Subsystem {
 
 
     if(endeffectorVelocity < ElevatorConstants.SAFETY_ENDEFFECTOR_MIN_VELOCITY && endeffectorTorque > ElevatorConstants.SAFETY_ENDEFFECTOR_MAX_TORQUE ){
-      PIDPosition(elevatorMotor, endeffectorMotor.getPosition().getValueAsDouble());
+      PIDPosition(endeffectorMotor, endeffectorMotor.getPosition().getValueAsDouble());
     }
 
     // This method will be called once per scheduler run

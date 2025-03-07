@@ -113,7 +113,7 @@ public final class Constants {
 
         private static final class ModuleSpecificConstants { //2025
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.22705078125+0.5);
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(-0.368896484375);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
@@ -121,7 +121,7 @@ public final class Constants {
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.07666015625);
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(-0.011474609375);
             private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
@@ -129,7 +129,7 @@ public final class Constants {
             private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.37646484375);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.333251953125+0.5);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
@@ -137,7 +137,7 @@ public final class Constants {
             private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.219970703125+0.5);
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.4306640625+0.5);
             private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
@@ -287,8 +287,12 @@ public final class Constants {
       }
     
     public static final class LiDARConstants {
+        public static final int REEF_LIDAR_DIO_CHANNEL = 7;
+        public static final int REVERSE_LIDAR_DIO_CHANNEL = 4;
+
+        public static final int HUMAN_PLAYER_STATION_DISTANCE = 25;
+
         public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-        public static final int LIDAR_DIO_CHANNEL = 7;
         public static final int LIDAR_MICROS_TO_CM = 10;
         public static final int SECONDS_TO_MICROS = 1000000;
     }
@@ -331,7 +335,7 @@ public final class Constants {
         // public static final int L3_DRIVE_TIME = 500;
         public static final int L2_DRIVE_TIME = 250; //Milliseconds
         public static final int ALGAE_DRIVE_TIME = 500;
-        public static final double STOP_VELOCITY = 0.25;
+        public static final double STOP_VELOCITY = 0.0;
     }
 
     public static final class VisionConstants { 
@@ -394,8 +398,8 @@ public final class Constants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
 
-        public static final double SAFETY_ENDEFFECTOR_MAX_TORQUE = 0;
-        public static final double SAFETY_ENDEFFECTOR_MIN_VELOCITY = 999;
+        public static final double SAFETY_ENDEFFECTOR_MAX_TORQUE = 75;
+        public static final double SAFETY_ENDEFFECTOR_MIN_VELOCITY = 20;
 
         // public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
         
