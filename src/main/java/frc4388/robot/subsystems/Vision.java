@@ -52,9 +52,14 @@ public class Vision extends Subsystem {
     private boolean isTagDetected = false;
     private boolean isTagProcessed = false;
 
+    private double lastLatency = 0;
+
+    public double getLastLatency() {
+        return lastLatency;
+    }
+
     public Pose2d lastVisionPose = new Pose2d();
     private Pose2d lastPhysOdomPose = new Pose2d();
-    private double lastOdomSpeed;
 
     private Matrix<N3, N1> curStdDevs;
 
@@ -102,6 +107,7 @@ public class Vision extends Subsystem {
     public void periodic() {
         update();
         field.setRobotPose(getPose2d());
+        // cameras[0].
     }
 
 
@@ -115,6 +121,7 @@ public class Vision extends Subsystem {
         double X = 0;
         double Y = 0;
         double Yaw = 0;
+        double latency = 0;
 
         for(int i = 0; i < cameras.length; i++){
             PhotonCamera camera = cameras[i];
@@ -128,6 +135,7 @@ public class Vision extends Subsystem {
 
             
             var result = results.get(results.size()-1);
+            latency += result.getTimestampSeconds();
 
             isTagDetected = isTagDetected | result.hasTargets();
 
@@ -150,6 +158,8 @@ public class Vision extends Subsystem {
         
             
         }
+
+        lastLatency = latency / cams;
 
         if(isTagProcessed){
             lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(Yaw/cams));
@@ -262,14 +272,9 @@ public class Vision extends Subsystem {
             lastPhysOdomPose = pose.get();
     }
 
-    public void setLastOdomSpeed(Optional<Pose2d> curPose, Optional<Pose2d> lastPose, double freq){
-        if(curPose.isPresent() && lastPose.isPresent())
-            this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
-    }
-
-    public double getLastOdomSpeed(){
-        return lastOdomSpeed;
-    }
+    // public double getLastOdomSpeed(){
+    //     return lastOdomSpeed;
+    // }
 
     public Pose2d getPose2d() {
         if(isTagDetected && isTagProcessed)

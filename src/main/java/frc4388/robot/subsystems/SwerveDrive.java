@@ -58,6 +58,8 @@ public class SwerveDrive extends Subsystem {
     public double autoSpeedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * 0.25; // cap auto performance to
                                                                                            // 25%
 
+    public double lastOdomSpeed;
+
     public Pose2d initalPose2d = null;
 
 
@@ -336,7 +338,7 @@ public class SwerveDrive extends Subsystem {
         Optional<Pose2d> lastPose = swerveDriveTrain.samplePoseAt(time - freq);
         
         vision.setLastOdomPose(curpose);
-        vision.setLastOdomSpeed(curpose, lastPose, freq);
+        setLastOdomSpeed(curpose, lastPose, freq);
 
         if (vision.isTag()) {
             Pose2d pose = vision.getPose2d();
@@ -347,7 +349,7 @@ public class SwerveDrive extends Subsystem {
                 rotTarget += deltaAngle;
             }
             
-            swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);// - 0.020);
+            swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, vision.getLastLatency());
             //back to the ~~future~~ *past*
         }
 
@@ -423,6 +425,14 @@ public class SwerveDrive extends Subsystem {
         setPercentOutput(SwerveDriveConstants.GEARS[tmp_gear_index]);
         gear_index = tmp_gear_index;
     }
+
+
+
+    public void setLastOdomSpeed(Optional<Pose2d> curPose, Optional<Pose2d> lastPose, double freq){
+        if(curPose.isPresent() && lastPose.isPresent())
+            this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
+    }
+
 
     @Override
     public String getSubsystemName() {

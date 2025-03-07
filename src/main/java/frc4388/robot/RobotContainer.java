@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -337,6 +338,9 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("grab-coral", waitFeedStation.asProxy());
         NamedCommands.registerCommand("await-coral", new waitFeedCoral(m_robotElevator));
+
+
+        NamedCommands.registerCommand("stop", new waitSupplier(() -> m_robotSwerveDrive.lastOdomSpeed < AutoConstants.STOP_VELOCITY));
 
         NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
             new MoveForTimeCommand(m_robotSwerveDrive, 

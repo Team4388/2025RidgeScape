@@ -331,6 +331,7 @@ public final class Constants {
         // public static final int L3_DRIVE_TIME = 500;
         public static final int L2_DRIVE_TIME = 250; //Milliseconds
         public static final int ALGAE_DRIVE_TIME = 500;
+        public static final double STOP_VELOCITY = 0.25;
     }
 
     public static final class VisionConstants { 
@@ -392,6 +393,9 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
+
+        public static final double SAFETY_ENDEFFECTOR_MAX_TORQUE = 0;
+        public static final double SAFETY_ENDEFFECTOR_MIN_VELOCITY = 999;
 
         // public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
         

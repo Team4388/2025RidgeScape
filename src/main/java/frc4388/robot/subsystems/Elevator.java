@@ -295,7 +295,19 @@ public class Elevator extends Subsystem {
   @Override
   public void periodic() {
 
+    // double elevatorVelocity = elevatorMotor.getVelocity().getValueAsDouble();
+    // double elevatorTorque = elevatorMotor.getTorqueCurrent().getValueAsDouble();
+    double endeffectorVelocity = endeffectorMotor.getVelocity().getValueAsDouble();
+    double endeffectorTorque = endeffectorMotor.getTorqueCurrent().getValueAsDouble();
+
+
+    if(endeffectorVelocity < ElevatorConstants.SAFETY_ENDEFFECTOR_MIN_VELOCITY && endeffectorTorque > ElevatorConstants.SAFETY_ENDEFFECTOR_MAX_TORQUE ){
+      PIDPosition(elevatorMotor, endeffectorMotor.getPosition().getValueAsDouble());
+    }
+
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Velocity Endeffector", endeffectorVelocity);
+    SmartDashboard.putNumber("Torque Endeffector", endeffectorTorque);
     SmartDashboard.putNumber("Basin", basinBeamBreak.get() ? 1 : 0);
     SmartDashboard.putNumber("endefector", endeffectorLimitSwitch.get() ? 1 : 0);
     SmartDashboard.putNumber("intake", intakeIR.get() ? 1 : 0);
@@ -314,6 +326,8 @@ public class Elevator extends Subsystem {
     if(!intakeIR.get()){
       led.setMode(LEDConstants.DOWN_PATTERN);
     }
+
+    
     // } else if (currentState == CoordinationState.ScoringThree || currentState == CoordinationState.ScoringFour) {
     //   periodicScoring();
     // }
