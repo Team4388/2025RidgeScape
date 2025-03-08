@@ -97,7 +97,7 @@ public class LidarAlign extends Command {
       currentFinderTick = 0;
       foundReef = false;
       return false;
-    } else if (bounces >= 2) {
+    } else if (bounces >= 3) {
       swerveDrive.stopModules();
       return true;
     } else {

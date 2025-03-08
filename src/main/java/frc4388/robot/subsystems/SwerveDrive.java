@@ -429,8 +429,11 @@ public class SwerveDrive extends Subsystem {
 
 
     public void setLastOdomSpeed(Optional<Pose2d> curPose, Optional<Pose2d> lastPose, double freq){
-        if(curPose.isPresent() && lastPose.isPresent())
+        if(curPose.isPresent() && lastPose.isPresent()){
             this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
+            
+            SmartDashboard.putNumber("Speed", lastOdomSpeed);
+        }
     }
 
 

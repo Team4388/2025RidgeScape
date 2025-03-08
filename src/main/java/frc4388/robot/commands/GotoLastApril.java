@@ -38,17 +38,19 @@ public class GotoLastApril extends Command {
     Vision vision;
     double distance;
     Side side;
+    boolean waitVelocityZero;
 
     /**
      * Command to drive robot to position.
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoLastApril(SwerveDrive swerveDrive, Vision vision, double distance, Side side) {
+    public GotoLastApril(SwerveDrive swerveDrive, Vision vision, double distance, Side side, boolean waitVelocityZero) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
         this.distance = distance;
         this.side = side;
+        this.waitVelocityZero = waitVelocityZero;
         // addRequirements(swerveDrive);
     }
 
@@ -138,7 +140,8 @@ public class GotoLastApril extends Command {
         boolean finished = (
             (Math.abs(xerr) < AutoConstants.XY_TOLERANCE || Math.abs(xoutput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
             (Math.abs(yerr) < AutoConstants.XY_TOLERANCE || Math.abs(youtput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
-            (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE)
+            (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE) &&
+            (!waitVelocityZero || swerveDrive.lastOdomSpeed < AutoConstants.VELOCITY_THRESHHOLD)
         );
         // System.out.println(finished);
 
