@@ -307,6 +307,7 @@ public class SwerveDrive extends Subsystem {
         swerveDriveTrain.tareEverything();
         robotKnowsWhereItIs = false;
         rotTarget = 0;
+        // vision.resetRotations();
     }
 
 
@@ -431,7 +432,15 @@ public class SwerveDrive extends Subsystem {
     public void setLastOdomSpeed(Optional<Pose2d> curPose, Optional<Pose2d> lastPose, double freq){
         if(curPose.isPresent() && lastPose.isPresent()){
             this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
-            
+        
+
+            // double rotDiff = curPose.get().getRotation().getDegrees() - lastPose.get().getRotation().getDegrees();
+    
+            // if(rotDiff >= 180){
+            //     vision.subtractRotation();
+            // }else if(rotDiff <= -180){
+            //     vision.addRotation();
+            // }
             SmartDashboard.putNumber("Speed", lastOdomSpeed);
         }
     }

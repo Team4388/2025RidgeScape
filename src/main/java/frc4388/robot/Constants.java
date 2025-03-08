@@ -382,6 +382,7 @@ public final class Constants {
         public static final LEDPatterns WAITING_PATTERN = LEDPatterns.SOLID_RED;
         public static final LEDPatterns DOWN_PATTERN = LEDPatterns.SOLID_YELLOW;
         public static final LEDPatterns READY_PATTERN = LEDPatterns.SOLID_GREEN_DARK;
+        public static final LEDPatterns SCORING_PATTERN = LEDPatterns.RAINBOW_RAINBOW;
 
         public static final LEDPatterns RED_PATTERN = LEDPatterns.LAVA_WAVES;
         public static final LEDPatterns BLUE_PATTERN = LEDPatterns.OCEAN_WAVES;
@@ -418,8 +419,8 @@ public final class Constants {
         public static final double HOVERING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;
-        public static final double DEALGAE_L2_ELEVATOR = -23.5;
-        public static final double DEALGAE_L3_ELEVATOR = -33.75;
+        public static final double DEALGAE_L2_ELEVATOR = -4;
+        public static final double DEALGAE_L3_ELEVATOR = -26.5;
         public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
         
         public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
@@ -429,8 +430,8 @@ public final class Constants {
 
         public static final double L2_SCORE_ENDEFFECTOR = -19;
 
-        public static final double COMPLETLY_DOWN_ENDEFFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
-        public static final double DEALGAE_L2_ENDEFFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;
+        public static final double COMPLETLY_DOWN_ENDEFFECTOR = 9001;
+        public static final double DEALGAE_L2_ENDEFFECTOR = 0.22 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
         public static final double PRIMED_THREE_ENDEFFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
         public static final double SCORING_FOUR_ENDEFFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value

@@ -145,62 +145,62 @@ public class Elevator extends Subsystem {
       case L2Score: {
         PIDPosition(elevatorMotor, ElevatorConstants.L2_SCORE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.L2_SCORE_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
       
       case PrimedFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR);
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
 
       case ScoringFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.SCORING_FOUR_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
 
       case PrimedThree: {
         PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.PRIMED_THREE_ENDEFFECTOR);
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
       
       case ScoringThree: {
         PIDPosition(elevatorMotor, ElevatorConstants.SCORING_THREE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
 
       case BallRemoverL2Primed: {
-        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFFECTOR);
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L2_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.DEALGAE_L2_ENDEFFECTOR);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
 
       case BallRemoverL2Go: {
-        PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L2_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.DEALGAE_L2_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
 
       case BallRemoverL3Primed: {
         PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L3_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_MIDDLE_ENDEFFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.DEALGAE_L2_ENDEFFECTOR);
         break;
       }
 
       case BallRemoverL3Go: {
         PIDPosition(elevatorMotor, ElevatorConstants.DEALGAE_L3_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.DEALGAE_L2_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
-        led.setMode(TimesNegativeOne.isRed ? LEDConstants.RED_PATTERN : LEDConstants.BLUE_PATTERN);
+        led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
 

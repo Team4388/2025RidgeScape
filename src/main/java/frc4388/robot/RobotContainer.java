@@ -299,31 +299,62 @@ public class RobotContainer {
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 
-    private Command leftAlgaeRemove = new SequentialCommandGroup(
+    // private Command leftAlgaeRemove = new SequentialCommandGroup(
+    //     new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
+    //     new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Primed);}, m_robotElevator),
+    //     new waitEndefectorRefrence(m_robotElevator),
+    //     new waitElevatorRefrence(m_robotElevator),
+    //     new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.LEFT, false),
+    //     new LidarAlign(m_robotSwerveDrive, m_reefLidar),
+    //     new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
+    //     new MoveForTimeCommand(m_robotSwerveDrive, 
+    //     new Translation2d(0,1), new Translation2d(), AutoConstants.ALGAE_DRIVE_TIME, true),
+    //     new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
+    //     new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
+    // );
+
+    private Command lowerAlgaeRemove = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Primed);}, m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE + Units.inchesToMeters(8), Side.FAR_LEFT, true),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.LEFT, false),
-        new LidarAlign(m_robotSwerveDrive, m_reefLidar),
-        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.FAR_LEFT, true),
+        waitDebuger.asProxy(),
+        // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), AutoConstants.ALGAE_DRIVE_TIME, true),
-        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
+            new Translation2d(1,0), new Translation2d(0, 0), AutoConstants.ALGAE_DRIVE_TIME / 2, true),
+        new MoveForTimeCommand(m_robotSwerveDrive, 
+            new Translation2d(1,1), new Translation2d(0, 0), AutoConstants.ALGAE_DRIVE_TIME * 2, true),
+        // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 
-    private Command rightAlgaeRemove = new SequentialCommandGroup(
+    // private Command rightAlgaeRemove = new SequentialCommandGroup(
+    //     new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
+    //     new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL3Primed);}, m_robotElevator),
+    //     new waitEndefectorRefrence(m_robotElevator),
+    //     new waitElevatorRefrence(m_robotElevator),
+    //     new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.LEFT, false),
+    //     new LidarAlign(m_robotSwerveDrive, m_reefLidar),
+    //     new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL3Go);}, m_robotElevator),
+    //     new MoveForTimeCommand(m_robotSwerveDrive, 
+    //     new Translation2d(1,1), new Translation2d(), AutoConstants.ALGAE_DRIVE_TIME, true),
+    //     new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
+    //     new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
+    // );
+    private Command upperAlgaeRemove = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL3Primed);}, m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE + Units.inchesToMeters(8), Side.FAR_LEFT, true),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
-        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.LEFT, false),
-        new LidarAlign(m_robotSwerveDrive, m_reefLidar),
-        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL3Go);}, m_robotElevator),
+        new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.ALGAE_REMOVAL_DISTANCE, Side.FAR_LEFT, true),
+        waitDebuger.asProxy(),
+        // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), AutoConstants.ALGAE_DRIVE_TIME, true),
-        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
+            new Translation2d(1,1), new Translation2d(0, 0), AutoConstants.ALGAE_DRIVE_TIME, true),
+        // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 
@@ -536,11 +567,11 @@ public class RobotContainer {
     
         // Lower algae removal
         new JoystickButton(getButtonBox(), ButtonBox.Eight)
-            .onTrue(leftAlgaeRemove);
+            .onTrue(lowerAlgaeRemove);
         
         // Upper algae removal
         new JoystickButton(getButtonBox(), ButtonBox.Four)
-            .onTrue(rightAlgaeRemove);
+            .onTrue(upperAlgaeRemove);
             
 
         // Cancel button
@@ -574,8 +605,8 @@ public class RobotContainer {
         new JoystickButton(getDeadbandedOperatorController(), XboxController.BACK_BUTTON)
             .onTrue(new InstantCommand(() -> {operatorManualMode = !operatorManualMode;}));
         
-        new JoystickButton(getDeadbandedOperatorController(), XboxController.START_BUTTON)
-            .onTrue(new InstantCommand(() -> m_robotElevator.togggleAutoIntaking()));
+        // new JoystickButton(getDeadbandedOperatorController(), XboxController.START_BUTTON)
+        //     .onTrue(new InstantCommand(() -> m_robotElevator.togggleAutoIntaking()));
 
         // Auto Scoring 
         new Trigger(() -> getDeadbandedOperatorController().getLeftTriggerAxis() >= 0.8 && !operatorManualMode)
@@ -598,11 +629,11 @@ public class RobotContainer {
 
         //Controller Lower Algae Removal
         new Trigger(() -> getDeadbandedOperatorController().getPOV() == 180 && !operatorManualMode)
-            .onTrue(leftAlgaeRemove);
+            .onTrue(lowerAlgaeRemove);
 
         //Controller Upper Algae Removal
         new Trigger(() -> getDeadbandedOperatorController().getPOV() == 0 && !operatorManualMode)
-            .onTrue(rightAlgaeRemove);
+            .onTrue(upperAlgaeRemove);
 
         // ? /* Programer Buttons (Controller 3)*/
 

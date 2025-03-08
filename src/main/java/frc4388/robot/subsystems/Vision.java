@@ -110,6 +110,20 @@ public class Vision extends Subsystem {
         // cameras[0].
     }
 
+    public double rotations = 0;
+
+    public void resetRotations(){
+        rotations = 0;
+    }
+
+    public void addRotation(){
+        rotations += 180;
+    }
+
+    public void subtractRotation(){
+        rotations -= 180;
+    }
+
 
     private void update() {
         isTagProcessed = false;
@@ -162,7 +176,20 @@ public class Vision extends Subsystem {
         lastLatency = latency / cams;
 
         if(isTagProcessed){
-            lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(Yaw/cams));
+
+            // double lastAngle = lastVisionPose.getRotation().getDegrees();
+            double curAngle = Yaw/cams;
+
+            // if(lastAngle - curAngle >= 90){
+            //     subtractRotation();
+            // }else if(lastAngle - curAngle <= -90){
+            //     addRotation();
+            // }
+
+            // SmartDashboard.putNumber("curAngle", curAngle);
+            // SmartDashboard.putNumber("Rotations", rotations);
+            
+            lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
         }
     }
 
