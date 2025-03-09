@@ -23,12 +23,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stop"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Reef 3 to Bottom Feed"

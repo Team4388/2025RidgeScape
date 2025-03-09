@@ -48,6 +48,9 @@ public class Elevator extends Subsystem {
 
   private boolean disableAutoIntake = false;
 
+  private boolean seededZeroEndefector = false;
+  private boolean seededZeroElevator = false;
+
   private DigitalInput basinBeamBreak;
   private DigitalInput endeffectorLimitSwitch;
   private DigitalInput intakeIR;
@@ -58,6 +61,7 @@ public class Elevator extends Subsystem {
     Ready, // Has coral in endefector
     Hovering, // Has coral in endefector
     L2Score,
+    L2ScoreLeave,
     PrimedThree, // Arm and elevator Waiting to score in the level 3 position
     ScoringThree, // Arm and elevator in the level three position
     PrimedFour, // Arm and elevator Waiting to score in the level 4 position
@@ -116,7 +120,7 @@ public class Elevator extends Subsystem {
       case Waiting: {
         wait = System.currentTimeMillis() + maxWait;
         PIDPosition(elevatorMotor, ElevatorConstants.WAITING_POSITION_ELEVATOR);
-        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR + (!seededZeroEndefector ? 10 : 0));
         led.setMode(LEDConstants.WAITING_PATTERN);
         break;
       }
@@ -129,7 +133,7 @@ public class Elevator extends Subsystem {
       }
 
       case Ready: {
-        PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR);
+        PIDPosition(elevatorMotor, ElevatorConstants.GROUND_POSITION_ELEVATOR + (!seededZeroElevator ? 10 : 0));
         PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_DOWN_ENDEFFECTOR);
         led.setMode(LEDConstants.DOWN_PATTERN);
         break;
@@ -144,6 +148,13 @@ public class Elevator extends Subsystem {
 
       case L2Score: {
         PIDPosition(elevatorMotor, ElevatorConstants.L2_SCORE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
+        PIDPosition(endeffectorMotor, ElevatorConstants.L2_SCORE_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
+        led.setMode(LEDConstants.SCORING_PATTERN);
+        break;
+      }
+
+      case L2ScoreLeave: {
+        PIDPosition(elevatorMotor, ElevatorConstants.L2_LEAVE_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
         PIDPosition(endeffectorMotor, ElevatorConstants.L2_SCORE_ENDEFFECTOR + AutoConstants.ARM_OFFSET_TRIM.get());
         led.setMode(LEDConstants.SCORING_PATTERN);
         break;
@@ -312,6 +323,16 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber("endefector", endeffectorLimitSwitch.get() ? 1 : 0);
     SmartDashboard.putNumber("intake", intakeIR.get() ? 1 : 0);
     SmartDashboard.putString("State", currentState.toString());
+
+    if (!seededZeroEndefector && endeffectorMotor.getForwardLimit().asSupplier().get().value == 0) {
+      endeffectorMotor.setPosition(0);
+      seededZeroEndefector = !seededZeroEndefector;
+    }
+
+    if (!seededZeroElevator && elevatorMotor.getForwardLimit().asSupplier().get().value == 0) {
+      elevatorMotor.setPosition(0);
+      seededZeroElevator = !seededZeroElevator;
+    }
     
     if (disableAutoIntake) return;
 

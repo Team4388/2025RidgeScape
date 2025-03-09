@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,6 +125,8 @@ public class Vision extends Subsystem {
         rotations -= 180;
     }
 
+    private Instant lastVisionTime = null;
+
 
     private void update() {
         isTagProcessed = false;
@@ -176,20 +179,27 @@ public class Vision extends Subsystem {
         lastLatency = latency / cams;
 
         if(isTagProcessed){
+            Instant now = Instant.now();
 
-            // double lastAngle = lastVisionPose.getRotation().getDegrees();
             double curAngle = Yaw/cams;
 
-            // if(lastAngle - curAngle >= 90){
-            //     subtractRotation();
-            // }else if(lastAngle - curAngle <= -90){
-            //     addRotation();
+            // if(lastVisionTime != null && Math.abs(now.getEpochSecond() - lastVisionTime.getEpochSecond()) > 1){            
+            //     double lastAngle = lastVisionPose.getRotation().getDegrees();
+
+            //     if(lastAngle - curAngle >= 80){
+            //         addRotation();
+            //     }else if(lastAngle - curAngle <= -80){
+            //         subtractRotation();
+            //     }
             // }
+
+
 
             // SmartDashboard.putNumber("curAngle", curAngle);
             // SmartDashboard.putNumber("Rotations", rotations);
             
             lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
+            lastVisionTime = now;
         }
     }
 

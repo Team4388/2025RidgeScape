@@ -274,6 +274,8 @@ public class RobotContainer {
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
+        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2ScoreLeave);}, m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
         new Translation2d(0,1), new Translation2d(), AutoConstants.L2_DRIVE_TIME, true),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
@@ -292,6 +294,8 @@ public class RobotContainer {
         waitDebuger.asProxy(),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
+        new waitElevatorRefrence(m_robotElevator),
+        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2ScoreLeave);}, m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
         new Translation2d(0,1), new Translation2d(), AutoConstants.L2_DRIVE_TIME, true),
@@ -326,7 +330,7 @@ public class RobotContainer {
             new Translation2d(1,0), new Translation2d(0, 0), AutoConstants.ALGAE_DRIVE_TIME / 2, true),
         new MoveForTimeCommand(m_robotSwerveDrive, 
             new Translation2d(1,1), new Translation2d(0, 0), AutoConstants.ALGAE_DRIVE_TIME * 2, true),
-        // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
+        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 
@@ -354,7 +358,7 @@ public class RobotContainer {
         // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.BallRemoverL2Go);}, m_robotElevator),
         new MoveForTimeCommand(m_robotSwerveDrive, 
             new Translation2d(1,1), new Translation2d(0, 0), AutoConstants.ALGAE_DRIVE_TIME, true),
-        // new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
+        new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.Waiting);}, m_robotElevator),
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
 

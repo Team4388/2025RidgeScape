@@ -427,10 +427,11 @@ public final class Constants {
         public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
         //Max for endefector = 60%
         public static final double L2_SCORE_ELEVATOR = -5;
+        public static final double L2_LEAVE_ELEVATOR = -11;
 
         public static final double L2_SCORE_ENDEFFECTOR = -19;
 
-        public static final double COMPLETLY_DOWN_ENDEFFECTOR = 9001;
+        public static final double COMPLETLY_DOWN_ENDEFFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
         public static final double DEALGAE_L2_ENDEFFECTOR = 0.22 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
         public static final double PRIMED_THREE_ENDEFFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
