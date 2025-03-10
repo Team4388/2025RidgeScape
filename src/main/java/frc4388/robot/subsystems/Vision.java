@@ -102,6 +102,7 @@ public class Vision extends Subsystem {
         photonEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         this.estimators = new PhotonPoseEstimator[]{photonEstimatorLeft, photonEstimatorRight};
+        // resetRotations();
     }
 
     @Override
@@ -111,11 +112,13 @@ public class Vision extends Subsystem {
         // cameras[0].
     }
 
-    public int rotations = 0;
+    // public int[] rotations;
+    // public Instant[] lastUpdateTimes;
 
-    public void resetRotations(){
-        rotations = 0;
-    }
+    // public void resetRotations(){
+    //     rotations = new int[cameras.length];
+    //     lastUpdateTimes = new Instant[cameras.length];
+    // }
 
     private Instant lastVisionTime = null;
 
@@ -124,13 +127,16 @@ public class Vision extends Subsystem {
         isTagProcessed = false;
         isTagDetected = false;
 
+        Instant now = Instant.now();
 
         int cams = 0;
 
-        double X = 0;
-        double Y = 0;
-        double Yaw = 0;
+        // double X = 0;
+        // double Y = 0;
+        // double Yaw = 0;
         double latency = 0;
+
+        Pose2d pose = null;
 
         for(int i = 0; i < cameras.length; i++){
             PhotonCamera camera = cameras[i];
@@ -158,11 +164,18 @@ public class Vision extends Subsystem {
             if(estimatedRobotPose.isEmpty())
                 continue;
 
-            Pose2d pose = estimatedRobotPose.get().estimatedPose.toPose2d();
-            X += pose.getX();
-            Y += pose.getY();
-            Yaw += pose.getRotation().getDegrees();
-            cams++;
+            if(pose == null)
+                pose = estimatedRobotPose.get().estimatedPose.toPose2d();
+            else
+                pose = pose.interpolate(pose, 0.5);
+            // X += pose.getX();
+            // Y += pose.getY();
+
+            // if(X > 6)
+
+            // Yaw += (pose.getRotation().getDegrees() + 180) % 360;
+            // cams++;
+
             isTagProcessed = true;
         
             
@@ -170,31 +183,38 @@ public class Vision extends Subsystem {
 
         lastLatency = latency / cams;
 
-        if(isTagProcessed || true){
-            Instant now = Instant.now();
+        if(isTagProcessed){
+            // Instant now = Instant.now();
 
             // double curAngle = (Yaw/cams);
-            double curAngle = + (((Math.random() * 2) - 1 + 360) % 360) - 180; // Generate loopover noise
 
-
-            if(lastVisionTime != null && Math.abs(now.getEpochSecond() - lastVisionTime.getEpochSecond()) <= 1){            
-                double diff = curAngle - lastVisionPose.getRotation().getDegrees() + rotations*360;
-
-                if(diff > 180){
-                    rotations -= 1;
-                }else if(diff < -180){
-                    rotations += 1;
-                }
-            }
+            // Pose2d e = new Pose2d();
 
 
 
-            
-            // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle + rotations*360));
-            lastVisionPose = new Pose2d(10, 5, Rotation2d.fromDegrees(curAngle + rotations*360));
 
-            SmartDashboard.putNumber("curAngle", lastVisionPose.getRotation().getRadians());
-            SmartDashboard.putNumber("Rotations", rotations);
+
+            // // double curAngle = + (((Math.random() * 2) - 1 + 360) % 360) - 180; // Generate loopover noise
+
+
+            // if(lastVisionTime != null && Math.abs(now.getEpochSecond() - lastVisionTime.getEpochSecond()) <= 1){            
+            //     double diff = curAngle - lastVisionPose.getRotation().getDegrees() + rotations*360;
+
+            //     if(diff > 180){
+            //         rotations -= 1;
+            //     }else if(diff < -180){
+            //         rotations += 1;
+            //     }
+            // }
+
+
+
+            lastVisionPose = pose;
+            // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
+            // lastVisionPose = new Pose2d(10, 5, Rotation2d.fromDegrees(curAngle + rotations*360));
+
+            // SmartDashboard.putNumber("curAngle", pose.getRotation().getRotations());
+            // SmartDashboard.putNumber("Rotations", rotations);
 
             lastVisionTime = now;
         }
