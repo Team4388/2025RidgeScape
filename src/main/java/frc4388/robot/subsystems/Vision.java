@@ -111,18 +111,10 @@ public class Vision extends Subsystem {
         // cameras[0].
     }
 
-    public double rotations = 0;
+    public int rotations = 0;
 
     public void resetRotations(){
         rotations = 0;
-    }
-
-    public void addRotation(){
-        rotations += 180;
-    }
-
-    public void subtractRotation(){
-        rotations -= 180;
     }
 
     private Instant lastVisionTime = null;
@@ -178,27 +170,32 @@ public class Vision extends Subsystem {
 
         lastLatency = latency / cams;
 
-        if(isTagProcessed){
+        if(isTagProcessed || true){
             Instant now = Instant.now();
 
-            double curAngle = Yaw/cams;
-
-            // if(lastVisionTime != null && Math.abs(now.getEpochSecond() - lastVisionTime.getEpochSecond()) > 1){            
-            //     double lastAngle = lastVisionPose.getRotation().getDegrees();
-
-            //     if(lastAngle - curAngle >= 80){
-            //         addRotation();
-            //     }else if(lastAngle - curAngle <= -80){
-            //         subtractRotation();
-            //     }
-            // }
+            // double curAngle = (Yaw/cams);
+            double curAngle = + (((Math.random() * 2) - 1 + 360) % 360) - 180; // Generate loopover noise
 
 
+            if(lastVisionTime != null && Math.abs(now.getEpochSecond() - lastVisionTime.getEpochSecond()) <= 1){            
+                double diff = curAngle - lastVisionPose.getRotation().getDegrees() + rotations*360;
 
-            // SmartDashboard.putNumber("curAngle", curAngle);
-            // SmartDashboard.putNumber("Rotations", rotations);
+                if(diff > 180){
+                    rotations -= 1;
+                }else if(diff < -180){
+                    rotations += 1;
+                }
+            }
+
+
+
             
-            lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
+            // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle + rotations*360));
+            lastVisionPose = new Pose2d(0, 0, Rotation2d.fromDegrees(curAngle + rotations*360));
+
+            SmartDashboard.putNumber("curAngle", lastVisionPose.getRotation().getRadians());
+            SmartDashboard.putNumber("Rotations", rotations);
+
             lastVisionTime = now;
         }
     }
