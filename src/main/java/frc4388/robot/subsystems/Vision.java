@@ -191,7 +191,7 @@ public class Vision extends Subsystem {
 
             
             // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle + rotations*360));
-            lastVisionPose = new Pose2d(0, 0, Rotation2d.fromDegrees(curAngle + rotations*360));
+            lastVisionPose = new Pose2d(10, 5, Rotation2d.fromDegrees(curAngle + rotations*360));
 
             SmartDashboard.putNumber("curAngle", lastVisionPose.getRotation().getRadians());
             SmartDashboard.putNumber("Rotations", rotations);

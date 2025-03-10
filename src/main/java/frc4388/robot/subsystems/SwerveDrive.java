@@ -341,7 +341,7 @@ public class SwerveDrive extends Subsystem {
         vision.setLastOdomPose(curpose);
         setLastOdomSpeed(curpose, lastPose, freq);
 
-        if (vision.isTag()) {
+        if (vision.isTag() || true) {
             Pose2d pose = vision.getPose2d();
             if (!robotKnowsWhereItIs) {
                 robotKnowsWhereItIs = true;
