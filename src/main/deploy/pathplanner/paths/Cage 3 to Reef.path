@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.616287878787879,
-        "y": 5.092234848484848
+        "x": 6.9590625,
+        "y": 4.9878124999999995
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.366483068336041,
-        "y": 5.1021119267533175
+        "x": 6.709257689548163,
+        "y": 4.997689578268469
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.31375,
-        "y": 5.43875
+        "x": 5.2528125,
+        "y": 5.7434375
       },
       "prevControl": {
-        "x": 5.7403125,
-        "y": 5.6215625
+        "x": 5.728125,
+        "y": 5.6703125
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Barge to Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.34296858150984
+    "rotation": -124.91940201245771
   },
   "useDefaultConstraints": true
 }

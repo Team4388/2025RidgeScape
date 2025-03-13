@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "prepare-l4"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Cage 4 to Reef"
@@ -25,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "align-feed"
+            "name": "feed-driveback"
           }
         },
         {
@@ -44,6 +50,24 @@
           "type": "named",
           "data": {
             "name": "place-coral-left-l4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 2 to Bottom Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "feed-driveback"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "grab-coral"
           }
         }
       ]

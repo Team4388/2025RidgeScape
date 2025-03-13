@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.006439393939393,
-        "y": 3.1508838383838382
+        "x": 6.97125,
+        "y": 3.244999999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.498232323232323,
-        "y": 2.480050505050505
+        "x": 6.166875,
+        "y": 2.9159374999999996
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.349684343434343,
-        "y": 2.6934974747474745
+        "x": 5.2771875,
+        "y": 2.27
       },
       "prevControl": {
-        "x": 5.979861111111112,
-        "y": 1.992171717171717
+        "x": 6.1059375,
+        "y": 2.5625000000000004
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 123.49004753500587
+    "rotation": 120.96375653207355
   },
   "reversed": false,
   "folder": "Barge to Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 124.11447294534119
+    "rotation": 118.9091836511478
   },
   "useDefaultConstraints": true
 }

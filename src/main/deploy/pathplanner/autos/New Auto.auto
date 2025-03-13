@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "prepare-l4"
+            "pathName": "Cage 1 to Reef"
           }
         },
         {
@@ -17,57 +17,39 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "place-coral-right-l4"
+            "pathName": "Cage 3 to Reef"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 5 to Top Feed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feed-driveback"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "grab-coral"
+            "pathName": "Cage 4 to Reef"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Feed to Reef 6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral-left-l4"
+            "pathName": "Cage 5 to Reef"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 6 to Top Feed"
+            "pathName": "Cage 6 to Reef"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "feed-driveback"
+            "pathName": "Center Barge to Reef 4 Left"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "grab-coral"
+            "pathName": "Center Barge to Reef 4 Right"
           }
         }
       ]

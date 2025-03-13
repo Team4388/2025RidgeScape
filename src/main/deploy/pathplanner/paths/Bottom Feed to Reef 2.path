@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.0807449494949497,
-        "y": 1.0875631313131315
+        "x": 1.3040625,
+        "y": 1.3559375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3668181411598166,
-        "y": 1.8456535210784974
+        "x": 2.590135691664867,
+        "y": 2.114027889765366
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.680625,
-        "y": 2.635625
+        "x": 3.5221875,
+        "y": 2.3675
       },
       "prevControl": {
-        "x": 2.741625910703272,
-        "y": 2.050875079374932
+        "x": 2.5831884107032717,
+        "y": 1.782750079374932
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Bottom Feed to Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 53.32565033042684
+    "rotation": 53.426969021480645
   },
   "useDefaultConstraints": true
 }

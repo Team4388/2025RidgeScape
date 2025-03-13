@@ -388,6 +388,11 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        NamedCommands.registerCommand("taxi", new SequentialCommandGroup(
+            new MoveForTimeCommand(m_robotSwerveDrive, 
+                new Translation2d(0, -1), 
+                new Translation2d(), 1000, true
+        ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
 
         NamedCommands.registerCommand("grab-coral", waitFeedStation.asProxy());
         NamedCommands.registerCommand("await-coral", new waitFeedCoral(m_robotElevator));

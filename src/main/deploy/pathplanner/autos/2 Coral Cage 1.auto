@@ -31,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "align-feed"
+            "name": "feed-driveback"
           }
         },
         {
@@ -49,13 +49,25 @@
         {
           "type": "named",
           "data": {
-            "name": "await-coral"
+            "name": "place-coral-right-l4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 6 to Top Feed"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "place-coral-right-l4"
+            "name": "feed-driveback"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "grab-coral"
           }
         }
       ]
