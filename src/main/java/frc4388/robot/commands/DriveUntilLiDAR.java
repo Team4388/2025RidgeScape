@@ -40,7 +40,7 @@ public class DriveUntilLiDAR extends Command {
 
     @Override
     public void execute() {
-        swerveDrive.driveFine(leftStick, rightStick, 0.1);
+        swerveDrive.driveFine(leftStick, rightStick, 0.3);
     }
 
     @Override

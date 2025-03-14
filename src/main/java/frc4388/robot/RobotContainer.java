@@ -398,7 +398,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("await-coral", new waitFeedCoral(m_robotElevator));
 
         NamedCommands.registerCommand("feed-driveback", new DriveUntilLiDAR(m_robotSwerveDrive, 
-        new Translation2d(0,1), new Translation2d(), m_reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, false));
+        new Translation2d(-1,0), new Translation2d(), m_reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, true));
+        // NamedCommands.registerCommand("feed-driveback", Commands.none());
         NamedCommands.registerCommand("stop", new waitSupplier(() -> m_robotSwerveDrive.lastOdomSpeed < AutoConstants.STOP_VELOCITY));
 
         NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
@@ -537,8 +538,9 @@ public class RobotContainer {
                 ), m_robotSwerveDrive))
             .onFalse(new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive));
         
-        // new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-        //     .onTrue(new LidarAlign(m_robotSwerveDrive, m_reefLidar));
+        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+            .onTrue(new DriveUntilLiDAR(m_robotSwerveDrive, 
+            new Translation2d(-1,0), new Translation2d(), m_reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, true));
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
             .onTrue(thrustIntake.asProxy());

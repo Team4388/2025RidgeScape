@@ -290,7 +290,7 @@ public final class Constants {
         public static final int REEF_LIDAR_DIO_CHANNEL = 7;
         public static final int REVERSE_LIDAR_DIO_CHANNEL = 4;
 
-        public static final int HUMAN_PLAYER_STATION_DISTANCE = 25;
+        public static final int HUMAN_PLAYER_STATION_DISTANCE = 40;
 
         public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
         public static final int LIDAR_MICROS_TO_CM = 10;
