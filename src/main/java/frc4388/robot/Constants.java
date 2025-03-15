@@ -305,6 +305,7 @@ public final class Constants {
         // public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
         public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
+        // public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 1.5);
         public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
         public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
         public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, 1, 0);
@@ -319,14 +320,15 @@ public final class Constants {
                 
         // X is tangent to reef side
         // Y is normal to reef side
-        public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // This is from the field
-        public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
+        public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5+1); // This is from the field
+        public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16+1);
 
         public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
         public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5.5);
+        // public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(4.5);
         
         public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
-        public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5);
+        public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5+1);
         
         public static final double L2_PREP_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
         public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(0.5);

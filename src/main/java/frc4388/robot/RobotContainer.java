@@ -511,10 +511,10 @@ public class RobotContainer {
 
         // While Left Trigger Pressed: Trims
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 0 && getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
-            .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepUp()));
+            .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepDown()));
 
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 180  && getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
-            .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepDown()));
+            .onTrue(new InstantCommand(() -> AutoConstants.Y_OFFSET_TRIM.stepUp()));
 
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 90 && getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
             .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepUp()));

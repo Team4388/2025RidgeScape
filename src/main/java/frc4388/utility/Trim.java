@@ -81,21 +81,22 @@ public class Trim {
     }
 
     public boolean load() {
-        try (FileInputStream stream = new FileInputStream("/home/lvuser/trims/" + trimName)) {
-            double fileValue = DataUtils.byteArrayToDouble(stream.readNBytes(8));
-            currentValue = fileValue;
-            clampModify();
-            modified = false;
-            if (fileValue != currentValue) {
-                System.out.println("TRIMS: Loaded trim `" + trimName + "` has a value that is higher than or less than the bounds set for the trim, clamping...");
-                modified = true;
-            }
-            return true;
-        } catch (Exception e) {
-            // e.printStackTrace();
-            System.out.println("TRIMS: Unable to read trim file `" + trimName + "`, using current value...");
-            return false;
-        }
+        // try (FileInputStream stream = new FileInputStream("/home/lvuser/trims/" + trimName)) {
+        //     double fileValue = DataUtils.byteArrayToDouble(stream.readNBytes(8));
+        //     currentValue = fileValue;
+        //     clampModify();
+        //     modified = false;
+        //     if (fileValue != currentValue) {
+        //         System.out.println("TRIMS: Loaded trim `" + trimName + "` has a value that is higher than or less than the bounds set for the trim, clamping...");
+        //         modified = true;
+        //     }
+        //     return true;
+        // } catch (Exception e) {
+        //     // e.printStackTrace();
+        //     System.out.println("TRIMS: Unable to read trim file `" + trimName + "`, using current value...");
+        //     return false;
+        // }
+        return false;
     }
 
     public void dump() {
