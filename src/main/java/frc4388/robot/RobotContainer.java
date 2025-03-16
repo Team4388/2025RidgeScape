@@ -116,6 +116,7 @@ public class RobotContainer {
     public void stop() {
         new InstantCommand(()->{}, m_robotSwerveDrive).schedule();
         m_robotSwerveDrive.stopModules();
+        Constants.AutoConstants.Y_OFFSET_TRIM.set(0);
     }
 
     // ! /*  Autos */
@@ -406,7 +407,9 @@ public class RobotContainer {
             new MoveForTimeCommand(m_robotSwerveDrive, 
                 new Translation2d(0, 1), 
                 new Translation2d(), 300, true
-        ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
+                
+        ), new InstantCommand(() -> Constants.AutoConstants.Y_OFFSET_TRIM.set(0)),
+        new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive)));
         
         NamedCommands.registerCommand("place-coral-left-l4", AprilLidarAlignL4Left);
         NamedCommands.registerCommand("place-coral-right-l4", AprilLidarAlignL4Right);
@@ -415,9 +418,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
         NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
 
-        NamedCommands.registerCommand("prepare-l4", new InstantCommand(() -> {
-            m_robotElevator.transitionState(CoordinationState.PrimedFour);
-        }));
+        NamedCommands.registerCommand("prepare-l4", new SequentialCommandGroup(
+            // new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Hovering)),
+            // new waitElevatorRefrence(m_robotElevator),
+            new InstantCommand(() -> Constants.AutoConstants.Y_OFFSET_TRIM.set(1.5)),
+            new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.PrimedFour))
+        ));
 
         configureButtonBindings();        
         configureVirtualButtonBindings();
