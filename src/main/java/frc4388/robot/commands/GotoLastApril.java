@@ -50,8 +50,8 @@ public class GotoLastApril extends Command {
         this.vision = vision;
         this.distance = distance;
         this.side = side;
-        this.waitVelocityZero = waitVelocityZero;
-        // addRequirements(swerveDrive);
+        this.waitVelocityZero = waitVelocityZero && false;
+        addRequirements(swerveDrive);
     }
 
 
@@ -62,6 +62,23 @@ public class GotoLastApril extends Command {
 
     @Override
     public void initialize() {
+        // double kP = AutoConstants.P_XY_GAINS.get();
+        // double kI = AutoConstants.I_XY_GAINS.get();
+        // double kD = AutoConstants.D_XY_GAINS.get();
+        // xPID = new PID(new Gains(
+        //     kP, 
+        //     kI, 
+        //     kD), 
+        // 0);
+        // yPID = new PID(new Gains(
+        //     kP, 
+        //     kI, 
+        //     kD),
+        // 0);
+
+        // System.out.println("kP: "+kP);
+        // System.out.println("kI: "+kI);
+        // System.out.println("kD: "+kD);
         xPID.initialize();
         yPID.initialize();
         this.targetpos = ReefPositionHelper.getNearestPosition(

@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "place-coral-left-l4"
+            "name": "place-coral-right-l4"
           }
         },
         {
@@ -44,6 +44,12 @@
           "type": "path",
           "data": {
             "pathName": "Bottom Feed to Reef 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "await-coral"
           }
         },
         {
@@ -74,6 +80,12 @@
           "type": "path",
           "data": {
             "pathName": "Bottom Feed to Reef 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "await-coral"
           }
         },
         {

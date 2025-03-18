@@ -162,7 +162,7 @@ public class Elevator extends Subsystem {
       
       case PrimedFour: {
         PIDPosition(elevatorMotor, ElevatorConstants.MAX_POSITION_ELEVATOR + AutoConstants.ELEVATOR_OFFSET_TRIM.get());
-        PIDPosition(endeffectorMotor, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR);
+        PIDPosition(endeffectorMotor, ElevatorConstants.PRIMED_FOUR_ENDEFFECTOR);
         led.setMode(LEDConstants.SCORING_PATTERN);
         break;
       }
@@ -254,6 +254,10 @@ public class Elevator extends Subsystem {
   //     elevatorMotor.set(stick.getY());
   //   }
   // }
+
+  public boolean getEndeffectorLimit() {
+    return endeffectorLimitSwitch.get();
+  }
 
   private void periodicWaiting() {
     if (!basinBeamBreak.get()) 
@@ -363,7 +367,7 @@ public class Elevator extends Subsystem {
   }
 
   public boolean hasCoral() {
-    return elevatorAtReference() && currentState == CoordinationState.Hovering && !endeffectorLimitSwitch.get();
+    return elevatorAtReference() && currentState == CoordinationState.Hovering || !endeffectorLimitSwitch.get();
   }
 
   public boolean readyToMove() {

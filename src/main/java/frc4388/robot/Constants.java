@@ -54,6 +54,7 @@ import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
 import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Trim;
+import frc4388.utility.configurable.ConfigurableDouble;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -193,7 +194,7 @@ public final class Constants {
                 .withKS(0).withKV(0.124);
             
             public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
-            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(2.5, 0.2, 1);
+            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(10, 0, 1);
         }
 
         public static final class Configurations {
@@ -298,7 +299,11 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final Gains XY_GAINS = new Gains(5,0.6,0.0);
+        // public static final Gains XY_GAINS = new Gains(5,0.6,0.0);
+        public static final Gains XY_GAINS = new Gains(8,0,0.0);
+        // public static final ConfigurableDouble P_XY_GAINS = new ConfigurableDouble("P_XY_GAINS", XY_GAINS.kP);
+        // public static final ConfigurableDouble I_XY_GAINS = new ConfigurableDouble("I_XY_GAINS", XY_GAINS.kI);
+        // public static final ConfigurableDouble D_XY_GAINS = new ConfigurableDouble("D_XY_GAINS", XY_GAINS.kD);
        // public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
 
         // public static final Gains ROT_GAINS = new Gains(0.05,0,0.007);
@@ -316,24 +321,37 @@ public final class Constants {
         public static final double MIN_XY_PID_OUTPUT = 0.0;
         public static final double MIN_ROT_PID_OUTPUT = 0.0;
 
-        public static final double VELOCITY_THRESHHOLD = 0.005;
+        public static final double VELOCITY_THRESHHOLD = 0.01;
                 
         // X is tangent to reef side
         // Y is normal to reef side
         public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5+1); // This is from the field
         public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16+1);
+        public static final double HALF_ROBOT_SIZE = Units.inchesToMeters(18);
 
-        public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
-        public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5.5);
-        // public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(4.5);
+        public static final double L4_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
+        public static final double L4_DISTANCE_SCORE = L4_DISTANCE_PREP;
+        // public static final double L4_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(4.5);
         
-        public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
-        public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5+1);
+        public static final double L3_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
+        public static final double L3_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(5+1);
         
-        public static final double L2_PREP_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
-        public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(0.5);
+        public static final double L2_PREP_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(6);
+        public static final double L2_SCORE_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(0.5);
 
-        public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
+        public static final double ALGAE_REMOVAL_DISTANCE = HALF_ROBOT_SIZE;
+        
+        // public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
+        // public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5.5);
+        // // public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(4.5);
+        
+        // public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
+        // public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5+1);
+        
+        // public static final double L2_PREP_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        // public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(0.5);
+
+        // public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
 
         public static final int L4_DRIVE_TIME = 250; //Milliseconds
         // public static final int L3_DRIVE_TIME = 500;
@@ -437,7 +455,8 @@ public final class Constants {
         public static final double DEALGAE_L2_ENDEFFECTOR = 0.22 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
         public static final double PRIMED_THREE_ENDEFFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
-        public static final double SCORING_FOUR_ENDEFFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
+        public static final double SCORING_FOUR_ENDEFFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR;
+        public static final double PRIMED_FOUR_ENDEFFECTOR = 0.44 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_TOP_ENDEFFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()

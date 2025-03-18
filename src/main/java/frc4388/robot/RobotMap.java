@@ -55,11 +55,14 @@ public class RobotMap {
     /* Elevator Subsystem */
     public final TalonFX elevator = new TalonFX(ElevatorConstants.ELEVATOR_ID.id);
     public final TalonFX endeffector = new TalonFX(ElevatorConstants.ENDEFFECTOR_ID.id);
+    
 
     public final DigitalInput basinLimitSwitch = new DigitalInput(ElevatorConstants.BASIN_LIMIT_SWITCH);
     public final DigitalInput endeffectorLimitSwitch = new DigitalInput(ElevatorConstants.ENDEFFECTOR_LIMIT_SWITCH);
     public final DigitalInput IRIntakeBeam = new DigitalInput(ElevatorConstants.INTAKE_LIMIT_SWITCH);
 
-    void configureDriveMotorControllers() {}
+    void configureDriveMotorControllers() {
+        // endeffector.saf
+    }
         
 }
