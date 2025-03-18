@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "prepare-l4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Barge to Reef 4 Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "place-coral-right-l4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

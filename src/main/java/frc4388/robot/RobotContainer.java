@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -90,6 +91,7 @@ import frc4388.utility.configurable.ConfigurableString;
  */
 public class RobotContainer {
     /* RobotMap */
+    
     public final RobotMap m_robotMap = new RobotMap();
     
     /* Subsystems */
@@ -154,7 +156,7 @@ public class RobotContainer {
         waitDebuger.asProxy(),
         new LidarAlign(m_robotSwerveDrive, m_reefLidar),
         waitDebuger.asProxy(),
-        new ParallelDeadlineGroup(
+        new ParallelRaceGroup(
             new WaitCommand(1),
             new MoveUntilSuply(
                 m_robotSwerveDrive, 
@@ -271,7 +273,7 @@ public class RobotContainer {
         waitDebuger.asProxy(),
         new LidarAlign(m_robotSwerveDrive, m_reefLidar),
         waitDebuger.asProxy(),
-        new ParallelDeadlineGroup(
+        new ParallelRaceGroup(
             new WaitCommand(1),
             new MoveUntilSuply(
                 m_robotSwerveDrive, 
@@ -635,10 +637,10 @@ public class RobotContainer {
                 ), m_robotSwerveDrive))
             .onFalse(new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive));
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-               .onTrue( new DriveUntilLiDAR(m_robotSwerveDrive, 
-               new Translation2d(-1,0), new Translation2d(), m_reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, true));
-        //     .onTrue(new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.HALF_ROBOT_SIZE, Side.CENTER, true));
+        // new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+        //        .onTrue( new DriveUntilLiDAR(m_robotSwerveDrive, 
+        //        new Translation2d(-1,0), new Translation2d(), m_reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, true));
+        // //     .onTrue(new GotoLastApril(m_robotSwerveDrive, m_vision, AutoConstants.HALF_ROBOT_SIZE, Side.CENTER, true));
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
             .onTrue(thrustIntake.asProxy());
