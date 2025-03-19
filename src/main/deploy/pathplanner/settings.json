@@ -9,7 +9,11 @@
     "Reef to Bottom Feed",
     "Top Feed to Reef"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "1 Coral",
+    "2 Coral",
+    "3 Coral"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

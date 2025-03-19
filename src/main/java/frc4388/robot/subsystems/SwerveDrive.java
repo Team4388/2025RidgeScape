@@ -118,6 +118,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void setOdoPose(Pose2d pose) {
+        if (pose == null) return;
         initalPose2d = pose;
         swerveDriveTrain.resetPose(pose);
     }

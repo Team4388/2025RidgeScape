@@ -163,7 +163,7 @@ public class RobotContainer {
                 new Translation2d(0,-0.5), 
                 new Translation2d(), m_robotElevator::getEndeffectorLimit, true)
         ),
-        new InstantCommand(m_robotSwerveDrive::softStop, m_robotElevator),
+        new InstantCommand(m_robotSwerveDrive::softStop, m_robotSwerveDrive),
 
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
 
@@ -172,10 +172,10 @@ public class RobotContainer {
         new MoveForTimeCommand(m_robotSwerveDrive, 
         new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
 
-        new ConditionalCommand(
-            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        // new ConditionalCommand(
+        //     new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
-             () -> m_robotElevator.hasCoral()),
+            //  () -> m_robotElevator.hasCoral()),
 
         new InstantCommand(() -> {m_robotSwerveDrive.endSlowPeriod();})
     );
@@ -280,7 +280,7 @@ public class RobotContainer {
                 new Translation2d(0,-0.5), 
                 new Translation2d(), m_robotElevator::getEndeffectorLimit, true)
         ),
-        new InstantCommand(m_robotSwerveDrive::softStop, m_robotElevator),
+        new InstantCommand(m_robotSwerveDrive::softStop, m_robotSwerveDrive),
         
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
 
@@ -290,10 +290,10 @@ public class RobotContainer {
         new MoveForTimeCommand(m_robotSwerveDrive, 
             new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
 
-        new ConditionalCommand(
-            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        // new ConditionalCommand(
+        //     new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
             new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
-                () -> m_robotElevator.hasCoral()),
+                // () -> m_robotElevator.hasCoral()),
 
 
 
@@ -510,6 +510,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("place-coral-right-l3", AprilLidarAlignL3Right);
         NamedCommands.registerCommand("place-coral-left-l2", AprilLidarAlignL2Left);
         NamedCommands.registerCommand("place-coral-right-l2", AprilLidarAlignL2Right);
+
+
+        NamedCommands.registerCommand("lower-algae-removal", lowerAlgaeRemove);
+        NamedCommands.registerCommand("upper-algae-removal", upperAlgaeRemove);
 
         NamedCommands.registerCommand("prepare-l4", new SequentialCommandGroup(
             // new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.Hovering)),
@@ -830,7 +834,15 @@ public class RobotContainer {
         }
 
         autoChooser.onChange((filename) -> {
-            autoCommand = new PathPlannerAuto(filename);
+            if (filename.equals("Taxi")) {
+                autoCommand = new SequentialCommandGroup(
+                    new MoveForTimeCommand(m_robotSwerveDrive, 
+                        new Translation2d(0, -1), 
+                        new Translation2d(), 1000, true
+                ), new InstantCommand(()-> {m_robotSwerveDrive.softStop();} , m_robotSwerveDrive));
+            } else {
+                autoCommand = new PathPlannerAuto(filename);
+            }
             System.out.println("Robot Auto Changed " + filename);
         });
         // SmartDashboard.putData(autoChooser);

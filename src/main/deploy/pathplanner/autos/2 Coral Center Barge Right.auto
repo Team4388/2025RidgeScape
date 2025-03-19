@@ -13,67 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 1 to Reef"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral-right-l4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef 5 to Top Feed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feed-driveback"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "grab-coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Feed to Reef 6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "place-coral-right-l4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef 6 to Top Feed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feed-driveback"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "grab-coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Feed to Reef 6"
+            "pathName": "Center Barge to Reef 4 Left"
           }
         },
         {
@@ -85,7 +25,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 6 to Top Feed"
+            "pathName": "Reef 4 to Bottom Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "feed-driveback"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "grab-coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Feed to Reef 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "place-coral-left-l4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 2 to Bottom Feed"
           }
         },
         {
@@ -104,6 +74,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "2 Coral",
   "choreoAuto": false
 }

@@ -13,19 +13,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Barge to Reef 4 Left"
+            "pathName": "Center Barge to Reef 4 Right"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "place-coral-left-l4"
+            "name": "place-coral-right-l4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "lower-algae-removal"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "1 Coral",
   "choreoAuto": false
 }

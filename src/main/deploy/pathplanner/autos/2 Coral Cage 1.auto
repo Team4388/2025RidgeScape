@@ -49,6 +49,12 @@
         {
           "type": "named",
           "data": {
+            "name": "await-coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "place-coral-right-l4"
           }
         },
@@ -74,6 +80,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "2 Coral",
   "choreoAuto": false
 }
