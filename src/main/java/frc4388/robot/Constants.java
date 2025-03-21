@@ -337,7 +337,7 @@ public final class Constants {
         public static final double L3_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(5+1);
         
         public static final double L2_PREP_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(6);
-        public static final double L2_SCORE_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(0.5);
+        public static final double L2_SCORE_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(0.5-2);
 
         public static final double ALGAE_REMOVAL_DISTANCE = HALF_ROBOT_SIZE;
         

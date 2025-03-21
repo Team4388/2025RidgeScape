@@ -625,6 +625,10 @@ public class RobotContainer {
         new Trigger(() -> getDeadbandedDriverController().getPOV() == 270 && getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
             .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
         
+        new Trigger(() -> getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
+            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.rotSpeedAdjust *= 2;}))
+            .onFalse(new InstantCommand(() -> {m_robotSwerveDrive.rotSpeedAdjust /= 2;}));
+
         new Trigger(() ->getDeadbandedDriverController().getRightTriggerAxis() > 0.8)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.startTurboPeriod()))
             .onFalse(new InstantCommand(() -> m_robotSwerveDrive.endSlowPeriod()));
