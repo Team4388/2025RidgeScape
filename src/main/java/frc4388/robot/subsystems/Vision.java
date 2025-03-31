@@ -10,6 +10,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +50,7 @@ public class Vision extends Subsystem {
 
     private PhotonCamera[] cameras;
     private PhotonPoseEstimator[] estimators;
+    private List<EstimatedRobotPose> poses = new ArrayList<>();
 
     private boolean isTagDetected = false;
     private boolean isTagProcessed = false;
@@ -136,7 +138,8 @@ public class Vision extends Subsystem {
         // double Yaw = 0;
         double latency = 0;
 
-        Pose2d pose = null;
+        // Pose2d pose = null;
+        poses.clear();
 
         for(int i = 0; i < cameras.length; i++){
             PhotonCamera camera = cameras[i];
@@ -163,11 +166,13 @@ public class Vision extends Subsystem {
             // If the tag was failed to be processed
             if(estimatedRobotPose.isEmpty())
                 continue;
+            
+            poses.add(estimatedRobotPose.get());
 
-            if(pose == null)
-                pose = estimatedRobotPose.get().estimatedPose.toPose2d();
-            else
-                pose = pose.interpolate(pose, 0.5);
+            // if(pose == null)
+            //     pose = estimatedRobotPose.get().estimatedPose.toPose2d();
+            // else
+            //     pose = pose.interpolate(pose, 0.5);
             // X += pose.getX();
             // Y += pose.getY();
 
@@ -181,43 +186,20 @@ public class Vision extends Subsystem {
             
         }
 
-        lastLatency = latency / cams;
+        // lastLatency = latency / cams;
 
-        if(isTagProcessed){
-            // Instant now = Instant.now();
-
-            // double curAngle = (Yaw/cams);
-
-            // Pose2d e = new Pose2d();
+        // if(isTagProcessed){
 
 
+        //     lastVisionPose = pose;
+        //     // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
+        //     // lastVisionPose = new Pose2d(10, 5, Rotation2d.fromDegrees(curAngle + rotations*360));
 
+        //     // SmartDashboard.putNumber("curAngle", pose.getRotation().getRotations());
+        //     // SmartDashboard.putNumber("Rotations", rotations);
 
-
-            // // double curAngle = + (((Math.random() * 2) - 1 + 360) % 360) - 180; // Generate loopover noise
-
-
-            // if(lastVisionTime != null && Math.abs(now.getEpochSecond() - lastVisionTime.getEpochSecond()) <= 1){            
-            //     double diff = curAngle - lastVisionPose.getRotation().getDegrees() + rotations*360;
-
-            //     if(diff > 180){
-            //         rotations -= 1;
-            //     }else if(diff < -180){
-            //         rotations += 1;
-            //     }
-            // }
-
-
-
-            lastVisionPose = pose;
-            // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
-            // lastVisionPose = new Pose2d(10, 5, Rotation2d.fromDegrees(curAngle + rotations*360));
-
-            // SmartDashboard.putNumber("curAngle", pose.getRotation().getRotations());
-            // SmartDashboard.putNumber("Rotations", rotations);
-
-            lastVisionTime = now;
-        }
+        //     lastVisionTime = now;
+        // }
     }
 
 
@@ -247,66 +229,66 @@ public class Vision extends Subsystem {
             return visionEst; // Will be empty
 
         visionEst = estimator.update(change);
-        updateEstimationStdDevs(visionEst, change.getTargets(), estimator);
+        // updateEstimationStdDevs(visionEst, change.getTargets(), estimator);
 
         return visionEst;
     }
 
 
-    /**
-     * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
-     * deviations based on number of tags, estimation strategy, and distance from the tags.
-     *
-     * @param estimatedPose The estimated pose to guess standard deviations for.
-     * @param targets All targets in this camera frame
-     */
-    private void updateEstimationStdDevs(
-            Optional<EstimatedRobotPose> estimatedPose, 
-            List<PhotonTrackedTarget> targets,
-            PhotonPoseEstimator estimator) {
-        if (estimatedPose.isEmpty()) {
-            // No pose input. Default to single-tag std devs
-            curStdDevs = VisionConstants.kSingleTagStdDevs;
+    // /**
+    //  * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
+    //  * deviations based on number of tags, estimation strategy, and distance from the tags.
+    //  *
+    //  * @param estimatedPose The estimated pose to guess standard deviations for.
+    //  * @param targets All targets in this camera frame
+    //  */
+    // private void updateEstimationStdDevs(
+    //         Optional<EstimatedRobotPose> estimatedPose, 
+    //         List<PhotonTrackedTarget> targets,
+    //         PhotonPoseEstimator estimator) {
+    //     if (estimatedPose.isEmpty()) {
+    //         // No pose input. Default to single-tag std devs
+    //         curStdDevs = VisionConstants.kSingleTagStdDevs;
 
-        } else {
-            // Pose present. Start running Heuristic
-            var estStdDevs = VisionConstants.kSingleTagStdDevs;
-            int numTags = 0;
-            double avgDist = 0;
+    //     } else {
+    //         // Pose present. Start running Heuristic
+    //         var estStdDevs = VisionConstants.kSingleTagStdDevs;
+    //         int numTags = 0;
+    //         double avgDist = 0;
 
-            // Precalculation - see how many tags we found, and calculate an average-distance metric
-            for (var tgt : targets) {
-                var tagPose = estimator.getFieldTags().getTagPose(tgt.getFiducialId());
-                if (tagPose.isEmpty()) continue;
+    //         // Precalculation - see how many tags we found, and calculate an average-distance metric
+    //         for (var tgt : targets) {
+    //             var tagPose = estimator.getFieldTags().getTagPose(tgt.getFiducialId());
+    //             if (tagPose.isEmpty()) continue;
                 
-                double distance = tagPose
-                .get()
-                .toPose2d()
-                .getTranslation()
-                .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+    //             double distance = tagPose
+    //             .get()
+    //             .toPose2d()
+    //             .getTranslation()
+    //             .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
                 
-                if (distance < VisionConstants.MIN_ESTIMATION_DISTANCE) {
-                    numTags++;
-                    avgDist += distance;
-                }
-            }
+    //             if (distance < VisionConstants.MIN_ESTIMATION_DISTANCE) {
+    //                 numTags++;
+    //                 avgDist += distance;
+    //             }
+    //         }
 
-            if (numTags == 0) {
-                // No tags visible. Default to single-tag std devs
-                curStdDevs = VisionConstants.kSingleTagStdDevs;
-            } else {
-                // One or more tags visible, run the full heuristic.
-                avgDist /= numTags;
-                // Decrease std devs if multiple targets are visible
-                if (numTags > 1) estStdDevs = VisionConstants.kMultiTagStdDevs;
-                // Increase std devs based on (average) distance
-                if (numTags == 1 && avgDist > 4)
-                    estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
-                curStdDevs = estStdDevs;
-            }
-        }
-    }
+    //         if (numTags == 0) {
+    //             // No tags visible. Default to single-tag std devs
+    //             curStdDevs = VisionConstants.kSingleTagStdDevs;
+    //         } else {
+    //             // One or more tags visible, run the full heuristic.
+    //             avgDist /= numTags;
+    //             // Decrease std devs if multiple targets are visible
+    //             if (numTags > 1) estStdDevs = VisionConstants.kMultiTagStdDevs;
+    //             // Increase std devs based on (average) distance
+    //             if (numTags == 1 && avgDist > 4)
+    //                 estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+    //             else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+    //             curStdDevs = estStdDevs;
+    //         }
+    //     }
+    // }
 
     /**
      * Returns the latest standard deviations of the estimated pose from {@link
@@ -331,11 +313,13 @@ public class Vision extends Subsystem {
     // }
 
     public Pose2d getPose2d() {
-        if(isTagDetected && isTagProcessed)
-            // return lastVisionPose;
+        if(lastPhysOdomPose != null)
             return lastPhysOdomPose;
-        else
-            return lastPhysOdomPose;
+        return new Pose2d();
+        // if(isTagDetected && isTagProcessed)
+        //     // return lastVisionPose;
+        // else
+        //     return lastPhysOdomPose;
     }
 
     public static double getTime() {
@@ -347,7 +331,11 @@ public class Vision extends Subsystem {
     }
 
 
-
+    public void addVisionMeasurement( SwerveDrivetrain<TalonFX, TalonFX, CANcoder> drivetrain){
+        for(EstimatedRobotPose pose : poses){
+            drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(pose.timestampSeconds));
+        }
+    }
 
 
 

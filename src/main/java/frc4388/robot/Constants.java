@@ -373,8 +373,8 @@ public final class Constants {
         // The standard deviations of our vision estimated poses, which affect correction rate
         // X, Y, Theta
         // https://www.chiefdelphi.com/t/photonvision-finding-standard-deviations-for-swervedriveposeestimator/467802/2
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(3, 3, 4);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.5, 4);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.1, 0.1, 1);
     }
 
     public static final class FieldConstants {

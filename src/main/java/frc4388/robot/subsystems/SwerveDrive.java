@@ -351,7 +351,8 @@ public class SwerveDrive extends Subsystem {
                 rotTarget += deltaAngle;
             }
             
-            swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);
+            vision.addVisionMeasurement(swerveDriveTrain);
+            // swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);
             //back to the ~~future~~ *past*
         }
 
