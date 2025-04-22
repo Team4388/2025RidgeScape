@@ -15,13 +15,31 @@ import frc4388.utility.Status.ReportLevel;
 // https://girlsofsteeldocs.readthedocs.io/en/latest/technical-resources/sensors/LIDAR-Lite-Distance-Sensor.html#minimal-roborio-interface
 public class Lidar extends Subsystem {
 
-    private double distance = -1;
-    Counter LidarPWM = new Counter(LiDARConstants.LIDAR_DIO_CHANNEL);
+    private Counter LidarPWM;
+    private String name = "Lidar";
 
-    public Lidar() {
+    private double distance = -1;
+    public Lidar(int port, String name) {
+        this.name = name;
+        LidarPWM = new Counter(port);
         LidarPWM.setMaxPeriod(1.00); //set the max period that can be measured
         LidarPWM.setSemiPeriodMode(true); //Set the counter to period measurement
         LidarPWM.reset();
+
+        
+    subsystemLayout = Shuffleboard.getTab("Subsystems")
+    .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+    .withSize(2, 2);
+
+    sbDistance = subsystemLayout
+    .add("Distance", 0)
+    .withWidget(BuiltInWidgets.kGraph)
+    .getEntry();
+
+    sbWithinDistance = subsystemLayout
+    .   add("Within Distance", 0)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
     }
 
     @Override
@@ -41,23 +59,13 @@ public class Lidar extends Subsystem {
         return distance < LiDARConstants.LIDAR_DETECT_DISTANCE;
     }
 
-    ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
-            .getLayout(getSubsystemName(), BuiltInLayouts.kList)
-            .withSize(2, 2);
-
-    GenericEntry sbDistance = subsystemLayout
-            .add("Distance", 0)
-            .withWidget(BuiltInWidgets.kGraph)
-            .getEntry();
-
-    GenericEntry sbWithinDistance = subsystemLayout
-            .add("Within Distance", 0)
-            .withWidget(BuiltInWidgets.kBooleanBox)
-            .getEntry();
+    ShuffleboardLayout subsystemLayout;
+    GenericEntry sbDistance;
+    GenericEntry sbWithinDistance;
 
     @Override
     public String getSubsystemName() {
-        return "Lidar";
+        return "Lidar " + name;
     }
 
     @Override

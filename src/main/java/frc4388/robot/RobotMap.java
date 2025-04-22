@@ -7,16 +7,25 @@
 
 package frc4388.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import org.photonvision.PhotonCamera;
 
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc4388.robot.Constants.ClimberConstants;
 import frc4388.robot.Constants.ElevatorConstants;
+// import edu.wpi.first.wpilibj.motorcontrol.Spark;
+// import frc4388.robot.Constants.LEDConstants;
+import frc4388.robot.Constants.SwerveDriveConstants;
 import frc4388.robot.Constants.VisionConstants;
+// import frc4388.robot.subsystems.SwerveModule;
+import frc4388.utility.RobotGyro;
 
 /**
  * Defines and holds all I/O objects on the Roborio. This is useful for unit
@@ -46,13 +55,14 @@ public class RobotMap {
     /* Elevator Subsystem */
     public final TalonFX elevator = new TalonFX(ElevatorConstants.ELEVATOR_ID.id);
     public final TalonFX endeffector = new TalonFX(ElevatorConstants.ENDEFFECTOR_ID.id);
+    
 
     public final DigitalInput basinLimitSwitch = new DigitalInput(ElevatorConstants.BASIN_LIMIT_SWITCH);
     public final DigitalInput endeffectorLimitSwitch = new DigitalInput(ElevatorConstants.ENDEFFECTOR_LIMIT_SWITCH);
+    public final DigitalInput IRIntakeBeam = new DigitalInput(ElevatorConstants.INTAKE_LIMIT_SWITCH);
 
-    /* Climber Subsytem */
-    public final TalonFX climber = new TalonFX(ClimberConstants.CLIMBER_ID.id);
-
-    void configureDriveMotorControllers() {}
-    
+    void configureDriveMotorControllers() {
+        // endeffector.saf
+    }
+        
 }

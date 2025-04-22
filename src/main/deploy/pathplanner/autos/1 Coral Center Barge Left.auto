@@ -5,33 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom Red Cage to Reef"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "place-coral-right-l4"
+            "name": "prepare-l4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Reef to Feed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "grab-coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom Feed to Reef"
+            "pathName": "Center Barge to Reef 4 Left"
           }
         },
         {
@@ -39,11 +21,17 @@
           "data": {
             "name": "place-coral-left-l4"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "lower-algae-removal"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "1 Coral",
   "choreoAuto": false
 }

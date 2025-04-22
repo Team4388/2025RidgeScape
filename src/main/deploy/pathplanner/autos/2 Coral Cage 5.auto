@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "prepare-l4"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Center Red Cage to Reef"
+            "pathName": "Cage 5 to Reef"
           }
         },
         {
@@ -19,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Reef to Feed"
+            "pathName": "Reef 3 to Bottom Feed"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "align-feed"
+            "name": "feed-driveback"
           }
         },
         {
@@ -37,7 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Feed to Reef"
+            "pathName": "Bottom Feed to Reef 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "await-coral"
           }
         },
         {
@@ -45,11 +57,29 @@
           "data": {
             "name": "place-coral-left-l4"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 2 to Bottom Feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "feed-driveback"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "grab-coral"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "2 Coral",
   "choreoAuto": false
 }

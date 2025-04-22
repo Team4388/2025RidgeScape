@@ -5,6 +5,7 @@ import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc4388.robot.Constants.AutoConstants;
@@ -14,7 +15,8 @@ public class ReefPositionHelper {
     public enum Side {
         LEFT,
         RIGHT,
-        CENTER
+        CENTER,
+        FAR_LEFT
     }
 
     public static final Pose2d[] RED_TAGS = {
@@ -56,6 +58,8 @@ public class ReefPositionHelper {
                 minDistance = dist;
             }
         }
+        
+        System.out.println(minPos.getRotation().getDegrees());
 
         return minPos;
     }
@@ -81,11 +85,14 @@ public class ReefPositionHelper {
         switch(side) {
             case LEFT:
                 return -(AutoConstants.X_SCORING_POSITION_OFFSET);
+            case FAR_LEFT:
+                return -(AutoConstants.X_SCORING_POSITION_OFFSET+Units.inchesToMeters(8));
             case RIGHT:
                 return (AutoConstants.X_SCORING_POSITION_OFFSET);
             case CENTER:
                 return 0;
         }
+        assert false;
         return 0;
     }
 

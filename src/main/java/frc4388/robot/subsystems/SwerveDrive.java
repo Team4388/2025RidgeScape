@@ -58,6 +58,8 @@ public class SwerveDrive extends Subsystem {
     public double autoSpeedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * 0.25; // cap auto performance to
                                                                                            // 25%
 
+    public double lastOdomSpeed;
+
     public Pose2d initalPose2d = null;
 
 
@@ -116,6 +118,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void setOdoPose(Pose2d pose) {
+        if (pose == null) return;
         initalPose2d = pose;
         swerveDriveTrain.resetPose(pose);
     }
@@ -141,7 +144,7 @@ public class SwerveDrive extends Subsystem {
         if (rightStick.getNorm() < 0.05 && leftStick.getNorm() < 0.05) // if no imput
             return; // don't bother doing swerve drive math and return early.
 
-            leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
         
         stopped = false;
         if (fieldRelative) {
@@ -184,10 +187,12 @@ public class SwerveDrive extends Subsystem {
     public void driveFine(Translation2d leftStick, Translation2d rightStick, double percentOutput) {
         stopped = false;
         // Create robot-relative speeds.
+        if (rightStick.getNorm() > 0.1) rightStick = rightStick.times(0);
         swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
             .withVelocityX(leftStick.getX() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
             .withVelocityY(-leftStick.getY() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
             .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
+        
     }
 
 
@@ -211,18 +216,33 @@ public class SwerveDrive extends Subsystem {
                 .withTargetDirection(rightStick.getAngle()));
     }
 
+    public void driveRelativeAngle(Translation2d leftStick, Rotation2d heading) {
+        leftStick = leftStick.rotateBy(TimesNegativeOne.ForwardOffset);
+        leftStick = TimesNegativeOne.invert(leftStick, TimesNegativeOne.XAxis, TimesNegativeOne.YAxis);
+        var ctrl = new SwerveRequest.FieldCentricFacingAngle()
+            .withVelocityX(leftStick.getX() * speedAdjust)
+            .withVelocityY(leftStick.getY() * speedAdjust)
+            .withTargetDirection(heading);
+        ctrl.HeadingController.setPID(
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        );
+        swerveDriveTrain.setControl(ctrl);
+    }
+
     public void driveRelativeLockedAngle(Translation2d leftStick, Rotation2d heading) {
         leftStick = leftStick.rotateBy(heading);
 
         var ctrl = new SwerveRequest.FieldCentricFacingAngle()
             .withVelocityX(leftStick.getX() * speedAdjust)
             .withVelocityY(leftStick.getY() * speedAdjust)
-            .withTargetDirection(Rotation2d.fromDegrees(rotTarget));
-        ctrl.HeadingController.setPID(
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
-        );
+            .withTargetDirection(heading);
+        // ctrl.HeadingController.setPID(
+        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        // );
         swerveDriveTrain.setControl(ctrl);
     }
 
@@ -288,6 +308,7 @@ public class SwerveDrive extends Subsystem {
         swerveDriveTrain.tareEverything();
         robotKnowsWhereItIs = false;
         rotTarget = 0;
+        // vision.resetRotations();
     }
 
 
@@ -313,9 +334,13 @@ public class SwerveDrive extends Subsystem {
         SmartDashboard.putNumber("RotTartget", rotTarget);
 
         double time = Vision.getTime();
-        
+        double freq =  swerveDriveTrain.getOdometryFrequency();
 
-        vision.setLastOdomPose(swerveDriveTrain.samplePoseAt(time));
+        Optional<Pose2d> curpose = swerveDriveTrain.samplePoseAt(time);
+        Optional<Pose2d> lastPose = swerveDriveTrain.samplePoseAt(time - freq);
+        
+        vision.setLastOdomPose(curpose);
+        setLastOdomSpeed(curpose, lastPose, freq);
 
         if (vision.isTag()) {
             Pose2d pose = vision.getPose2d();
@@ -326,7 +351,9 @@ public class SwerveDrive extends Subsystem {
                 rotTarget += deltaAngle;
             }
             
-            swerveDriveTrain.addVisionMeasurement(vision.getPose2d(), time);
+            vision.addVisionMeasurement(swerveDriveTrain);
+            // swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);
+            //back to the ~~future~~ *past*
         }
 
         // if(e.isPresent())
@@ -392,10 +419,34 @@ public class SwerveDrive extends Subsystem {
         setToSlow();
     }
 
+    public void startTurboPeriod() {
+        tmp_gear_index = gear_index;
+        setToTurbo();
+    }
+
     public void endSlowPeriod() {
         setPercentOutput(SwerveDriveConstants.GEARS[tmp_gear_index]);
         gear_index = tmp_gear_index;
     }
+
+
+
+    public void setLastOdomSpeed(Optional<Pose2d> curPose, Optional<Pose2d> lastPose, double freq){
+        if(curPose.isPresent() && lastPose.isPresent()){
+            this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
+        
+
+            // double rotDiff = curPose.get().getRotation().getDegrees() - lastPose.get().getRotation().getDegrees();
+    
+            // if(rotDiff >= 180){
+            //     vision.subtractRotation();
+            // }else if(rotDiff <= -180){
+            //     vision.addRotation();
+            // }
+            SmartDashboard.putNumber("Speed", lastOdomSpeed);
+        }
+    }
+
 
     @Override
     public String getSubsystemName() {

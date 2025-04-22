@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.982954545454545,
-        "y": 4.03497159090909
+        "x": 7.0078125,
+        "y": 6.0725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.109744318181819,
-        "y": 3.8355397727272718
+        "x": 6.902067334527623,
+        "y": 5.78751784036735
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.232244318181818,
-        "y": 5.281420454545455
+        "x": 5.590213815789473,
+        "y": 5.593338815789473
       },
       "prevControl": {
-        "x": 7.1397939460232385,
-        "y": 4.676387369317844
-      },
-      "nextControl": {
-        "x": 5.574119318181818,
-        "y": 5.720170454545454
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.121401515151515,
-        "y": 7.003093434343434
-      },
-      "prevControl": {
-        "x": 0.32627122293847843,
-        "y": 7.229156472141377
+        "x": 5.872115174798128,
+        "y": 6.170888760790882
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,7 +30,18 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 5.15,
+        "y": 4.85
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -58,13 +53,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.93780932479241
+    "rotation": -120.52970589993409
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Barge to Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.1574757392596
+    "rotation": -123.4533094540727
   },
   "useDefaultConstraints": true
 }

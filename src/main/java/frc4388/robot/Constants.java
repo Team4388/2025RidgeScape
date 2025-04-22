@@ -21,7 +21,6 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -55,6 +54,7 @@ import frc4388.utility.Gains;
 import frc4388.utility.LEDPatterns;
 import frc4388.utility.ReefPositionHelper;
 import frc4388.utility.Trim;
+import frc4388.utility.configurable.ConfigurableDouble;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -69,7 +69,7 @@ public final class Constants {
     
     public static final class SwerveDriveConstants {
 
-        public static final double MAX_ROT_SPEED        = 3.5;
+        public static final double MAX_ROT_SPEED        = Math.PI * 2;
         public static final double AUTO_MAX_ROT_SPEED = 1.5;
         public static final double MIN_ROT_SPEED        = 1.0;
         public static       double ROTATION_SPEED       = MAX_ROT_SPEED;
@@ -114,7 +114,7 @@ public final class Constants {
 
         private static final class ModuleSpecificConstants { //2025
             //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.4794921875+0.25);
+            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(-0.368896484375);
             private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
@@ -122,7 +122,7 @@ public final class Constants {
             private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.62841796875-0.5);
+            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(-0.011474609375);
             private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
@@ -130,7 +130,7 @@ public final class Constants {
             private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
 
             //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(-0.867431640625+0.25);
+            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.333251953125+0.5);
             private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
@@ -138,47 +138,13 @@ public final class Constants {
             private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
             
             //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.425537109375-0.25+0.25);
+            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.4306640625+0.5);
             private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
             private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
             private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
             private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
             private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
         }
-
-        /* private static final class ModuleSpecificConstants { // 2024
-            //Front Left
-            private static final Angle FRONT_LEFT_ENCODER_OFFSET = Rotations.of(0.36328125);
-            private static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean FRONT_LEFT_STEER_MOTOR_INVERTED = true;
-            private static final boolean FRONT_LEFT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_LEFT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_LEFT_YPOS = Inches.of(HALF_HEIGHT);
-            
-            //Front Right
-            private static final Angle FRONT_RIGHT_ENCODER_OFFSET = Rotations.of(0.133056640625);
-            private static final boolean FRONT_RIGHT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean FRONT_RIGHT_STEER_MOTOR_INVERTED = true;
-            private static final boolean FRONT_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance FRONT_RIGHT_XPOS = Inches.of(HALF_WIDTH);
-            private static final Distance FRONT_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-
-            //Back Left
-            private static final Angle BACK_LEFT_ENCODER_OFFSET = Rotations.of(0.47705078125 + 0.5);
-            private static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean BACK_LEFT_STEER_MOTOR_INVERTED = true;
-            private static final boolean BACK_LEFT_ENCODER_INVERTED = false;
-            private static final Distance BACK_LEFT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
-            
-            //Back Right
-            private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(-0.355224609375 + 0.5);
-            private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
-            private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
-            private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;
-            private static final Distance BACK_RIGHT_XPOS = Inches.of(-HALF_WIDTH);
-            private static final Distance BACK_RIGHT_YPOS = Inches.of(-HALF_HEIGHT);
-        } */
 
         public static final class IDs {
             public static final CanDevice RIGHT_FRONT_WHEEL   = new CanDevice("RIGHT_FRONT_WHEEL", 4);
@@ -228,7 +194,7 @@ public final class Constants {
                 .withKS(0).withKV(0.124);
             
             public static final Gains DRIFT_CORRECTION_GAINS = new Gains(2.5, 0, 0.1);
-            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(5, 0, 0.1); // TODO: TEST
+            public static final Gains RELATIVE_LOCKED_ANGLE_GAINS = new Gains(10, 0, 1);
         }
 
         public static final class Configurations {
@@ -322,43 +288,76 @@ public final class Constants {
       }
     
     public static final class LiDARConstants {
+        public static final int REEF_LIDAR_DIO_CHANNEL = 7;
+        public static final int REVERSE_LIDAR_DIO_CHANNEL = 4;
+
+        public static final int HUMAN_PLAYER_STATION_DISTANCE = 40;
+
         public static final int LIDAR_DETECT_DISTANCE = 100; // Min distance to detect pole
-        public static final int LIDAR_DIO_CHANNEL = 7;
         public static final int LIDAR_MICROS_TO_CM = 10;
         public static final int SECONDS_TO_MICROS = 1000000;
     }
 
     public static final class AutoConstants {
-        public static final Gains XY_GAINS = new Gains(3,0.01,0.0);
-        public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
+        // public static final Gains XY_GAINS = new Gains(5,0.6,0.0);
+        public static final Gains XY_GAINS = new Gains(8,0,0.0);
+        // public static final ConfigurableDouble P_XY_GAINS = new ConfigurableDouble("P_XY_GAINS", XY_GAINS.kP);
+        // public static final ConfigurableDouble I_XY_GAINS = new ConfigurableDouble("I_XY_GAINS", XY_GAINS.kI);
+        // public static final ConfigurableDouble D_XY_GAINS = new ConfigurableDouble("D_XY_GAINS", XY_GAINS.kD);
+       // public static final Gains XY_GAINS = new Gains(3,0.3,0.0);
+
+        // public static final Gains ROT_GAINS = new Gains(0.05,0,0.007);
+        // public static final Gains ROT_GAINS = new Gains(0.05,0,0.0);
 
         public static final Trim X_OFFSET_TRIM =        new Trim("X Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE,0.5, 0);
+        // public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 1.5);
         public static final Trim Y_OFFSET_TRIM =        new Trim("Y Offset Trim",        Double.MAX_VALUE, -Double.MAX_VALUE, 0.5, 0);
         public static final Trim ELEVATOR_OFFSET_TRIM = new Trim("Elevator Offset Trim", -ElevatorConstants.MAX_POSITION_ELEVATOR, ElevatorConstants.MAX_POSITION_ELEVATOR, 1, 0);
         public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, 1, 0);
                 
         public static final double XY_TOLERANCE = 0.07; // Meters
         public static final double ROT_TOLERANCE = 5; // Degrees
+
+        public static final double MIN_XY_PID_OUTPUT = 0.0;
+        public static final double MIN_ROT_PID_OUTPUT = 0.0;
+
+        public static final double VELOCITY_THRESHHOLD = 0.01;
                 
         // X is tangent to reef side
         // Y is normal to reef side
-        public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5); // This is from the field
-        public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16);
+        public static final double X_SCORING_POSITION_OFFSET = Units.inchesToMeters(6.5+1); // This is from the field
+        public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16+1);
+        public static final double HALF_ROBOT_SIZE = Units.inchesToMeters(18);
 
-        public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
-        public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L4_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
+        public static final double L4_DISTANCE_SCORE = L4_DISTANCE_PREP;
+        // public static final double L4_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(4.5);
         
-        public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(12);
-        public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        public static final double L3_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
+        public static final double L3_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(5+1);
         
-        public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(1);
+        public static final double L2_PREP_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(6);
+        public static final double L2_SCORE_DISTANCE = HALF_ROBOT_SIZE + Units.inchesToMeters(0.5-2);
 
-        public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
+        public static final double ALGAE_REMOVAL_DISTANCE = HALF_ROBOT_SIZE;
+        
+        // public static final double L4_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
+        // public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5.5);
+        // // public static final double L4_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(4.5);
+        
+        // public static final double L3_DISTANCE_PREP = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(15);
+        // public static final double L3_DISTANCE_SCORE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(5+1);
+        
+        // public static final double L2_PREP_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(6);
+        // public static final double L2_SCORE_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(0.5);
+
+        // public static final double ALGAE_REMOVAL_DISTANCE = Y_SCORING_POSITION_OFFSET + Units.inchesToMeters(2);
 
         public static final int L4_DRIVE_TIME = 250; //Milliseconds
         // public static final int L3_DRIVE_TIME = 500;
         public static final int L2_DRIVE_TIME = 250; //Milliseconds
         public static final int ALGAE_DRIVE_TIME = 500;
+        public static final double STOP_VELOCITY = 0.0;
     }
 
     public static final class VisionConstants { 
@@ -368,14 +367,14 @@ public final class Constants {
         public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
         public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), -Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
         
-        public static final double MIN_ESTIMATION_DISTANCE = 1; // Meters
+        public static final double MIN_ESTIMATION_DISTANCE = 2; // Meters
 
         // Photonvision thing
         // The standard deviations of our vision estimated poses, which affect correction rate
         // X, Y, Theta
         // https://www.chiefdelphi.com/t/photonvision-finding-standard-deviations-for-swervedriveposeestimator/467802/2
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.5, 4);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.1, 0.1, 1);
     }
 
     public static final class FieldConstants {
@@ -403,6 +402,7 @@ public final class Constants {
         public static final LEDPatterns WAITING_PATTERN = LEDPatterns.SOLID_RED;
         public static final LEDPatterns DOWN_PATTERN = LEDPatterns.SOLID_YELLOW;
         public static final LEDPatterns READY_PATTERN = LEDPatterns.SOLID_GREEN_DARK;
+        public static final LEDPatterns SCORING_PATTERN = LEDPatterns.RAINBOW_RAINBOW;
 
         public static final LEDPatterns RED_PATTERN = LEDPatterns.LAVA_WAVES;
         public static final LEDPatterns BLUE_PATTERN = LEDPatterns.OCEAN_WAVES;
@@ -416,39 +416,47 @@ public final class Constants {
         public static final double LEFT_AXIS_DEADBAND = 0.1;
 
     }
-    public static final class ClimberConstants {
-        public static final CanDevice CLIMBER_ID = new CanDevice("Climber", 311);
-        public static final double CLIMBER_SPEED = 0.1;
-    }
+
     public static final class ElevatorConstants {
         public static final CanDevice ENDEFFECTOR_ID = new CanDevice("Endeffector", 15);
         public static final CanDevice ELEVATOR_ID = new CanDevice("Elevator", 16);
 
+        public static final double SAFETY_ENDEFFECTOR_MAX_TORQUE = 75;
+        public static final double SAFETY_ENDEFFECTOR_MIN_VELOCITY = 20;
+
+        // public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
+        
         public static final int BASIN_LIMIT_SWITCH = 8; // TODO: FIND
         public static final int ENDEFFECTOR_LIMIT_SWITCH = 9; // TODO: FIND
+        public static final int INTAKE_LIMIT_SWITCH = 6; // TODO: FIND
+
         
         public static final double GEAR_RATIO_ELEVATOR = -9.0;
         //Max for elevator = 50%
         
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
         public static final double WAITING_POSITION_ELEVATOR = -9.5; // TODO: find 2-4 in off the pipe
+        public static final double HOVERING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;
-        public static final double DEALGAE_L2_ELEVATOR = -23.5;
-        public static final double DEALGAE_L3_ELEVATOR = -33.75;
+        public static final double DEALGAE_L2_ELEVATOR = -4;
+        public static final double DEALGAE_L3_ELEVATOR = -26.5;
         public static final double MAX_POSITION_ELEVATOR = 4.5 * GEAR_RATIO_ELEVATOR; // TODO: find MAX position
         
         public static final double GEAR_RATIO_ENDEFECTOR = -100.0;
         public static final double ENDEFECTOR_DRIVE_SLOW = -0.08;
         //Max for endefector = 60%
+        public static final double L2_SCORE_ELEVATOR = -5;
+        public static final double L2_LEAVE_ELEVATOR = -11;
 
         public static final double L2_SCORE_ENDEFFECTOR = -19;
 
         public static final double COMPLETLY_DOWN_ENDEFFECTOR = 0 * GEAR_RATIO_ENDEFECTOR;
-        public static final double DEALGAE_L2_ENDEFFECTOR = 0.18 * GEAR_RATIO_ENDEFECTOR;
+        public static final double DEALGAE_L2_ENDEFFECTOR = 0.22 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_MIDDLE_ENDEFFECTOR = 0.25 * GEAR_RATIO_ENDEFECTOR;
         public static final double PRIMED_THREE_ENDEFFECTOR = 0.4 * GEAR_RATIO_ENDEFECTOR;
-        public static final double SCORING_FOUR_ENDEFFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR; // TODO: find this value
+        public static final double SCORING_FOUR_ENDEFFECTOR = 0.3 * GEAR_RATIO_ENDEFECTOR;
+        public static final double PRIMED_FOUR_ENDEFFECTOR = 0.44 * GEAR_RATIO_ENDEFECTOR;
         public static final double COMPLETLY_TOP_ENDEFFECTOR = 0.5 * GEAR_RATIO_ENDEFECTOR;
 
         public static final Slot0Configs ELEVATOR_PID = new Slot0Configs()

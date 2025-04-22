@@ -1,5 +1,7 @@
 package frc4388.robot.commands;
 
+import static frc4388.robot.Constants.OIConstants.LEFT_AXIS_DEADBAND;
+
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,25 +31,27 @@ public class GotoLastApril extends Command {
 
     private PID xPID = new PID(AutoConstants.XY_GAINS, 0);
     private PID yPID = new PID(AutoConstants.XY_GAINS, 0);
-    private PID rotPID = new PID(AutoConstants.ROT_GAINS, 0);
+    // private PID rotPID = new PID(AutoConstants.ROT_GAINS, 0);
     private Pose2d targetpos;
 
     SwerveDrive swerveDrive;
     Vision vision;
     double distance;
     Side side;
+    boolean waitVelocityZero;
 
     /**
      * Command to drive robot to position.
      * @param SwerveDrive m_robotSwerveDrive
      */
 
-    public GotoLastApril(SwerveDrive swerveDrive, Vision vision, double distance, Side side) {
+    public GotoLastApril(SwerveDrive swerveDrive, Vision vision, double distance, Side side, boolean waitVelocityZero) {
         this.swerveDrive = swerveDrive;
         this.vision = vision;
         this.distance = distance;
         this.side = side;
-        // addRequirements(swerveDrive);
+        this.waitVelocityZero = waitVelocityZero && false;
+        addRequirements(swerveDrive);
     }
 
 
@@ -56,23 +60,42 @@ public class GotoLastApril extends Command {
         tagRelativeXError = val;
     }
 
-    Alliance alliance = null;
-
     @Override
     public void initialize() {
+        // double kP = AutoConstants.P_XY_GAINS.get();
+        // double kI = AutoConstants.I_XY_GAINS.get();
+        // double kD = AutoConstants.D_XY_GAINS.get();
+        // xPID = new PID(new Gains(
+        //     kP, 
+        //     kI, 
+        //     kD), 
+        // 0);
+        // yPID = new PID(new Gains(
+        //     kP, 
+        //     kI, 
+        //     kD),
+        // 0);
+
+        // System.out.println("kP: "+kP);
+        // System.out.println("kI: "+kI);
+        // System.out.println("kD: "+kD);
         xPID.initialize();
         yPID.initialize();
-        this.targetpos = ReefPositionHelper.getNearestPosition(this.vision.getPose2d(), side, 
-        Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
-        distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get()));
-        Optional<Alliance> a = DriverStation.getAlliance();
-        if(!a.isEmpty())
-            alliance = a.get();
+        this.targetpos = ReefPositionHelper.getNearestPosition(
+            this.vision.getPose2d(), 
+            side, 
+            Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
+            distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get())
+        );
     }
     
     double xerr;
     double yerr;
     double roterr;
+
+    double xoutput;
+    double youtput;
+    double rotoutput;
 
     @Override
     public void execute() {
@@ -85,28 +108,27 @@ public class GotoLastApril extends Command {
 
         roterr = ((targetpos.getRotation().getDegrees() - vision.getPose2d().getRotation().getDegrees()));
 
-        boolean invert = Math.abs(roterr) > 180;
-
         if(roterr > 180){
             roterr -= 360;
         }else if(roterr < -180){
             roterr += 360;
         }
 
-        SmartDashboard.putNumber("Rotational PID target", targetpos.getRotation().getDegrees());
-        SmartDashboard.putNumber("Rotational PID position", vision.getPose2d().getRotation().getDegrees());
-        SmartDashboard.putNumber("Rotational PID error", roterr);
+        // SmartDashboard.putNumber("Rotational PID target", targetpos.getRotation().getDegrees());
+        // SmartDashboard.putNumber("Rotational PID position", vision.getPose2d().getRotation().getDegrees());
+        // SmartDashboard.putNumber("Rotational PID error", roterr);
 
-        // SmartDashboard.putNumber("PID X Error", xerr);
-        // SmartDashboard.putNumber("PID Y Error", yerr);
+        SmartDashboard.putNumber("PID X Error", xerr);
+        SmartDashboard.putNumber("PID Y Error", yerr);
+        SmartDashboard.putNumber("PID Rot Error", roterr);
 
-        double xoutput = xPID.update(xerr);
-        double youtput = yPID.update(yerr);
-        double rotoutput = rotPID.update(roterr);
+        xoutput = xPID.update(xerr);
+        youtput = yPID.update(yerr);
+        // rotoutput = rotPID.update(roterr);
 
         xoutput *= Math.abs(xerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
         youtput *= Math.abs(yerr) < AutoConstants.XY_TOLERANCE ? 0 : 1;
-        rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
+        // rotoutput *= Math.abs(roterr) < AutoConstants.ROT_TOLERANCE ? 0 : 1;
         
 
 
@@ -116,24 +138,28 @@ public class GotoLastApril extends Command {
             // 0,0
         );
 
-        Translation2d rightStick = new Translation2d(
-            Math.max(Math.min(rotoutput, 1), -1), 
-           0
-        );
-
-
+        // Translation2d rightStick = new Translation2d(
+        //     Math.max(Math.min(rotoutput, 1), -1), 
+        //    0
+        // );
 
         setTagRelativeXError(
             new Translation2d(xerr, yerr).getAngle()
             .rotateBy(targetpos.getRotation())
             .getCos());
 
-        swerveDrive.driveWithInput(leftStick, rightStick, true);
+        swerveDrive.driveRelativeAngle(leftStick, targetpos.getRotation());
+        // swerveDrive.driveWithInputOrientation(leftStick, rightStick, true);
     }
 
     @Override
     public final boolean isFinished() {
-        boolean finished = (Math.abs(xerr) < AutoConstants.XY_TOLERANCE && Math.abs(yerr) < AutoConstants.XY_TOLERANCE && Math.abs(roterr) < AutoConstants.ROT_TOLERANCE);
+        boolean finished = (
+            (Math.abs(xerr) < AutoConstants.XY_TOLERANCE || Math.abs(xoutput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
+            (Math.abs(yerr) < AutoConstants.XY_TOLERANCE || Math.abs(youtput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
+            (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE) &&
+            (!waitVelocityZero || swerveDrive.lastOdomSpeed < AutoConstants.VELOCITY_THRESHHOLD)
+        );
         // System.out.println(finished);
 
         if(finished)
