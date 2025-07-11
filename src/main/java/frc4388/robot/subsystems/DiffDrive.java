@@ -12,12 +12,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc4388.robot.Constants.DriveConstants;
+import frc4388.robot.constants.DriveConstants;
 import frc4388.utility.RobotGyro;
-import frc4388.utility.RobotTime;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
+import frc4388.utility.compute.RobotTime;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.Subsystem;
 
 /**
  * Add your docs here.

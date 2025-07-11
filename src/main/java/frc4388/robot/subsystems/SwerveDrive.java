@@ -5,7 +5,8 @@
 package frc4388.robot.subsystems;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -14,34 +15,26 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc4388.robot.Constants.SwerveDriveConstants;
-import frc4388.robot.Constants.VisionConstants;
-import frc4388.robot.commands.GotoLastApril;
-import frc4388.robot.commands.LidarAlign;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
-import frc4388.utility.TimesNegativeOne;
-import frc4388.utility.Status.ReportLevel;
+import frc4388.robot.constants.DriveConstants;
+import frc4388.utility.compute.TimesNegativeOne;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.Status.ReportLevel;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 
 public class SwerveDrive extends Subsystem {
@@ -49,13 +42,14 @@ public class SwerveDrive extends Subsystem {
 
     private Vision vision;
 
-    private int gear_index = SwerveDriveConstants.STARTING_GEAR;
+    private int gear_index = DriveConstants.STARTING_GEAR;
     private boolean stopped = false;
+    @SuppressWarnings("unused")
     private boolean robotKnowsWhereItIs = false;
 
-    public double speedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * SwerveDriveConstants.GEARS[gear_index];
-    public double rotSpeedAdjust = SwerveDriveConstants.MAX_ROT_SPEED;
-    public double autoSpeedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * 0.25; // cap auto performance to
+    public double speedAdjust = DriveConstants.MAX_SPEED_MEETERS_PER_SEC * DriveConstants.GEARS[gear_index];
+    public double rotSpeedAdjust = DriveConstants.MAX_ROT_SPEED;
+    public double autoSpeedAdjust = DriveConstants.MAX_SPEED_MEETERS_PER_SEC * 0.25; // cap auto performance to
                                                                                            // 25%
 
     public double lastOdomSpeed;
@@ -115,6 +109,30 @@ public class SwerveDrive extends Subsystem {
                 this // Reference to this subsystem to set requirements
         );
 
+        PathPlannerLogging.setLogActivePathCallback(
+        (activePath) -> {
+          Logger.recordOutput(
+              "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+        });
+        
+        PathPlannerLogging.setLogTargetPoseCallback(
+        (targetPose) -> {
+          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+        });
+
+
+
+        // // Configure SysId
+        // sysId =
+        //     new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //             null,
+        //             null,
+        //             null,
+        //             (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+        //         new SysIdRoutine.Mechanism(
+        //             (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+
     }
 
     public void setOdoPose(Pose2d pose) {
@@ -153,7 +171,7 @@ public class SwerveDrive extends Subsystem {
             rightStick = TimesNegativeOne.invert(rightStick, TimesNegativeOne.RotAxis);    
 
             // ! drift correction
-            if (rightStick.getNorm() > 0.05 || !SwerveDriveConstants.DRIFT_CORRECTION_ENABLED) {
+            if (rightStick.getNorm() > 0.05 || !DriveConstants.DRIFT_CORRECTION_ENABLED) {
                 rotTarget = swerveDriveTrain.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(new Pose2d()).getRotation().getDegrees();
                 swerveDriveTrain.setControl(new SwerveRequest.FieldCentric()
                     .withVelocityX(leftStick.getX() * speedAdjust)
@@ -167,9 +185,9 @@ public class SwerveDrive extends Subsystem {
                     .withVelocityY(leftStick.getY() * speedAdjust)
                     .withTargetDirection(Rotation2d.fromDegrees(rotTarget));
                 ctrl.HeadingController.setPID(
-                    SwerveDriveConstants.PIDConstants.DRIFT_CORRECTION_GAINS.kP,
-                    SwerveDriveConstants.PIDConstants.DRIFT_CORRECTION_GAINS.kI,
-                    SwerveDriveConstants.PIDConstants.DRIFT_CORRECTION_GAINS.kD
+                    DriveConstants.PIDConstants.DRIFT_CORRECTION_GAINS.kP,
+                    DriveConstants.PIDConstants.DRIFT_CORRECTION_GAINS.kI,
+                    DriveConstants.PIDConstants.DRIFT_CORRECTION_GAINS.kD
                 );
                 swerveDriveTrain.setControl(ctrl);
                 SmartDashboard.putBoolean("drift correction", true);
@@ -189,8 +207,8 @@ public class SwerveDrive extends Subsystem {
         // Create robot-relative speeds.
         if (rightStick.getNorm() > 0.1) rightStick = rightStick.times(0);
         swerveDriveTrain.setControl(new SwerveRequest.RobotCentric()
-            .withVelocityX(leftStick.getX() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
-            .withVelocityY(-leftStick.getY() * SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
+            .withVelocityX(leftStick.getX() * DriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
+            .withVelocityY(-leftStick.getY() * DriveConstants.MAX_SPEED_MEETERS_PER_SEC * percentOutput)
             .withRotationalRate(rightStick.getX() * rotSpeedAdjust));
         
     }
@@ -224,9 +242,9 @@ public class SwerveDrive extends Subsystem {
             .withVelocityY(leftStick.getY() * speedAdjust)
             .withTargetDirection(heading);
         ctrl.HeadingController.setPID(
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
-            SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+            DriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+            DriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+            DriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
         );
         swerveDriveTrain.setControl(ctrl);
     }
@@ -239,9 +257,9 @@ public class SwerveDrive extends Subsystem {
             .withVelocityY(leftStick.getY() * speedAdjust)
             .withTargetDirection(heading);
         // ctrl.HeadingController.setPID(
-        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
-        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
-        //     SwerveDriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
+        //     DriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kP,
+        //     DriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kI,
+        //     DriveConstants.PIDConstants.RELATIVE_LOCKED_ANGLE_GAINS.kD
         // );
         swerveDriveTrain.setControl(ctrl);
     }
@@ -263,7 +281,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void deactivateLuigiMode() {
-        setLimits(SwerveDriveConstants.Configurations.SLIP_CURRENT);
+        setLimits(DriveConstants.Configurations.SLIP_CURRENT);
     }
 
     public boolean rotateToTarget(double angle) {
@@ -342,77 +360,65 @@ public class SwerveDrive extends Subsystem {
         vision.setLastOdomPose(curpose);
         setLastOdomSpeed(curpose, lastPose, freq);
 
-        if (vision.isTag()) {
-            Pose2d pose = vision.getPose2d();
-            if (!robotKnowsWhereItIs) {
-                robotKnowsWhereItIs = true;
-                Pose2d currPose = getPose2d();
-                double deltaAngle = pose.getRotation().getDegrees() - currPose.getRotation().getDegrees();
-                rotTarget += deltaAngle;
-            }
-            
-            vision.addVisionMeasurement(swerveDriveTrain);
-            // swerveDriveTrain.addVisionMeasurement(vision.lastVisionPose, time);
-            //back to the ~~future~~ *past*
-        }
+        // if (vision.isTag()) {5
 
         // if(e.isPresent())
     }
 
     private void reset_index() {
-        gear_index = SwerveDriveConstants.STARTING_GEAR; // however we wish to initialize the gear (What gear does the
+        gear_index = DriveConstants.STARTING_GEAR; // however we wish to initialize the gear (What gear does the
                                                          // robot start in?)
     }
 
     public void shiftDown() {
-        if (gear_index == -1 || gear_index >= SwerveDriveConstants.GEARS.length)
+        if (gear_index == -1 || gear_index >= DriveConstants.GEARS.length)
             reset_index(); // If outof bounds: reset index
         int i = gear_index - 1;
         if (i == -1)
             i = 0;
-        setPercentOutput(SwerveDriveConstants.GEARS[i]);
+        setPercentOutput(DriveConstants.GEARS[i]);
         gear_index = i;
     }
 
     public void shiftUp() {
-        if (gear_index == -1 || gear_index >= SwerveDriveConstants.GEARS.length)
+        if (gear_index == -1 || gear_index >= DriveConstants.GEARS.length)
             reset_index(); // If outof bounds: reset index
         int i = gear_index + 1;
-        if (i == SwerveDriveConstants.GEARS.length)
-            i = SwerveDriveConstants.GEARS.length - 1;
-        setPercentOutput(SwerveDriveConstants.GEARS[i]);
+        if (i == DriveConstants.GEARS.length)
+            i = DriveConstants.GEARS.length - 1;
+        setPercentOutput(DriveConstants.GEARS[i]);
         gear_index = i;
     }
 
     public void setPercentOutput(double speed) {
-        speedAdjust = SwerveDriveConstants.MAX_SPEED_MEETERS_PER_SEC * speed;
+        speedAdjust = DriveConstants.MAX_SPEED_MEETERS_PER_SEC * speed;
         gear_index = -1;
     }
 
     public void setToSlow() {
-        setPercentOutput(SwerveDriveConstants.SLOW_SPEED);
+        setPercentOutput(DriveConstants.SLOW_SPEED);
         gear_index = 0;
     }
 
     public void setToFast() {
-        setPercentOutput(SwerveDriveConstants.FAST_SPEED);
+        setPercentOutput(DriveConstants.FAST_SPEED);
         gear_index = 1;
     }
 
     public void setToTurbo() {
-        setPercentOutput(SwerveDriveConstants.TURBO_SPEED);
+        setPercentOutput(DriveConstants.TURBO_SPEED);
         gear_index = 2;
     }
 
     public void shiftUpRot() {
-        rotSpeedAdjust = SwerveDriveConstants.ROTATION_SPEED;
+        rotSpeedAdjust = DriveConstants.ROTATION_SPEED;
     }
 
     public void shiftDownRot() {
-        rotSpeedAdjust = SwerveDriveConstants.MIN_ROT_SPEED;
+        rotSpeedAdjust = DriveConstants.MIN_ROT_SPEED;
     }
 
-    private int tmp_gear_index = SwerveDriveConstants.STARTING_GEAR;
+    private int tmp_gear_index = DriveConstants.STARTING_GEAR;
 
     public void startSlowPeriod() {
         tmp_gear_index = gear_index;
@@ -425,7 +431,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void endSlowPeriod() {
-        setPercentOutput(SwerveDriveConstants.GEARS[tmp_gear_index]);
+        setPercentOutput(DriveConstants.GEARS[tmp_gear_index]);
         gear_index = tmp_gear_index;
     }
 
@@ -435,17 +441,10 @@ public class SwerveDrive extends Subsystem {
         if(curPose.isPresent() && lastPose.isPresent()){
             this.lastOdomSpeed = curPose.get().getTranslation().getDistance(lastPose.get().getTranslation())/freq;
         
-
-            // double rotDiff = curPose.get().getRotation().getDegrees() - lastPose.get().getRotation().getDegrees();
-    
-            // if(rotDiff >= 180){
-            //     vision.subtractRotation();
-            // }else if(rotDiff <= -180){
-            //     vision.addRotation();
-            // }
             SmartDashboard.putNumber("Speed", lastOdomSpeed);
         }
     }
+    
 
 
     @Override
@@ -484,4 +483,11 @@ public class SwerveDrive extends Subsystem {
 
         return status;
     }
+
+
+    // Update CTRE simulation, if used.
+    public void updateSim(double voltage) {
+        swerveDriveTrain.updateSimState(0.02, voltage);
+    }
 }
+

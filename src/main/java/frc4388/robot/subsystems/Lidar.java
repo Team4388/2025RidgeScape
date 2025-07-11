@@ -1,16 +1,15 @@
 package frc4388.robot.subsystems;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import frc4388.robot.Constants.LiDARConstants;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
-import frc4388.utility.Status.ReportLevel;
+import frc4388.robot.constants.Constants.LiDARConstants;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.Status.ReportLevel;
 
 // https://girlsofsteeldocs.readthedocs.io/en/latest/technical-resources/sensors/LIDAR-Lite-Distance-Sensor.html#minimal-roborio-interface
 public class Lidar extends Subsystem {

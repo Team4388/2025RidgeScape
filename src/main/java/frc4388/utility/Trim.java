@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc4388.utility.compute.DataUtils;
 
 /**
  * Reboot persistant Trims.
@@ -27,11 +28,34 @@ public class Trim {
 
     private boolean modified = false;
     private double currentValue;
+    private boolean persistant = false;
 
     private GenericEntry trimElement = null;
-    
+
     /**
-     * Creates a Trim with a given name, upper and lower bounds, step size and intial value
+     * Creates a variably Trim with a given name, upper and lower bounds, step size and intial value
+     * @param trimName please keep the trim name without special symbols
+     * @param upperBound the upper limit inclusive
+     * @param lowerBound the lower limit inclusive
+     * @param step the step size
+     * @param inital the inital value, will get overridden if the persistant trim exists on disk.
+     * @param persistnat Weather the trim is persistant or not
+     */
+    public Trim(String trimName, double upperBound, double lowerBound, double step, double inital, boolean persistant) {
+        this.trimName = trimName;
+        this.upperBound = upperBound;
+        this.lowerBound = lowerBound;
+        this.step = step;
+        this.persistant = persistant;
+        currentValue = inital;
+        load();
+        trimElement = trimTab.add(trimName, currentValue).getEntry();
+
+        trims.add(this);
+    }
+
+    /**
+     * Creates a non-Trim with a given name, upper and lower bounds, step size and intial value
      * @param trimName please keep the trim name without special symbols
      * @param upperBound the upper limit inclusive
      * @param lowerBound the lower limit inclusive
@@ -81,22 +105,25 @@ public class Trim {
     }
 
     public boolean load() {
-        // try (FileInputStream stream = new FileInputStream("/home/lvuser/trims/" + trimName)) {
-        //     double fileValue = DataUtils.byteArrayToDouble(stream.readNBytes(8));
-        //     currentValue = fileValue;
-        //     clampModify();
-        //     modified = false;
-        //     if (fileValue != currentValue) {
-        //         System.out.println("TRIMS: Loaded trim `" + trimName + "` has a value that is higher than or less than the bounds set for the trim, clamping...");
-        //         modified = true;
-        //     }
-        //     return true;
-        // } catch (Exception e) {
-        //     // e.printStackTrace();
-        //     System.out.println("TRIMS: Unable to read trim file `" + trimName + "`, using current value...");
-        //     return false;
-        // }
-        return false;
+        if(!persistant)
+            return false;
+
+        try (FileInputStream stream = new FileInputStream("/home/lvuser/trims/" + trimName)) {
+            double fileValue = DataUtils.byteArrayToDouble(stream.readNBytes(8));
+            currentValue = fileValue;
+            clampModify();
+            modified = false;
+            if (fileValue != currentValue) {
+                System.out.println("TRIMS: Loaded trim `" + trimName + "` has a value that is higher than or less than the bounds set for the trim, clamping...");
+                modified = true;
+            }
+            return true;
+        } catch (Exception e) {
+            // e.printStackTrace();
+            System.out.println("TRIMS: Unable to read trim file `" + trimName + "`, using current value...");
+            return false;
+        }
+        
     }
 
     public void dump() {

@@ -1,15 +1,11 @@
 package frc4388.robot.subsystems;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +14,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.SimCameraProperties;
-import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -37,11 +27,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc4388.robot.Constants.FieldConstants;
-import frc4388.robot.Constants.VisionConstants;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
-import frc4388.utility.Status.ReportLevel;
+import frc4388.robot.constants.Constants.FieldConstants;
+import frc4388.robot.constants.Constants.VisionConstants;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.Status.ReportLevel;
 
 public class Vision extends Subsystem {
 
@@ -104,39 +94,26 @@ public class Vision extends Subsystem {
         photonEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         this.estimators = new PhotonPoseEstimator[]{photonEstimatorLeft, photonEstimatorRight};
-        // resetRotations();
     }
 
     @Override
     public void periodic() {
         update();
         field.setRobotPose(getPose2d());
-        // cameras[0].
     }
 
-    // public int[] rotations;
-    // public Instant[] lastUpdateTimes;
-
-    // public void resetRotations(){
-    //     rotations = new int[cameras.length];
-    //     lastUpdateTimes = new Instant[cameras.length];
-    // }
-
-    private Instant lastVisionTime = null;
+    // private Instant lastVisionTime = null;
 
 
     private void update() {
         isTagProcessed = false;
         isTagDetected = false;
 
-        Instant now = Instant.now();
+        // Instant now = Instant.now();
 
-        int cams = 0;
+        // int cams = 0;
 
-        // double X = 0;
-        // double Y = 0;
-        // double Yaw = 0;
-        double latency = 0;
+        // double latency = 0;
 
         // Pose2d pose = null;
         poses.clear();
@@ -153,7 +130,7 @@ public class Vision extends Subsystem {
 
             
             var result = results.get(results.size()-1);
-            latency += result.getTimestampSeconds();
+            // latency += result.getTimestampSeconds();
 
             isTagDetected = isTagDetected | result.hasTargets();
 
@@ -185,21 +162,6 @@ public class Vision extends Subsystem {
         
             
         }
-
-        // lastLatency = latency / cams;
-
-        // if(isTagProcessed){
-
-
-        //     lastVisionPose = pose;
-        //     // lastVisionPose = new Pose2d(X/cams, Y/cams, Rotation2d.fromDegrees(curAngle));
-        //     // lastVisionPose = new Pose2d(10, 5, Rotation2d.fromDegrees(curAngle + rotations*360));
-
-        //     // SmartDashboard.putNumber("curAngle", pose.getRotation().getRotations());
-        //     // SmartDashboard.putNumber("Rotations", rotations);
-
-        //     lastVisionTime = now;
-        // }
     }
 
 
@@ -315,11 +277,11 @@ public class Vision extends Subsystem {
     public Pose2d getPose2d() {
         if(lastPhysOdomPose != null)
             return lastPhysOdomPose;
+
+        // if(lastVisionPose != null)
+        //     return lastVisionPose;
         return new Pose2d();
-        // if(isTagDetected && isTagProcessed)
-        //     // return lastVisionPose;
-        // else
-        //     return lastPhysOdomPose;
+
     }
 
     public static double getTime() {

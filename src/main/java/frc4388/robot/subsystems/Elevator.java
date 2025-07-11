@@ -4,32 +4,18 @@
 
 package frc4388.robot.subsystems;
 
-import java.time.Instant;
-
-import org.opencv.ml.RTrees;
-
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4388.robot.Constants.ElevatorConstants;
-import frc4388.robot.Constants.LEDConstants;
-import frc4388.robot.Constants.AutoConstants;
-import frc4388.robot.subsystems.LED;
-import frc4388.utility.LEDPatterns;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
-import frc4388.utility.TimesNegativeOne;
-import frc4388.utility.Status.ReportLevel;
+import frc4388.robot.constants.Constants.AutoConstants;
+import frc4388.robot.constants.Constants.ElevatorConstants;
+import frc4388.robot.constants.Constants.LEDConstants;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.Status.ReportLevel;
 
 public class Elevator extends Subsystem {
   /** Creates a new Elevator. */
@@ -37,6 +23,7 @@ public class Elevator extends Subsystem {
   private TalonFX endeffectorMotor;
   private LED led;
 
+  @SuppressWarnings("unused")
   private long wait = 0;
   private long maxWait = 1000;
 
@@ -278,6 +265,7 @@ public class Elevator extends Subsystem {
       transitionState(CoordinationState.Hovering);
   }
 
+  @SuppressWarnings("unused")
   private void periodicScoring() {
     if (!endeffectorLimitSwitch.get()) 
       transitionState(CoordinationState.Waiting);

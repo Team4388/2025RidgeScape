@@ -7,18 +7,14 @@
 
 package frc4388.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc4388.robot.Constants.LEDConstants;
-import frc4388.utility.LEDPatterns;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
-import frc4388.utility.Status.ReportLevel;
+import frc4388.robot.constants.Constants.LEDConstants;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.Status.ReportLevel;
+import frc4388.utility.structs.LEDPatterns;
 
 /**
  * Allows for the control of a 5v LED Strip using a Rev Robotics Blinkin LED
