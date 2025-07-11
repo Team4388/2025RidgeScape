@@ -10,14 +10,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.Constants.AutoConstants;
 import frc4388.robot.constants.Constants.ElevatorConstants;
 import frc4388.robot.constants.Constants.LEDConstants;
 import frc4388.utility.status.Status;
-import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.FaultReporter;
+import frc4388.utility.status.Queryable;
 import frc4388.utility.status.Status.ReportLevel;
 
-public class Elevator extends Subsystem {
+public class Elevator extends SubsystemBase implements Queryable {
   /** Creates a new Elevator. */
   private TalonFX elevatorMotor;
   private TalonFX endeffectorMotor;
@@ -77,6 +79,8 @@ public class Elevator extends Subsystem {
     elevatorMotor.getConfigurator().apply(ElevatorConstants.ELEVATOR_PID);
     endeffectorMotor.getConfigurator().apply(ElevatorConstants.ENDEFFECTOR_PID);
     currentState = CoordinationState.Ready;
+
+    FaultReporter.register(this);
   }
 
   //PID methods
@@ -370,7 +374,7 @@ public class Elevator extends Subsystem {
   }
 
   @Override
-  public String getSubsystemName() {
+  public String getName() {
     return "Elevator";
   }
 
@@ -382,8 +386,6 @@ public class Elevator extends Subsystem {
     Status status = new Status();
 
     status.addReport(ReportLevel.INFO, "Elevator Mode: " + currentState.name());
-    status.diagnoseHardwareCTRE("Elevator Motor", elevatorMotor);
-    status.diagnoseHardwareCTRE("Endeffector Motor", endeffectorMotor);
 
     return status;
   }

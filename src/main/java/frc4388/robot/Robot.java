@@ -7,10 +7,6 @@
 
 package frc4388.robot;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-
 // Advantagekit
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -19,23 +15,16 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.CANBus.CANBusStatus;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc4388.robot.constants.BuildConstants;
-import frc4388.robot.constants.Constants;
 import frc4388.robot.constants.Constants.SimConstants;
 import frc4388.utility.DeferredBlock;
 import frc4388.utility.DeferredBlockMulti;
 import frc4388.utility.Trim;
 import frc4388.utility.compute.RobotTime;
-import frc4388.utility.status.CanDevice;
-import frc4388.utility.status.Status;
-import frc4388.utility.status.Subsystem;
-import frc4388.utility.status.Status.Report;
-import frc4388.utility.status.Status.ReportLevel;
+import frc4388.utility.status.FaultReporter;
+
 //import frc4388.robot.subsystems.LED;
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -63,23 +52,7 @@ public class Robot extends LoggedRobot {
 
 
     // Create a shuffleboard update thread, that will periodically update the values on shuffleboard
-    new Thread() {
-      public void run() {
-        try{
-        while(!this.isInterrupted() && this.isAlive()){
-          Thread.sleep(500);
-          for(int i=0;i<Subsystem.subsystems.size(); i++){
-            Subsystem.subsystems.get(i).queryStatus();
-          }
-
-          // System.out.println("Updated statuses!");
-          
-        }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-      }
-    }.start();
+    FaultReporter.startThread();
   }
 
   /**
@@ -189,71 +162,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testInit() {
-
-    List<String> errors = new ArrayList<>();
-
-    // Subsystems header
-    System.out.println(new String(Base64.getDecoder().decode("IOKWl+KWhOKWhOKWluKWl+KWliDilpfilpbilpfiloTiloTilpYgIOKWl+KWhOKWhOKWluKWl+KWliAg4paX4paW4paX4paE4paE4paW4paX4paE4paE4paE4paW4paX4paE4paE4paE4paW4paX4paWICDilpfilpYg4paX4paE4paE4paWCuKWkOKWjCAgIOKWkOKWjCDilpDilozilpDilowg4paQ4paM4paQ4paMICAgIOKWneKWmuKWnuKWmOKWkOKWjCAgICAg4paIICDilpDilowgICDilpDilpvilprilp7ilpzilozilpDilowgICAKIOKWneKWgOKWmuKWluKWkOKWjCDilpDilozilpDilpviloDilprilpYg4pad4paA4paa4paWICDilpDilowgIOKWneKWgOKWmuKWliAg4paIICDilpDilpviloDiloDilpjilpDilowgIOKWkOKWjCDilp3iloDilprilpYK4paX4paE4paE4pae4paY4pad4paa4paE4pae4paY4paQ4paZ4paE4pae4paY4paX4paE4paE4pae4paYICDilpDilowg4paX4paE4paE4pae4paYICDiloggIOKWkOKWmeKWhOKWhOKWluKWkOKWjCAg4paQ4paM4paX4paE4paE4pae4paY")));
-
-    for(int i=0;i< Subsystem.subsystems.size();i++){
-
-      Subsystem subsystem = Subsystem.subsystems.get(i);
-      System.out.println("** Subsystem diagnostic report for " + subsystem.getName() + ":");
-      Status status = subsystem.diagnosticStatus();
-
-      for(int a=0;a<status.reports.size();a++){
-        Report r = status.reports.get(a);
-        if(r.reportLevel == ReportLevel.ERROR)
-          errors.add(subsystem.getName() + " - " + r.toString());
-        subsystem.Log(r.toString());
-      }
-    }
-
-    
-    // CAN header
-    System.out.println(new String(Base64.getDecoder().decode("IOKWl+KWhOKWhOKWliDilpfiloTilpYg4paX4paWICDilpfilpYK4paQ4paMICAg4paQ4paMIOKWkOKWjOKWkOKWm+KWmuKWluKWkOKWjArilpDilowgICDilpDilpviloDilpzilozilpDilowg4pad4pac4paMCuKWneKWmuKWhOKWhOKWluKWkOKWjCDilpDilozilpDilowgIOKWkOKWjCh0KQ==")));
-    
-    CANBus canBus = new CANBus(Constants.CANBUS_NAME);
-    
-    CANBusStatus canInfo = canBus.getStatus();
-    
-    System.out.println("CANInfo BusOffCount     - " + canInfo.BusOffCount);
-    System.out.println("CANInfo BusUtilization  - " + canInfo.BusUtilization);
-    System.out.println("CANInfo RX Errors count - " + canInfo.REC);
-    System.out.println("CANInfo TX Errors count - " + canInfo.TEC);
-    System.out.println("CANInfo Transmit buffer full count - " + canInfo.TxFullCount);
-    // Broken turniary operator
-    ReportLevel canReportLevel = canInfo.Status.isOK() ? (canInfo.Status.isWarning() ? ReportLevel.WARNING : ReportLevel.ERROR) : ReportLevel.INFO;
-    String canStatus = "CAN " + canReportLevel.name() + " - " + canInfo.Status.getName() + " (" + canInfo.Status.getDescription() + ")";
-    if(canReportLevel == ReportLevel.ERROR) {
-      errors.add(canStatus);
-    }
-    System.out.println(canStatus);
-
-    for(int i=0;i<CanDevice.devices.size();i++){
-
-      CanDevice device = CanDevice.devices.get(i);
-      System.out.println("** CAN diagnostic report for " + device.name + ":");
-      Status status = device.diagnosticStatus();
-
-      for(int a=0;a<status.reports.size();a++){
-        Report r = status.reports.get(a);
-        if(r.reportLevel == ReportLevel.ERROR)
-          errors.add(device.getName() + " - " + r.toString());
-        device.Log(r.toString());
-      }
-    }
-
-    // System.out.println("Found CAN devices: " + new DeviceFinder().Find());
-    
-    if(errors.size() > 0) {
-      // Errors header
-      System.out.println(new String(Base64.getDecoder().decode("4paX4paE4paE4paE4paW4paX4paE4paE4paWIOKWl+KWhOKWhOKWliAg4paX4paE4paWIOKWl+KWhOKWhOKWliAg4paX4paE4paE4paWCuKWkOKWjCAgIOKWkOKWjCDilpDilozilpDilowg4paQ4paM4paQ4paMIOKWkOKWjOKWkOKWjCDilpDilozilpDilowgICAK4paQ4pab4paA4paA4paY4paQ4pab4paA4paa4paW4paQ4pab4paA4paa4paW4paQ4paMIOKWkOKWjOKWkOKWm+KWgOKWmuKWliDilp3iloDilprilpYK4paQ4paZ4paE4paE4paW4paQ4paMIOKWkOKWjOKWkOKWjCDilpDilozilp3ilpriloTilp7ilpjilpDilowg4paQ4paM4paX4paE4paE4pae4paY")));
-      for(int i=0;i<errors.size(); i++){
-        System.out.println(errors.get(i));
-      }
-    }
-
+    FaultReporter.printReport();
   }
 
 

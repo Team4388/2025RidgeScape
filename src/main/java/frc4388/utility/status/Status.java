@@ -44,6 +44,10 @@ public class Status {
     }
 
     public void diagnoseHardwareCTRE(String deviceName, TalonFX motor) {
+        addReport(ReportLevel.ERROR, deviceName + " Motor (TalonFX) Alive?: " + (motor.isAlive() ? "Alive." : "Dead!"));
+
+
+
         if (motor.isAlive()) addReport(ReportLevel.INFO, deviceName + " Motor (TalonFX) Alive?: Alive.");
         else addReport(ReportLevel.ERROR, deviceName + " Motor (TalonFX) Alive?: Dead!");
     }

@@ -6,19 +6,23 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.Constants.LiDARConstants;
 import frc4388.utility.status.Status;
-import frc4388.utility.status.Subsystem;
+import frc4388.utility.status.FaultReporter;
+import frc4388.utility.status.Queryable;
 import frc4388.utility.status.Status.ReportLevel;
 
 // https://girlsofsteeldocs.readthedocs.io/en/latest/technical-resources/sensors/LIDAR-Lite-Distance-Sensor.html#minimal-roborio-interface
-public class Lidar extends Subsystem {
+public class Lidar extends SubsystemBase implements Queryable {
 
     private Counter LidarPWM;
     private String name = "Lidar";
 
     private double distance = -1;
     public Lidar(int port, String name) {
+        FaultReporter.register(this);
+
         this.name = name;
         LidarPWM = new Counter(port);
         LidarPWM.setMaxPeriod(1.00); //set the max period that can be measured
@@ -27,7 +31,7 @@ public class Lidar extends Subsystem {
 
         
     subsystemLayout = Shuffleboard.getTab("Subsystems")
-    .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+    .getLayout(getName(), BuiltInLayouts.kList)
     .withSize(2, 2);
 
     sbDistance = subsystemLayout
@@ -63,7 +67,7 @@ public class Lidar extends Subsystem {
     GenericEntry sbWithinDistance;
 
     @Override
-    public String getSubsystemName() {
+    public String getName() {
         return "Lidar " + name;
     }
 
@@ -77,12 +81,9 @@ public class Lidar extends Subsystem {
     public Status diagnosticStatus() {
         Status s = new Status();
 
-        if(distance == -1){
+        if(distance == -1)
             s.addReport(ReportLevel.ERROR, "LiDAR DISCONNECTED");
-        }else{
-            s.addReport(ReportLevel.INFO, "LiDAR Connected");
-        }
-
+        
         s.addReport(ReportLevel.INFO, "LiDAR Distance: " + distance);
 
         return s;

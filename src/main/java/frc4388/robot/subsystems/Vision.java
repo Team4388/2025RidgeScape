@@ -27,13 +27,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.Constants.FieldConstants;
 import frc4388.robot.constants.Constants.VisionConstants;
 import frc4388.utility.status.Status;
-import frc4388.utility.status.Subsystem;
-import frc4388.utility.status.Status.ReportLevel;
+import frc4388.utility.status.FaultReporter;
+import frc4388.utility.status.Queryable;
 
-public class Vision extends Subsystem {
+public class Vision extends SubsystemBase implements Queryable {
 
     // private PhotonCamera leftCamera;
     // private PhotonCamera rightCamera;
@@ -59,7 +60,7 @@ public class Vision extends Subsystem {
     private Field2d field = new Field2d();
     
     ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
-    .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+    .getLayout(getName(), BuiltInLayouts.kList)
     .withSize(2, 2);
 
     GenericEntry sbTagDetected = subsystemLayout
@@ -72,17 +73,8 @@ public class Vision extends Subsystem {
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
     
-    GenericEntry sbLeftCamConnected = subsystemLayout
-    .add("Left Camera Connnected", false)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .getEntry();
-
-    GenericEntry sbRightCamConnected = subsystemLayout
-    .add("Right Camera Connnected", false)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .getEntry();
-    
     public Vision(PhotonCamera leftCamera, PhotonCamera rightCamera){
+        FaultReporter.register(this);
         SmartDashboard.putData(field);
 
         this.cameras = new PhotonCamera[]{leftCamera, rightCamera};
@@ -307,7 +299,7 @@ public class Vision extends Subsystem {
 
 
     @Override
-    public String getSubsystemName() {
+    public String getName() {
         return "Vision";
     }
 
@@ -321,27 +313,12 @@ public class Vision extends Subsystem {
     public void queryStatus() {
         sbTagDetected.setBoolean(isTagDetected);
         sbTagProcessed.setBoolean(isTagProcessed);
-        sbLeftCamConnected.setBoolean(cameras[0].isConnected());
-        sbRightCamConnected.setBoolean(cameras[1].isConnected());
         // field.setRobotPose(getPose2d());
     }
 
     @Override
     public Status diagnosticStatus() {
-        Status status = new Status();
-
-        if(cameras[0].isConnected())
-            status.addReport(ReportLevel.INFO, "Left Camera Connected");
-        else
-            status.addReport(ReportLevel.ERROR, "Left Camera DISCONNECTED");
-
-        if(cameras[1].isConnected())
-            status.addReport(ReportLevel.INFO, "Right Camera Connected");
-        else
-            status.addReport(ReportLevel.ERROR, "Right Camera DISCONNECTED");
-
-
-        return status;
+        return new Status();
     }
     
 }

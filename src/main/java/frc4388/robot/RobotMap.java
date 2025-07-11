@@ -22,6 +22,10 @@ import frc4388.robot.constants.Constants.LiDARConstants;
 import frc4388.robot.constants.Constants.VisionConstants;
 import frc4388.robot.constants.DriveConstants;
 import frc4388.robot.subsystems.Lidar;
+import frc4388.utility.status.FaultCANCoder;
+import frc4388.utility.status.FaultPhotonCamera;
+import frc4388.utility.status.FaultPidgeon2;
+import frc4388.utility.status.FaultTalonFX;
 
 /**
  * Defines and holds all I/O objects on the Roborio. This is useful for unit
@@ -37,10 +41,6 @@ public class RobotMap {
     public final Lidar reefLidar = new Lidar(LiDARConstants.REEF_LIDAR_DIO_CHANNEL, "Reef");
     public final Lidar reverseLidar = new Lidar(LiDARConstants.REVERSE_LIDAR_DIO_CHANNEL, "Reverse");
 
-    
-    public RobotMap() {
-        configureDriveMotorControllers();
-    }
 
     /* LED Subsystem */
     // public final Spark LEDController = new Spark(LEDConstants.LED_SPARK_ID);
@@ -65,6 +65,31 @@ public class RobotMap {
         // endeffector.saf
     }
 
+
+    public RobotMap() {
+        configureDriveMotorControllers();
+
+        FaultPhotonCamera.addDevice(leftCamera, "Left Camera");
+        FaultPhotonCamera.addDevice(rightCamera, "Right Camera");
+
+        FaultPidgeon2.addDevice(swerveDrivetrain.getPigeon2(), "Gyro");
+
+        FaultTalonFX.addDevice(elevator, "Elevator");
+        FaultTalonFX.addDevice(endeffector, "Endeffector");
+        
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(0).getDriveMotor(), "Module 0 Drive");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(0).getSteerMotor(), "Module 0 Steer");
+        FaultCANCoder.addDevice(swerveDrivetrain.getModule(0).getEncoder(), "Module 0 CANCoder");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(1).getDriveMotor(), "Module 1 Drive");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(1).getSteerMotor(), "Module 1 Steer");
+        FaultCANCoder.addDevice(swerveDrivetrain.getModule(1).getEncoder(), "Module 1 CANCoder");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(2).getDriveMotor(), "Module 2 Drive");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(2).getSteerMotor(), "Module 2 Steer");
+        FaultCANCoder.addDevice(swerveDrivetrain.getModule(2).getEncoder(), "Module 2 CANCoder");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(3).getDriveMotor(), "Module 3 Drive");
+        FaultTalonFX.addDevice(swerveDrivetrain.getModule(3).getSteerMotor(), "Module 3 Steer");
+        FaultCANCoder.addDevice(swerveDrivetrain.getModule(3).getEncoder(), "Module 3 CANCoder");
+    }
 
     public class RobotMapSim {
         public PhotonCameraSim leftCamera;

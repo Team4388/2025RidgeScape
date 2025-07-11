@@ -243,5 +243,4 @@ public final class DriveConstants {
     // misc
     public static final int TIMEOUT_MS = 30;
     public static final int SMARTDASHBOARD_UPDATE_FRAME = 2;
-    
 }

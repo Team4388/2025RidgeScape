@@ -25,11 +25,12 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.DriveConstants;
 import frc4388.utility.compute.TimesNegativeOne;
 import frc4388.utility.status.Status;
-import frc4388.utility.status.Subsystem;
-import frc4388.utility.status.Status.ReportLevel;
+import frc4388.utility.status.FaultReporter;
+import frc4388.utility.status.Queryable;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -37,7 +38,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 
-public class SwerveDrive extends Subsystem {
+public class SwerveDrive extends SubsystemBase implements Queryable {
     private SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain;
 
     private Vision vision;
@@ -65,7 +66,7 @@ public class SwerveDrive extends Subsystem {
     public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain, Vision vision) {
         // public SwerveDrive(SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
         // swerveDriveTrain) {
-        super();
+        FaultReporter.register(this);
 
         this.swerveDriveTrain = swerveDriveTrain;
         this.vision = vision;
@@ -448,12 +449,12 @@ public class SwerveDrive extends Subsystem {
 
 
     @Override
-    public String getSubsystemName() {
+    public String getName() {
         return "Swerve Drive Controller";
     }
 
     ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
-            .getLayout(getSubsystemName(), BuiltInLayouts.kList)
+            .getLayout(getName(), BuiltInLayouts.kList)
             .withSize(2, 2);
 
     GenericEntry sbGyro = subsystemLayout
@@ -478,8 +479,8 @@ public class SwerveDrive extends Subsystem {
     public Status diagnosticStatus() {
         Status status = new Status();
 
-        status.addReport(ReportLevel.INFO,
-                "Don't know how to diganose new CTRE swerve systems. please check under the CAN(t) section for more detailed information about the swerves there.");
+        // status.addReport(ReportLevel.INFO,
+        //         "Don't know how to diganose new CTRE swerve systems. please check under the CAN(t) section for more detailed information about the swerves there.");
 
         return status;
     }
