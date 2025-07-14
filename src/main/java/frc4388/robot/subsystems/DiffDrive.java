@@ -8,13 +8,13 @@
 package frc4388.robot.subsystems;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.DriveConstants;
-import frc4388.utility.RobotGyro;
+// import frc4388.utility.RobotGyro;
 import frc4388.utility.compute.RobotTime;
 import frc4388.utility.status.Status;
 import frc4388.utility.status.FaultReporter;
@@ -34,13 +34,13 @@ public class DiffDrive extends SubsystemBase implements Queryable {
   private TalonFX m_leftBackMotor;
   private TalonFX m_rightBackMotor;
   private DifferentialDrive m_driveTrain;
-  private RobotGyro m_gyro;
+  private Pigeon2 m_gyro;
 
   /**
    * Add your docs here.
    */
   public DiffDrive(TalonFX leftFrontMotor, TalonFX rightFrontMotor, TalonFX leftBackMotor,
-      TalonFX rightBackMotor, DifferentialDrive driveTrain, RobotGyro gyro) {
+      TalonFX rightBackMotor, DifferentialDrive driveTrain, Pigeon2 gyro) {
     
     FaultReporter.register(this);
 
@@ -56,8 +56,6 @@ public class DiffDrive extends SubsystemBase implements Queryable {
 
   @Override
   public void periodic() {
-    m_gyro.updatePigeonDeltas();
-
     if (m_robotTime.m_frameNumber % DriveConstants.SMARTDASHBOARD_UPDATE_FRAME == 0) {
       updateSmartDashboard();
     }
@@ -84,9 +82,9 @@ public class DiffDrive extends SubsystemBase implements Queryable {
   private void updateSmartDashboard() {
 
     // Examples of the functionality of RobotGyro
-    SmartDashboard.putBoolean("Is Gyro a Pigeon?", m_gyro.m_isGyroAPigeon);
-    SmartDashboard.putNumber("Turn Rate", m_gyro.getRate());
-    SmartDashboard.putNumber("Gyro Pitch", m_gyro.getPitch());
+    // SmartDashboard.putBoolean("Is Gyro a Pigeon?", m_gyro.m_isGyroAPigeon);
+    // SmartDashboard.putNumber("Turn Rate", m_gyro.getRate());
+    // SmartDashboard.putNumber("Gyro Pitch", m_gyro.getPitch());
     //SmartDashboard.putData(m_gyro);
   }
 
