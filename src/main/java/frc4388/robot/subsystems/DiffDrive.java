@@ -34,7 +34,7 @@ public class DiffDrive extends SubsystemBase implements Queryable {
   private TalonFX m_leftBackMotor;
   private TalonFX m_rightBackMotor;
   private DifferentialDrive m_driveTrain;
-  private Pigeon2 m_gyro;
+  // private Pigeon2 m_gyro;
 
   /**
    * Add your docs here.
@@ -51,7 +51,7 @@ public class DiffDrive extends SubsystemBase implements Queryable {
     m_leftBackMotor .setControl(new Follower(m_leftFrontMotor.getDeviceID(), false));
     m_rightBackMotor.setControl(new Follower(m_rightBackMotor.getDeviceID(), false));
     m_driveTrain = driveTrain;
-    m_gyro = gyro;
+    // m_gyro = gyro;
   }
 
   @Override

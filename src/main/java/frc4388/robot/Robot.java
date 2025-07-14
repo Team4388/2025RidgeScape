@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc4388.robot.constants.BuildConstants;
 import frc4388.robot.constants.Constants.SimConstants;
 import frc4388.utility.DeferredBlock;
-import frc4388.utility.DeferredBlockMulti;
 import frc4388.utility.Trim;
 import frc4388.utility.compute.RobotTime;
 import frc4388.utility.status.FaultReporter;
@@ -95,7 +94,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledExit() {
     DeferredBlock.execute();
-    DeferredBlockMulti.execute();
   }
 
   /**

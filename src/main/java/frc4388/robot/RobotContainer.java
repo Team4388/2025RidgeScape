@@ -60,7 +60,6 @@ import frc4388.robot.subsystems.SwerveDrive;
 
 // Utilites
 import frc4388.utility.DeferredBlock;
-import frc4388.utility.DeferredBlockMulti;
 import frc4388.utility.compute.TimesNegativeOne;
 import frc4388.utility.compute.ReefPositionHelper.Side;
 
@@ -590,12 +589,14 @@ public class RobotContainer {
 
         configureButtonBindings();        
         configureVirtualButtonBindings();
-        new DeferredBlock(() -> { // Called on first robot enable
+        
+        DeferredBlock.addBlock(() -> { // Called on first robot enable
             m_robotSwerveDrive.resetGyro();
-        });
-        new DeferredBlockMulti(() -> { // Called on every robot enable
+        }, false);
+        DeferredBlock.addBlock(() -> { // Called on every robot enable
             TimesNegativeOne.update();
-        });
+        }, true);
+
         DriverStation.silenceJoystickConnectionWarning(true);
         // CameraServer.startAutomaticCapture();
 
