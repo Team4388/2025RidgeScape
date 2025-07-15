@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc4388.robot.constants.Constants.AutoConstants;
 import frc4388.robot.subsystems.SwerveDrive;
-import frc4388.robot.subsystems.Vision;
+import frc4388.robot.subsystems.vision.Vision;
 import frc4388.utility.compute.ReefPositionHelper;
 import frc4388.utility.compute.TimesNegativeOne;
 import frc4388.utility.compute.ReefPositionHelper.Side;
@@ -131,7 +131,7 @@ public class DriveToReef extends Command {
             (Math.abs(xerr) < AutoConstants.XY_TOLERANCE || Math.abs(xoutput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
             (Math.abs(yerr) < AutoConstants.XY_TOLERANCE || Math.abs(youtput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
             (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE) &&
-            (!waitVelocityZero || swerveDrive.state.lastOdomSpeed < AutoConstants.VELOCITY_THRESHHOLD)
+            (!waitVelocityZero || swerveDrive.lastOdomSpeed < AutoConstants.VELOCITY_THRESHHOLD)
         );
         // System.out.println(finished);
 

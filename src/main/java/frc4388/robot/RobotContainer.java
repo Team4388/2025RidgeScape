@@ -55,11 +55,10 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc4388.robot.subsystems.Elevator;
 // Subsystems
 import frc4388.robot.subsystems.LED;
-import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.Elevator.CoordinationState;
 // import frc4388.robot.subsystems.Endeffector;
 import frc4388.robot.subsystems.SwerveDrive;
-
+import frc4388.robot.subsystems.vision.Vision;
 // Utilites
 import frc4388.utility.DeferredBlock;
 import frc4388.utility.compute.TimesNegativeOne;
@@ -695,8 +694,8 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
         
         new Trigger(() -> getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
-            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.state.rotSpeedAdjust *= 2;}))
-            .onFalse(new InstantCommand(() -> {m_robotSwerveDrive.state.rotSpeedAdjust /= 2;}));
+            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.rotSpeedAdjust *= 2;}))
+            .onFalse(new InstantCommand(() -> {m_robotSwerveDrive.rotSpeedAdjust /= 2;}));
 
         new Trigger(() ->getDeadbandedDriverController().getRightTriggerAxis() > 0.8)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.startTurboPeriod()))

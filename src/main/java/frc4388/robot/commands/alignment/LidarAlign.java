@@ -8,13 +8,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc4388.robot.subsystems.Lidar;
 import frc4388.robot.subsystems.SwerveDrive;
+import frc4388.robot.subsystems.lidar.LiDAR;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LidarAlign extends Command {
   private SwerveDrive swerveDrive;
-  private Lidar lidar;  
+  private LiDAR lidar;  
 
   private int currentFinderTick;
   // private int tickFoundPipe;
@@ -26,7 +26,7 @@ public class LidarAlign extends Command {
   // private final boolean constructedHeadedRight;
 
   /** Creates a new LidarAlign. */
-  public LidarAlign(SwerveDrive swerveDrive, Lidar lidar) {//, boolean headedRight) {
+  public LidarAlign(SwerveDrive swerveDrive, LiDAR lidar) {//, boolean headedRight) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.swerveDrive = swerveDrive;

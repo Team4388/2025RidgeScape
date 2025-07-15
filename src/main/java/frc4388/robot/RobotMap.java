@@ -21,9 +21,12 @@ import frc4388.robot.constants.Constants.ElevatorConstants;
 import frc4388.robot.constants.Constants.LiDARConstants;
 import frc4388.robot.constants.Constants.VisionConstants;
 import frc4388.robot.constants.DriveConstants;
-import frc4388.robot.subsystems.Lidar;
+import frc4388.robot.subsystems.lidar.LiDAR;
+import frc4388.robot.subsystems.lidar.LidarIO;
+import frc4388.robot.subsystems.lidar.LidarLiteV2;
+import frc4388.robot.subsystems.vision.VisionIO;
+import frc4388.robot.subsystems.vision.VisionPhotonvision;
 import frc4388.utility.status.FaultCANCoder;
-import frc4388.utility.status.FaultPhotonCamera;
 import frc4388.utility.status.FaultPidgeon2;
 import frc4388.utility.status.FaultTalonFX;
 
@@ -35,11 +38,13 @@ public class RobotMap {
     // private Pigeon2 m_pigeon2 = new Pigeon2(SwerveDriveConstants.IDs.DRIVE_PIGEON.id);
     // public RobotGyro gyro = new RobotGyro(m_pigeon2);
 
-    public final PhotonCamera leftCamera = new PhotonCamera(VisionConstants.LEFT_CAMERA_NAME);
-    public final PhotonCamera rightCamera = new PhotonCamera(VisionConstants.RIGHT_CAMERA_NAME);
+    public final VisionIO leftCamera = new VisionPhotonvision(new PhotonCamera(VisionConstants.LEFT_CAMERA_NAME), VisionConstants.LEFT_CAMERA_POS);
+    public final VisionIO rightCamera = new VisionPhotonvision(new PhotonCamera(VisionConstants.RIGHT_CAMERA_NAME), VisionConstants.RIGHT_CAMERA_POS);
 
-    public final Lidar reefLidar = new Lidar(LiDARConstants.REEF_LIDAR_DIO_CHANNEL, "Reef");
-    public final Lidar reverseLidar = new Lidar(LiDARConstants.REVERSE_LIDAR_DIO_CHANNEL, "Reverse");
+    // public final LiDAR lidar = new 
+
+    public final LiDAR reefLidar = new LiDAR((LidarIO) new LidarLiteV2(LiDARConstants.REEF_LIDAR_DIO_CHANNEL), "Reef");
+    public final LiDAR reverseLidar = new LiDAR((LidarIO) new LidarLiteV2(LiDARConstants.REVERSE_LIDAR_DIO_CHANNEL), "Reverse");
 
 
     /* LED Subsystem */
@@ -69,8 +74,8 @@ public class RobotMap {
     public RobotMap() {
         configureDriveMotorControllers();
 
-        FaultPhotonCamera.addDevice(leftCamera, "Left Camera");
-        FaultPhotonCamera.addDevice(rightCamera, "Right Camera");
+        // FaultPhotonCamera.addDevice(leftCamera, "Left Camera");
+        // FaultPhotonCamera.addDevice(rightCamera, "Right Camera");
 
         FaultPidgeon2.addDevice(swerveDrivetrain.getPigeon2(), "Gyro");
 
@@ -111,8 +116,8 @@ public class RobotMap {
         cameraProp.setAvgLatencyMs(35);
         cameraProp.setLatencyStdDevMs(5);
 
-        sim.leftCamera = new PhotonCameraSim(leftCamera, cameraProp);
-        sim.rightCamera = new PhotonCameraSim(rightCamera, cameraProp);
+        // sim.leftCamera = new PhotonCameraSim(leftCamera, cameraProp);
+        // sim.rightCamera = new PhotonCameraSim(rightCamera, cameraProp);
 
         
         sim.leftCamera.enableRawStream(true);
