@@ -131,7 +131,7 @@ public class DriveToReef extends Command {
             (Math.abs(xerr) < AutoConstants.XY_TOLERANCE || Math.abs(xoutput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
             (Math.abs(yerr) < AutoConstants.XY_TOLERANCE || Math.abs(youtput) <= AutoConstants.MIN_XY_PID_OUTPUT) && 
             (Math.abs(roterr) < AutoConstants.ROT_TOLERANCE) &&
-            (!waitVelocityZero || swerveDrive.lastOdomSpeed < AutoConstants.VELOCITY_THRESHHOLD)
+            (!waitVelocityZero || swerveDrive.state.lastOdomSpeed < AutoConstants.VELOCITY_THRESHHOLD)
         );
         // System.out.println(finished);
 

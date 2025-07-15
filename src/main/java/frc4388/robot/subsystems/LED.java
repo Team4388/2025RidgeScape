@@ -60,11 +60,6 @@ public class LED extends SubsystemBase implements Queryable {
     return "LEDs";
   }
 
-  // @Override
-  // public void queryStatus() {
-  //   SmartDashboard.putString("LED status", mode.name());
-  // }
-
   @Override
   public Status diagnosticStatus() {
     Status status = new Status();

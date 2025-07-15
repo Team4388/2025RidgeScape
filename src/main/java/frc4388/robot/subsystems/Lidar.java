@@ -51,10 +51,6 @@ public class Lidar extends SubsystemBase implements Queryable {
         return distance < LiDARConstants.LIDAR_DETECT_DISTANCE;
     }
 
-    ShuffleboardLayout subsystemLayout;
-    GenericEntry sbDistance;
-    GenericEntry sbWithinDistance;
-
     @Override
     public String getName() {
         return "Lidar " + name;

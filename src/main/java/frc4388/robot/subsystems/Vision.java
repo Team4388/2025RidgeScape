@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -35,44 +36,22 @@ import frc4388.utility.status.FaultReporter;
 import frc4388.utility.status.Queryable;
 
 public class Vision extends SubsystemBase implements Queryable {
-
-    // private PhotonCamera leftCamera;
-    // private PhotonCamera rightCamera;
-
     private PhotonCamera[] cameras;
     private PhotonPoseEstimator[] estimators;
-    private List<EstimatedRobotPose> poses = new ArrayList<>();
 
-    private boolean isTagDetected = false;
-    private boolean isTagProcessed = false;
-
-    private double lastLatency = 0;
-
-    public double getLastLatency() {
-        return lastLatency;
+    @AutoLog
+    public class VisionState {
+        public boolean isTagDetected = false;
+        public boolean isTagProcessed = false;
+        public List<EstimatedRobotPose> poses = new ArrayList<>();
+        public double latency = 0;
+        public Pose2d lastVisionPose = new Pose2d();
+        public Pose2d lastPhysOdomPose = new Pose2d();
     }
 
-    public Pose2d lastVisionPose = new Pose2d();
-    private Pose2d lastPhysOdomPose = new Pose2d();
-
-    private Matrix<N3, N1> curStdDevs;
+    private VisionState state = new VisionState();
 
     private Field2d field = new Field2d();
-    
-    ShuffleboardLayout subsystemLayout = Shuffleboard.getTab("Subsystems")
-    .getLayout(getName(), BuiltInLayouts.kList)
-    .withSize(2, 2);
-
-    GenericEntry sbTagDetected = subsystemLayout
-    .add("Tag Detected", false)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .getEntry();
-
-    GenericEntry sbTagProcessed = subsystemLayout
-    .add("Tag Processed", false)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .getEntry();
-    
     public Vision(PhotonCamera leftCamera, PhotonCamera rightCamera){
         FaultReporter.register(this);
         SmartDashboard.putData(field);
@@ -98,17 +77,17 @@ public class Vision extends SubsystemBase implements Queryable {
 
 
     private void update() {
-        isTagProcessed = false;
-        isTagDetected = false;
+        state.isTagProcessed = false;
+        state.isTagDetected = false;
 
         // Instant now = Instant.now();
 
         // int cams = 0;
 
-        // double latency = 0;
+        double latency = 0;
 
         // Pose2d pose = null;
-        poses.clear();
+        state.poses.clear();
 
         for(int i = 0; i < cameras.length; i++){
             PhotonCamera camera = cameras[i];
@@ -122,9 +101,9 @@ public class Vision extends SubsystemBase implements Queryable {
 
             
             var result = results.get(results.size()-1);
-            // latency += result.getTimestampSeconds();
+            latency += result.getTimestampSeconds();
 
-            isTagDetected = isTagDetected | result.hasTargets();
+            state.isTagDetected = state.isTagDetected | result.hasTargets();
 
             // If there are no tags
             if(!result.hasTargets())
@@ -136,7 +115,7 @@ public class Vision extends SubsystemBase implements Queryable {
             if(estimatedRobotPose.isEmpty())
                 continue;
             
-            poses.add(estimatedRobotPose.get());
+            state.poses.add(estimatedRobotPose.get());
 
             // if(pose == null)
             //     pose = estimatedRobotPose.get().estimatedPose.toPose2d();
@@ -150,7 +129,7 @@ public class Vision extends SubsystemBase implements Queryable {
             // Yaw += (pose.getRotation().getDegrees() + 180) % 360;
             // cams++;
 
-            isTagProcessed = true;
+            state.isTagProcessed = true;
         
             
         }
@@ -244,22 +223,13 @@ public class Vision extends SubsystemBase implements Queryable {
     //     }
     // }
 
-    /**
-     * Returns the latest standard deviations of the estimated pose from {@link
-     * #getEstimatedGlobalPose()}, for use with {@link
-     * edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}. This should
-     * only be used when there are targets visible.
-     */
-    public Matrix<N3, N1> getEstimationStdDevs() {
-        return curStdDevs;
-    }
 
 
 
 
     public void setLastOdomPose(Optional<Pose2d> pose){
         if(pose.isPresent())
-            lastPhysOdomPose = pose.get();
+            state.lastPhysOdomPose = pose.get();
     }
 
     // public double getLastOdomSpeed(){
@@ -267,8 +237,8 @@ public class Vision extends SubsystemBase implements Queryable {
     // }
 
     public Pose2d getPose2d() {
-        if(lastPhysOdomPose != null)
-            return lastPhysOdomPose;
+        if(state.lastPhysOdomPose != null)
+            return state.lastPhysOdomPose;
 
         // if(lastVisionPose != null)
         //     return lastVisionPose;
@@ -281,12 +251,12 @@ public class Vision extends SubsystemBase implements Queryable {
     }
 
     public boolean isTag(){
-        return isTagDetected && isTagProcessed;
+        return state.isTagDetected && state.isTagProcessed;
     }
 
 
     public void addVisionMeasurement( SwerveDrivetrain<TalonFX, TalonFX, CANcoder> drivetrain){
-        for(EstimatedRobotPose pose : poses){
+        for(EstimatedRobotPose pose : state.poses){
             drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(pose.timestampSeconds));
         }
     }
@@ -302,19 +272,6 @@ public class Vision extends SubsystemBase implements Queryable {
     public String getName() {
         return "Vision";
     }
-
-//   GenericEntry sbShiftState = subsystemLayout
-//   .add("Shift State", 0)
-//   .withWidget(BuiltInWidgets.kNumberBar)
-//   .getEntry();
-
-
-    // @Override
-    // public void queryStatus() {
-    //     sbTagDetected.setBoolean(isTagDetected);
-    //     sbTagProcessed.setBoolean(isTagProcessed);
-    //     // field.setRobotPose(getPose2d());
-    // }
 
     @Override
     public Status diagnosticStatus() {

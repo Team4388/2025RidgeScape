@@ -51,11 +51,12 @@ import frc4388.robot.constants.Constants.OIConstants;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import frc4388.robot.subsystems.Elevator;
 // Subsystems
 import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Vision;
 import frc4388.robot.subsystems.Elevator.CoordinationState;
-import frc4388.robot.subsystems.Elevator;
 // import frc4388.robot.subsystems.Endeffector;
 import frc4388.robot.subsystems.SwerveDrive;
 
@@ -560,7 +561,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("feed-driveback", new DriveUntilLiDAR(m_robotSwerveDrive, 
         new Translation2d(-1,0), new Translation2d(), m_robotMap.reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE));
         // NamedCommands.registerCommand("feed-driveback", Commands.none());
-        NamedCommands.registerCommand("stop", new waitSupplier(() -> m_robotSwerveDrive.lastOdomSpeed < AutoConstants.STOP_VELOCITY));
+        NamedCommands.registerCommand("stop", new waitSupplier(() -> m_robotSwerveDrive.isStopped()));
 
         NamedCommands.registerCommand("align-feed", new SequentialCommandGroup(
             new MoveForTimeCommand(m_robotSwerveDrive, 
@@ -694,8 +695,8 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> AutoConstants.X_OFFSET_TRIM.stepDown()));
         
         new Trigger(() -> getDeadbandedDriverController().getLeftTriggerAxis() > 0.8)
-            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.rotSpeedAdjust *= 2;}))
-            .onFalse(new InstantCommand(() -> {m_robotSwerveDrive.rotSpeedAdjust /= 2;}));
+            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.state.rotSpeedAdjust *= 2;}))
+            .onFalse(new InstantCommand(() -> {m_robotSwerveDrive.state.rotSpeedAdjust /= 2;}));
 
         new Trigger(() ->getDeadbandedDriverController().getRightTriggerAxis() > 0.8)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.startTurboPeriod()))
@@ -890,6 +891,7 @@ public class RobotContainer {
       //  return new GotoPositionCommand(m_robotSwerveDrive, m_vision, AutoConstants.targetpos);
     }
 
+    public boolean autoChooserUpdated = false;
     public void makeAutoChooser() {
         autoChooser = new SendableChooser<String>();
         
@@ -913,6 +915,7 @@ public class RobotContainer {
         }
 
         autoChooser.onChange((filename) -> {
+            autoChooserUpdated = true;
             if (filename.equals("Taxi")) {
                 autoCommand = new SequentialCommandGroup(
                     new MoveForTimeCommand(m_robotSwerveDrive, 

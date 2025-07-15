@@ -15,7 +15,9 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc4388.robot.constants.BuildConstants;
@@ -57,6 +59,8 @@ public class Robot extends LoggedRobot {
     // FaultReporter.startThread();
   }
 
+
+
   /**
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
@@ -77,7 +81,6 @@ public class Robot extends LoggedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
   }
-
   /**
    * This function is called once each time the robot enters Disabled mode.
    * You can use it to reset any subsystem information you want to clear when
@@ -125,6 +128,7 @@ public class Robot extends LoggedRobot {
   public void autonomousPeriodic() {
   }
 
+
   @Override
   public void teleopInit() {
     m_robotContainer.stop();
@@ -137,10 +141,7 @@ public class Robot extends LoggedRobot {
       CommandScheduler.getInstance().cancel(m_autonomousCommand);
       m_autonomousCommand.cancel();
       m_autonomousCommand.end(true);
-      System.out.println("NOT Null!!");
 
-    } else {
-      System.out.println("Null!!");
     }
     m_robotTime.startMatchTime();
   }

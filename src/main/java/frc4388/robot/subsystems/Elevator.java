@@ -4,6 +4,8 @@
 
 package frc4388.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLog;
+
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -25,24 +27,29 @@ public class Elevator extends SubsystemBase implements Queryable {
   private TalonFX endeffectorMotor;
   private LED led;
 
-  @SuppressWarnings("unused")
-  private long wait = 0;
-  private long maxWait = 1000;
+  // @AutoLog
+  // private class ElevatorState {
+    @SuppressWarnings("unused")
+    public long wait = 0;
+    public long maxWait = 1000;
 
-  private double elevatorRefrence = 0;
-  private double endeffectorRefrence = 0;
+    public double elevatorRefrence = 0;
+    public double endeffectorRefrence = 0;
 
-  private boolean elevatorManualStop = true;
-  private boolean endefectorManualStop = true;
+    public boolean elevatorManualStop = true;
+    public boolean endefectorManualStop = true;
 
-  private boolean disableAutoIntake = false;
+    public boolean disableAutoIntake = false;
 
-  private boolean seededZeroEndefector = false;
-  private boolean seededZeroElevator = false;
+    public boolean seededZeroEndefector = false;
+    public boolean seededZeroElevator = false;
 
-  private DigitalInput basinBeamBreak;
-  private DigitalInput endeffectorLimitSwitch;
-  private DigitalInput intakeIR;
+    public DigitalInput basinBeamBreak;
+    public DigitalInput endeffectorLimitSwitch;
+    public DigitalInput intakeIR;
+  // }
+
+  // private ElevatorState state = new ElevatorState();
 
   public enum CoordinationState {
     Waiting, // for coral into the though
