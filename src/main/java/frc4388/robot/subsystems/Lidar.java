@@ -31,20 +31,6 @@ public class Lidar extends SubsystemBase implements Queryable {
         LidarPWM.setSemiPeriodMode(true); //Set the counter to period measurement
         LidarPWM.reset();
 
-        
-    subsystemLayout = Shuffleboard.getTab("Subsystems")
-    .getLayout(getName(), BuiltInLayouts.kList)
-    .withSize(2, 2);
-
-    sbDistance = subsystemLayout
-    .add("Distance", 0)
-    .withWidget(BuiltInWidgets.kGraph)
-    .getEntry();
-
-    sbWithinDistance = subsystemLayout
-    .   add("Within Distance", 0)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .getEntry();
     }
 
     @Override
@@ -55,7 +41,7 @@ public class Lidar extends SubsystemBase implements Queryable {
             distance = (LidarPWM.getPeriod() * LiDARConstants.SECONDS_TO_MICROS) / LiDARConstants.LIDAR_MICROS_TO_CM;
     }
 
-    @AutoLogOutput
+    @AutoLogOutput(key = "Lidar/{name}")
     public double getDistance(){
         return distance;
     }
@@ -73,12 +59,6 @@ public class Lidar extends SubsystemBase implements Queryable {
     public String getName() {
         return "Lidar " + name;
     }
-
-    // @Override
-    // public void queryStatus() {
-    //     sbDistance.setDouble(distance);
-    //     sbWithinDistance.setBoolean(withinDistance());
-    // }
 
     @Override
     public Status diagnosticStatus() {

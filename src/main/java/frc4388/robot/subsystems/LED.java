@@ -7,6 +7,8 @@
 
 package frc4388.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,6 +48,11 @@ public class LED extends SubsystemBase implements Queryable {
       LEDController.set(LEDConstants.DEFAULT_PATTERN.getValue());
     }else
       LEDController.set(mode.getValue());
+  }
+
+  @AutoLogOutput
+  public String state() {
+    return mode.getClass().toString();
   }
 
   @Override

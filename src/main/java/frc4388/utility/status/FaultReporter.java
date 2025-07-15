@@ -13,22 +13,26 @@ import frc4388.utility.status.Status.ReportLevel;
 public class FaultReporter {
 
     private static final String REPORTS_HEADER = 
-    "▄▖        ▗   \n" + //
-    "▙▘█▌▛▌▛▌▛▘▜▘▛▘\n" + //
-    "▌▌▙▖▙▌▙▌▌ ▐▖▄▌\n" + //
-    "    ▌           ";
+    "###############\n" + //
+    "#.............#\n" + //
+    "#...Reports...#\n" + //
+    "#.............#\n" + //
+    "###############\n";
+
 
     private static final String CAN_HEADER = 
-    "▄▖▄▖▖ ▖   \n" + //
-    "▌ ▌▌▛▖▌   \n" + //
-    "▙▖▛▌▌▝▌(t)\n" + //
-    "            ";
+    "###############\n" + //
+    "#.............#\n" + //
+    "#....CAN(t)...#\n" + //
+    "#.............#\n" + //
+    "###############\n";
 
     private static final String ERROR_HEADER = 
-    "▄▖▄▖▄▖▄▖▄▖▄▖\n" + //
-    "▙▖▙▘▙▘▌▌▙▘▚ \n" + //
-    "▙▖▌▌▌▌▙▌▌▌▄▌\n" + //
-    "              ";
+    "###############\n" + //
+    "#.............#\n" + //
+    "#....ERRORS...#\n" + //
+    "#.............#\n" + //
+    "###############\n";
 
     private static List<Queryable> queryables = new ArrayList<>();
 
