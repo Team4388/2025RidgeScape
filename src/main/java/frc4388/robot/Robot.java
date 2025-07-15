@@ -15,13 +15,14 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc4388.robot.constants.BuildConstants;
 import frc4388.robot.constants.Constants.SimConstants;
 import frc4388.utility.DeferredBlock;
-import frc4388.utility.Trim;
 import frc4388.utility.compute.RobotTime;
+import frc4388.utility.compute.Trim;
 import frc4388.utility.status.FaultReporter;
 
 //import frc4388.robot.subsystems.LED;
@@ -52,8 +53,8 @@ public class Robot extends LoggedRobot {
     m_robotContainer = new RobotContainer();
 
 
-    // Create a shuffleboard update thread, that will periodically update the values on shuffleboard
-    FaultReporter.startThread();
+    // // Create a shuffleboard update thread, that will periodically update the values on shuffleboard
+    // FaultReporter.startThread();
   }
 
   /**
@@ -205,13 +206,13 @@ public class Robot extends LoggedRobot {
   // }
 
 
-  // @Override
-  // public void simulationPeriodic() {
-  //   m_robotContainer.m_robotSwerveDrive.updateSim(RobotController.getBatteryVoltage());
-  //   visionSim.update(m_robotContainer.m_robotSwerveDrive.getPose2d());
+  @Override
+  public void simulationPeriodic() {
+    m_robotContainer.m_robotSwerveDrive.updateSim(RobotController.getBatteryVoltage());
+    // visionSim.update(m_robotContainer.m_robotSwerveDrive.getPose2d());
 
-  //   // m_robotContainer.m_robotSwerveDrive.
-  // }
+    // m_robotContainer.m_robotSwerveDrive.
+  }
 
 
 

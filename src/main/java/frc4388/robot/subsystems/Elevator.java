@@ -378,8 +378,8 @@ public class Elevator extends SubsystemBase implements Queryable {
     return "Elevator";
   }
 
-  @Override
-  public void queryStatus() {}
+  // @Override
+  // public void queryStatus() {}
 
   @Override
   public Status diagnosticStatus() {

@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc4388.utility.controller.XboxController;
@@ -67,7 +68,7 @@ import frc4388.utility.compute.ReefPositionHelper.Side;
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * scheduler calls). Instead, the structure of the robot (2including subsystems,
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -892,8 +893,15 @@ public class RobotContainer {
     public void makeAutoChooser() {
         autoChooser = new SendableChooser<String>();
         
-        File dir = new File("/home/lvuser/deploy/pathplanner/autos/");
-        // File dir = new File("C:\\Users\\Ridgebotics\\Documents\\GitHub\\2025RidgeScape\\src\\main\\deploy\\pathplanner\\autos\\");
+        File dir;
+
+        if(RobotBase.isReal()) {
+            dir = new File("/home/lvuser/deploy/pathplanner/autos/");
+        } else {
+            // dir = new File("C:\\Users\\Ridgebotics\\Documents\\GitHub\\2025RidgeScape\\src\\main\\deploy\\pathplanner\\autos\\");
+            dir = new File("/home/astatin3/Documents/GitHub/2025RidgeScape/src/main/deploy/pathplanner/autos");
+        }
+
         String[] autos = dir.list();
 
         if(autos == null) return;

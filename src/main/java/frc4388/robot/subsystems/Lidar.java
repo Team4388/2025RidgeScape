@@ -1,5 +1,7 @@
 package frc4388.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -53,6 +55,7 @@ public class Lidar extends SubsystemBase implements Queryable {
             distance = (LidarPWM.getPeriod() * LiDARConstants.SECONDS_TO_MICROS) / LiDARConstants.LIDAR_MICROS_TO_CM;
     }
 
+    @AutoLogOutput
     public double getDistance(){
         return distance;
     }
@@ -71,11 +74,11 @@ public class Lidar extends SubsystemBase implements Queryable {
         return "Lidar " + name;
     }
 
-    @Override
-    public void queryStatus() {
-        sbDistance.setDouble(distance);
-        sbWithinDistance.setBoolean(withinDistance());
-    }
+    // @Override
+    // public void queryStatus() {
+    //     sbDistance.setDouble(distance);
+    //     sbWithinDistance.setBoolean(withinDistance());
+    // }
 
     @Override
     public Status diagnosticStatus() {

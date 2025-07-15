@@ -20,7 +20,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc4388.utility.Trim;
+import frc4388.utility.compute.Trim;
 import frc4388.utility.status.CanDevice;
 import frc4388.utility.structs.Gains;
 import frc4388.utility.structs.LEDPatterns;

@@ -309,12 +309,12 @@ public class Vision extends SubsystemBase implements Queryable {
 //   .getEntry();
 
 
-    @Override
-    public void queryStatus() {
-        sbTagDetected.setBoolean(isTagDetected);
-        sbTagProcessed.setBoolean(isTagProcessed);
-        // field.setRobotPose(getPose2d());
-    }
+    // @Override
+    // public void queryStatus() {
+    //     sbTagDetected.setBoolean(isTagDetected);
+    //     sbTagProcessed.setBoolean(isTagProcessed);
+    //     // field.setRobotPose(getPose2d());
+    // }
 
     @Override
     public Status diagnosticStatus() {

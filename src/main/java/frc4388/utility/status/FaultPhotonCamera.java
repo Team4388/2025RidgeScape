@@ -23,9 +23,6 @@ public class FaultPhotonCamera implements Queryable {
     }
 
     @Override
-    public void queryStatus() {}
-
-    @Override
     public Status diagnosticStatus() {
         Status s = new Status();
 

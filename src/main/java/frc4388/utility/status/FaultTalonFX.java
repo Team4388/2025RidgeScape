@@ -24,12 +24,6 @@ public class FaultTalonFX implements Queryable {
     }
 
     @Override
-    public void queryStatus() {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'queryStatus'");
-    }
-
-    @Override
     public Status diagnosticStatus() {
         Status s = new Status();
 

@@ -467,13 +467,13 @@ public class SwerveDrive extends SubsystemBase implements Queryable {
             .withWidget(BuiltInWidgets.kNumberBar)
             .getEntry();
 
-    @Override
-    public void queryStatus() {
-        sbGyro.setDouble(getGyroAngle());
-        sbShiftState.setDouble(this.speedAdjust);
+    // @Override
+    // public void queryStatus() {
+    //     sbGyro.setDouble(getGyroAngle());
+    //     sbShiftState.setDouble(this.speedAdjust);
 
-        // TODO: Add more status things
-    }
+    //     // TODO: Add more status things
+    // }
 
     @Override
     public Status diagnosticStatus() {

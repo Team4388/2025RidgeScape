@@ -94,10 +94,10 @@ public class DiffDrive extends SubsystemBase implements Queryable {
       return "Diff Drive";
   }
 
-  @Override
-  public void queryStatus() {
-      // TODO: Add Stuff
-  }
+  // @Override
+  // public void queryStatus() {
+  //     // TODO: Add Stuff
+  // }
 
   @Override
   public Status diagnosticStatus() {

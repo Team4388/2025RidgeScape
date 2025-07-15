@@ -32,25 +32,25 @@ public class FaultReporter {
 
     private static List<Queryable> queryables = new ArrayList<>();
 
-    public static void startThread() {
-        new Thread() {
-            public void run() {
-              try{
-              while(!this.isInterrupted() && this.isAlive()){
-                Thread.sleep(500);
-                for(int i=0;i<queryables.size(); i++){
-                  queryables.get(i).queryStatus();
-                }
+    // public static void startThread() {
+    //     new Thread() {
+    //         public void run() {
+    //           try{
+    //           while(!this.isInterrupted() && this.isAlive()){
+    //             Thread.sleep(500);
+    //             for(int i=0;i<queryables.size(); i++){
+    //               queryables.get(i).queryStatus();
+    //             }
       
-                // System.out.println("Updated statuses!");
+    //             // System.out.println("Updated statuses!");
                 
-              }
-              }catch(Exception e){
-                  e.printStackTrace();
-              }
-            }
-        }.start();
-    }
+    //           }
+    //           }catch(Exception e){
+    //               e.printStackTrace();
+    //           }
+    //         }
+    //     }.start();
+    // }
 
     public static void register(Queryable q) {
         queryables.add(q);
