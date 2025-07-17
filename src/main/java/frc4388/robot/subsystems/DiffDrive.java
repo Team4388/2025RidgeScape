@@ -13,7 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4388.robot.constants.DriveConstants;
+import frc4388.robot.subsystems.swerve.SwerveDriveConstants;
 // import frc4388.utility.RobotGyro;
 import frc4388.utility.compute.RobotTime;
 import frc4388.utility.status.Status;
@@ -56,7 +56,7 @@ public class DiffDrive extends SubsystemBase implements Queryable {
 
   @Override
   public void periodic() {
-    if (m_robotTime.m_frameNumber % DriveConstants.SMARTDASHBOARD_UPDATE_FRAME == 0) {
+    if (m_robotTime.m_frameNumber % SwerveDriveConstants.SMARTDASHBOARD_UPDATE_FRAME == 0) {
       updateSmartDashboard();
     }
   }

@@ -1,5 +1,7 @@
 package frc4388.robot.subsystems.vision;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -43,21 +45,20 @@ public class Vision extends SubsystemBase implements Queryable {
         }
     }
 
-    public void addVisionMeasurement(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> drivetrain){
-        // for(EstimatedRobotPose pose : poses){
-        //     
-        // }
+    public List<PoseObservation> getPosesToAdd(){
+        List<PoseObservation> poses = new ArrayList<>();
         for(int i = 0; i < state.length; i++) {
             if(state[i].lastEstimatedPose != null) {
-                PoseObservation pose = state[i].lastEstimatedPose;
-                drivetrain.addVisionMeasurement(pose.pose(), Utils.fpgaToCurrentTime(pose.timestamp()));
+                poses.add(state[i].lastEstimatedPose);
             }
         }
+
+        return poses;
     }
 
-    public void setLastOdomPose(Optional<Pose2d> pose){
-        if(pose.isPresent())
-            lastPhysOdomPose = pose.get();
+    public void setLastOdomPose(Pose2d pose){
+        if(pose != null)
+            lastPhysOdomPose = pose;
     }
 
     public boolean isTag(){

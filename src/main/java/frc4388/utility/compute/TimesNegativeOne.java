@@ -7,16 +7,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc4388.robot.constants.DriveConstants;
+import frc4388.robot.subsystems.swerve.SwerveDriveConstants;
 
 // Class that holds weather the drivers sticks should be inverted
 public class TimesNegativeOne {
 
-    public static boolean XAxis = DriveConstants.INVERT_X;
-    public static boolean YAxis = DriveConstants.INVERT_Y;
-    public static boolean RotAxis = DriveConstants.INVERT_ROTATION;
+    public static boolean XAxis = SwerveDriveConstants.INVERT_X;
+    public static boolean YAxis = SwerveDriveConstants.INVERT_Y;
+    public static boolean RotAxis = SwerveDriveConstants.INVERT_ROTATION;
     public static boolean isRed = false;
-    public static Rotation2d ForwardOffset = Rotation2d.fromDegrees(DriveConstants.FORWARD_OFFSET);
+    public static Rotation2d ForwardOffset = Rotation2d.fromDegrees(SwerveDriveConstants.FORWARD_OFFSET);
 
     private static boolean isRed() {
         Optional<Alliance> alliance = DriverStation.getAlliance();
@@ -26,10 +26,10 @@ public class TimesNegativeOne {
 
     public static void update(){
         isRed = isRed();
-        XAxis = DriveConstants.INVERT_X ^ isRed;
-        YAxis = DriveConstants.INVERT_Y ^ isRed;
-        RotAxis = DriveConstants.INVERT_ROTATION;
-        ForwardOffset = Rotation2d.fromDegrees((DriveConstants.FORWARD_OFFSET + (isRed ? 0 : 0)));
+        XAxis = SwerveDriveConstants.INVERT_X ^ isRed;
+        YAxis = SwerveDriveConstants.INVERT_Y ^ isRed;
+        RotAxis = SwerveDriveConstants.INVERT_ROTATION;
+        ForwardOffset = Rotation2d.fromDegrees((SwerveDriveConstants.FORWARD_OFFSET + (isRed ? 0 : 0)));
         SmartDashboard.putBoolean("Is red alliance", isRed);
     }
 

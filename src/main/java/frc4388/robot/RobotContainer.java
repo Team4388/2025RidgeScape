@@ -48,6 +48,7 @@ import frc4388.robot.constants.Constants;
 import frc4388.robot.constants.Constants.AutoConstants;
 import frc4388.robot.constants.Constants.LiDARConstants;
 import frc4388.robot.constants.Constants.OIConstants;
+import frc4388.robot.constants.Constants.SimConstants.Mode;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -56,8 +57,8 @@ import frc4388.robot.subsystems.Elevator;
 // Subsystems
 import frc4388.robot.subsystems.LED;
 import frc4388.robot.subsystems.Elevator.CoordinationState;
-// import frc4388.robot.subsystems.Endeffector;
-import frc4388.robot.subsystems.SwerveDrive;
+import frc4388.robot.subsystems.lidar.LiDAR;
+import frc4388.robot.subsystems.swerve.SwerveDrive;
 import frc4388.robot.subsystems.vision.Vision;
 // Utilites
 import frc4388.utility.DeferredBlock;
@@ -74,7 +75,7 @@ import frc4388.utility.compute.ReefPositionHelper.Side;
 public class RobotContainer {
     /* RobotMap */
     
-    public final RobotMap m_robotMap = new RobotMap();
+    public final RobotMap m_robotMap = new RobotMap(Mode.REAL);
     
     /* Subsystems */
     public final LED m_robotLED = new LED();
@@ -82,6 +83,9 @@ public class RobotContainer {
     public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotMap.IRIntakeBeam, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
+
+    public final LiDAR reefLidar = new LiDAR(m_robotMap.reefLidar, "Reef");
+    public final LiDAR reverseLidar = new LiDAR(m_robotMap.reverseLidar, "Reverse");
 
 
     /* Controllers */
@@ -129,7 +133,7 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.RIGHT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
         new ParallelRaceGroup(
             new WaitCommand(1),
@@ -292,7 +296,7 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.LEFT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
         new ParallelRaceGroup(
             new WaitCommand(1),
@@ -339,7 +343,7 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.LEFT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         // waitDebuger.asProxy(),
         // new ParallelRaceGroup(
         //     new WaitCommand(1),
@@ -380,7 +384,7 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_SCORE-Units.inchesToMeters(1), Side.LEFT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
@@ -409,7 +413,7 @@ public class RobotContainer {
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_SCORE, Side.RIGHT, true),
         waitDebuger.asProxy(),
         
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
 
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
@@ -429,7 +433,7 @@ public class RobotContainer {
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.LEFT, true),
         waitDebuger.asProxy(),
         
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
@@ -450,7 +454,7 @@ public class RobotContainer {
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.RIGHT, true),
         waitDebuger.asProxy(),
 
-        new LidarAlign(m_robotSwerveDrive, m_robotMap.reefLidar),
+        new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
@@ -558,7 +562,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("await-coral", new waitFeedCoral(m_robotElevator));
 
         NamedCommands.registerCommand("feed-driveback", new DriveUntilLiDAR(m_robotSwerveDrive, 
-        new Translation2d(-1,0), new Translation2d(), m_robotMap.reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE));
+        new Translation2d(-1,0), new Translation2d(), reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE));
         // NamedCommands.registerCommand("feed-driveback", Commands.none());
         NamedCommands.registerCommand("stop", new waitSupplier(() -> m_robotSwerveDrive.isStopped()));
 
@@ -722,7 +726,7 @@ public class RobotContainer {
             .onTrue(thrustIntake.asProxy());
           
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.softStop();}, m_robotSwerveDrive, m_robotMap.reefLidar)); 
+            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.softStop();}, m_robotSwerveDrive, reefLidar)); 
         
             
         // ?  /* Operator Buttons */

@@ -1,5 +1,7 @@
 package frc4388.robot.subsystems.lidar;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.Constants.LiDARConstants;
 import frc4388.utility.status.Status;
@@ -23,6 +25,7 @@ public class LiDAR extends SubsystemBase implements Queryable {
     @Override
     public void periodic() {
         io.updateInputs(state);
+        Logger.processInputs("LiDAR/"+name, state);
     }
 
     // @AutoLogOutput(key = "Lidar/{name}")

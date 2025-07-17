@@ -2,8 +2,8 @@ package frc4388.robot.commands.alignment;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc4388.robot.subsystems.SwerveDrive;
 import frc4388.robot.subsystems.lidar.LiDAR;
+import frc4388.robot.subsystems.swerve.SwerveDrive;
 
 // Command to repeat a joystick movement for a specific time.
 public class DriveUntilLiDAR extends Command {

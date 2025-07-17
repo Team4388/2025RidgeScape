@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc4388.robot.subsystems.SwerveDrive;
+import frc4388.robot.subsystems.swerve.SwerveDrive;
 import frc4388.utility.compute.DataUtils;
 import frc4388.utility.controller.DeadbandedXboxController;
 import frc4388.utility.structs.UtilityStructs.AutoRecordingControllerFrame;

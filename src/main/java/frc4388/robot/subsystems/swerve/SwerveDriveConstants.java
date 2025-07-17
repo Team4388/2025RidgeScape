@@ -1,4 +1,4 @@
-package frc4388.robot.constants;
+package frc4388.robot.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Rotations;
@@ -28,7 +28,7 @@ import frc4388.utility.structs.Gains;
 
 // No mans land
 // Beware, there be dragons.
-public final class DriveConstants {
+public final class SwerveDriveConstants {
     public static final double MAX_ROT_SPEED        = Math.PI * 2;
     public static final double AUTO_MAX_ROT_SPEED = 1.5;
     public static final double MIN_ROT_SPEED        = 1.0;
