@@ -53,10 +53,10 @@ import frc4388.robot.constants.Constants.SimConstants.Mode;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import frc4388.robot.subsystems.Elevator;
 // Subsystems
 import frc4388.robot.subsystems.LED;
-import frc4388.robot.subsystems.Elevator.CoordinationState;
+import frc4388.robot.subsystems.elevator.Elevator;
+import frc4388.robot.subsystems.elevator.Elevator.CoordinationState;
 import frc4388.robot.subsystems.lidar.LiDAR;
 import frc4388.robot.subsystems.swerve.SwerveDrive;
 import frc4388.robot.subsystems.vision.Vision;
@@ -80,7 +80,7 @@ public class RobotContainer {
     /* Subsystems */
     public final LED m_robotLED = new LED();
     public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
-    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevator, m_robotMap.endeffector, m_robotMap.basinLimitSwitch, m_robotMap.endeffectorLimitSwitch, m_robotMap.IRIntakeBeam, m_robotLED);
+    public final Elevator m_robotElevator = new Elevator(m_robotMap.elevatorIO, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 

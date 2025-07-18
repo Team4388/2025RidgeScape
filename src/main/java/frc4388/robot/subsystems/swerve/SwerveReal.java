@@ -10,15 +10,13 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import frc4388.robot.subsystems.lidar.LidarIO.LidarState;
 import frc4388.robot.subsystems.vision.Vision;
 import frc4388.robot.subsystems.vision.VisionIO.PoseObservation;
 
-public class SwervePhoenix implements SwerveIO {
+public class SwerveReal implements SwerveIO {
     SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain;
 
-    public SwervePhoenix(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
+    public SwerveReal(SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDriveTrain) {
         this.swerveDriveTrain = swerveDriveTrain;
         swerveDriveTrain.getOdometryFrequency();
     }
@@ -26,9 +24,9 @@ public class SwervePhoenix implements SwerveIO {
     @Override
     public void updateInputs(SwerveState state) {
         double time = Vision.getTime();
-        state.frequency = swerveDriveTrain.getOdometryFrequency();
+        state.odometryRate = 1 / swerveDriveTrain.getOdometryFrequency();
         state.currentPose = swerveDriveTrain.samplePoseAt(time).orElse(null);
-        state.lastPose = swerveDriveTrain.samplePoseAt(time - state.frequency).orElse(null);
+        state.lastPose = swerveDriveTrain.samplePoseAt(time - state.odometryRate).orElse(null);
         state.speeds = swerveDriveTrain.getState().Speeds;
     }
 

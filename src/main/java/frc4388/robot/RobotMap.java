@@ -21,14 +21,16 @@ import frc4388.robot.constants.Constants.ElevatorConstants;
 import frc4388.robot.constants.Constants.LiDARConstants;
 import frc4388.robot.constants.Constants.SimConstants;
 import frc4388.robot.constants.Constants.VisionConstants;
+import frc4388.robot.subsystems.elevator.ElevatorIO;
+import frc4388.robot.subsystems.elevator.ElevatorReal;
 import frc4388.robot.subsystems.lidar.LiDAR;
 import frc4388.robot.subsystems.lidar.LidarIO;
-import frc4388.robot.subsystems.lidar.LidarLiteV2;
+import frc4388.robot.subsystems.lidar.LidarReal;
 import frc4388.robot.subsystems.swerve.SwerveDriveConstants;
 import frc4388.robot.subsystems.swerve.SwerveIO;
-import frc4388.robot.subsystems.swerve.SwervePhoenix;
+import frc4388.robot.subsystems.swerve.SwerveReal;
 import frc4388.robot.subsystems.vision.VisionIO;
-import frc4388.robot.subsystems.vision.VisionPhotonvision;
+import frc4388.robot.subsystems.vision.VisionReal;
 import frc4388.utility.status.FaultCANCoder;
 import frc4388.utility.status.FaultPhotonCamera;
 import frc4388.utility.status.FaultPidgeon2;
@@ -58,13 +60,7 @@ public class RobotMap {
     public final SwerveIO swerveDrivetrain;
 
     /* Elevator Subsystem */
-    public final TalonFX elevator = new TalonFX(ElevatorConstants.ELEVATOR_ID.id);
-    public final TalonFX endeffector = new TalonFX(ElevatorConstants.ENDEFFECTOR_ID.id);
-    
-
-    public final DigitalInput basinLimitSwitch = new DigitalInput(ElevatorConstants.BASIN_LIMIT_SWITCH);
-    public final DigitalInput endeffectorLimitSwitch = new DigitalInput(ElevatorConstants.ENDEFFECTOR_LIMIT_SWITCH);
-    public final DigitalInput IRIntakeBeam = new DigitalInput(ElevatorConstants.INTAKE_LIMIT_SWITCH);
+    public final ElevatorIO elevatorIO;
 
     public RobotMap(SimConstants.Mode mode) {
         switch (mode) {
@@ -73,28 +69,40 @@ public class RobotMap {
                 PhotonCamera leftCameraReal = new PhotonCamera(VisionConstants.LEFT_CAMERA_NAME);
                 PhotonCamera rightCameraReal = new PhotonCamera(VisionConstants.RIGHT_CAMERA_NAME);
 
-                leftCamera =  new VisionPhotonvision(leftCameraReal, VisionConstants.LEFT_CAMERA_POS);                ;
-                rightCamera = new VisionPhotonvision(rightCameraReal, VisionConstants.RIGHT_CAMERA_POS);
+                leftCamera =  new VisionReal(leftCameraReal, VisionConstants.LEFT_CAMERA_POS);                ;
+                rightCamera = new VisionReal(rightCameraReal, VisionConstants.RIGHT_CAMERA_POS);
 
                 FaultPhotonCamera.addDevice(leftCameraReal, "Left Camera");
                 FaultPhotonCamera.addDevice(rightCameraReal , "Right Camera");
 
                 // Configure LiDAR
-                reefLidar = new LidarLiteV2(LiDARConstants.REEF_LIDAR_DIO_CHANNEL);
-                reverseLidar = new LidarLiteV2(LiDARConstants.REVERSE_LIDAR_DIO_CHANNEL);
+                reefLidar = new LidarReal(LiDARConstants.REEF_LIDAR_DIO_CHANNEL);
+                reverseLidar = new LidarReal(LiDARConstants.REVERSE_LIDAR_DIO_CHANNEL);
 
                 // Configure swerve drive train
-
                 SwerveDrivetrain<TalonFX, TalonFX, CANcoder> swerveDrivetrainReal = new SwerveDrivetrain<TalonFX, TalonFX, CANcoder> (TalonFX::new, TalonFX::new, CANcoder::new, 
                     SwerveDriveConstants.DrivetrainConstants, 
                     SwerveDriveConstants.FRONT_LEFT, SwerveDriveConstants.FRONT_RIGHT,
                     SwerveDriveConstants.BACK_LEFT, SwerveDriveConstants.BACK_RIGHT
                 );
 
-                swerveDrivetrain = new SwervePhoenix(swerveDrivetrainReal);
+                swerveDrivetrain = new SwerveReal(swerveDrivetrainReal);
+
+                // Configure elevator
+
+                TalonFX elevator = new TalonFX(ElevatorConstants.ELEVATOR_ID.id);
+                TalonFX endeffector = new TalonFX(ElevatorConstants.ENDEFFECTOR_ID.id);
+                
+
+                DigitalInput basinLimitSwitch = new DigitalInput(ElevatorConstants.BASIN_LIMIT_SWITCH);
+                DigitalInput endeffectorLimitSwitch = new DigitalInput(ElevatorConstants.ENDEFFECTOR_LIMIT_SWITCH);
+                DigitalInput IRIntakeBeam = new DigitalInput(ElevatorConstants.INTAKE_LIMIT_SWITCH);
+
+                elevatorIO = new ElevatorReal(elevator, endeffector, basinLimitSwitch, endeffectorLimitSwitch, IRIntakeBeam);
 
 
 
+                // Fault
                 FaultPidgeon2.addDevice(swerveDrivetrainReal.getPigeon2(), "Gyro");
 
                 FaultTalonFX.addDevice(elevator, "Elevator");
@@ -122,6 +130,7 @@ public class RobotMap {
                 reefLidar = new LidarIO() {};
                 reverseLidar = new LidarIO() {};
                 swerveDrivetrain = new SwerveIO() {};
+                elevatorIO = new ElevatorIO() {};
                 break;
         }
     }

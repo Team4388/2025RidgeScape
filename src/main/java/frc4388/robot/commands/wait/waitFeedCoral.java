@@ -5,7 +5,7 @@
 package frc4388.robot.commands.wait;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc4388.robot.subsystems.Elevator;
+import frc4388.robot.subsystems.elevator.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class waitFeedCoral extends Command {

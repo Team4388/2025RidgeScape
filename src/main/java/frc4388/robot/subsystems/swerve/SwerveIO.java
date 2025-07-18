@@ -16,7 +16,7 @@ public interface SwerveIO {
         public Pose2d currentPose = null;
         public Pose2d lastPose = null;
         public ChassisSpeeds speeds = null;
-        public double frequency = 1;
+        public double odometryRate = 1;
     }
 
     public default void setControl(SwerveRequest ctrl) {}

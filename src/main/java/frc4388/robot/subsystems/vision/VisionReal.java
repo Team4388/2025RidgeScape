@@ -11,7 +11,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import frc4388.robot.constants.Constants.FieldConstants;
 import frc4388.robot.constants.Constants.VisionConstants;
 
-public class VisionPhotonvision implements VisionIO {
+public class VisionReal implements VisionIO {
     // private PhotonCamera[] cameras;
     // private PhotonPoseEstimator[] estimators;
     
@@ -21,7 +21,7 @@ public class VisionPhotonvision implements VisionIO {
     // public List<EstimatedRobotPose> poses = new ArrayList<>();
 
     
-    public VisionPhotonvision(PhotonCamera camera, Transform3d position){
+    public VisionReal(PhotonCamera camera, Transform3d position){
         this.camera = camera;
         estimator = new PhotonPoseEstimator(FieldConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, position);
         estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);

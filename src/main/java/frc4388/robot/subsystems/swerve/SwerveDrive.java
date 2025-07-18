@@ -4,16 +4,9 @@
 
 package frc4388.robot.subsystems.swerve;
 
-import java.util.Optional;
-
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,7 +15,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4388.robot.constants.Constants.AutoConstants;
-import frc4388.robot.subsystems.swerve.SwerveIO.SwerveState;
 import frc4388.robot.subsystems.vision.Vision;
 import frc4388.utility.compute.TimesNegativeOne;
 import frc4388.utility.status.Status;
@@ -56,7 +48,7 @@ public class SwerveDrive extends SubsystemBase implements Queryable {
 
     public double lastOdomSpeed;
 
-    public Pose2d initalPose2d = null;
+    public Pose2d initalPose2d = new Pose2d();
 
 
     public double rotTarget = 0.0;
@@ -353,9 +345,10 @@ public class SwerveDrive extends SubsystemBase implements Queryable {
         SmartDashboard.putNumber("RotTartget", rotTarget);
 
         io.updateInputs(state);
+        Logger.processInputs("SwerveDrive", state);
         
         vision.setLastOdomPose(state.currentPose);
-        setLastOdomSpeed(state.currentPose, state.lastPose, state.frequency);
+        setLastOdomSpeed(state.currentPose, state.lastPose, state.odometryRate);
 
         if (vision.isTag()) {
             Pose2d pose = vision.getPose2d();
@@ -447,6 +440,11 @@ public class SwerveDrive extends SubsystemBase implements Queryable {
         if(curPose != null && lastPose != null){
             lastOdomSpeed = curPose.getTranslation().getDistance(lastPose.getTranslation())/freq;
         }
+    }
+
+    @AutoLogOutput(key="SwerveDrive/speed ")
+    public double getOdometrySpeed() {
+        return lastOdomSpeed;
     }
     
 

@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.Counter;
 import frc4388.robot.constants.Constants.LiDARConstants;
 
 // https://girlsofsteeldocs.readthedocs.io/en/latest/technical-resources/sensors/LIDAR-Lite-Distance-Sensor.html#minimal-roborio-interface
-public class LidarLiteV2 implements LidarIO {
+public class LidarReal implements LidarIO {
 
     
     private Counter LidarPWM;
 
-    public LidarLiteV2(int port) {
+    public LidarReal(int port) {
         LidarPWM = new Counter(port);
         LidarPWM.setMaxPeriod(1.00); //set the max period that can be measured
         LidarPWM.setSemiPeriodMode(true); //Set the counter to period measurement
