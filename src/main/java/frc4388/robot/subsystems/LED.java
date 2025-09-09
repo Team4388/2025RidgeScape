@@ -7,24 +7,26 @@
 
 package frc4388.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc4388.robot.Constants.LEDConstants;
-import frc4388.utility.LEDPatterns;
-import frc4388.utility.Status;
-import frc4388.utility.Subsystem;
-import frc4388.utility.Status.ReportLevel;
+import frc4388.robot.constants.Constants.LEDConstants;
+import frc4388.utility.status.Status;
+import frc4388.utility.status.FaultReporter;
+import frc4388.utility.status.Queryable;
+import frc4388.utility.status.Status.ReportLevel;
+import frc4388.utility.structs.LEDPatterns;
 
 /**
  * Allows for the control of a 5v LED Strip using a Rev Robotics Blinkin LED
  * Driver
  */
-public class LED extends Subsystem {
+public class LED extends SubsystemBase implements Queryable {
+  public LED() {
+    FaultReporter.register(this);
+  }
 
   private static Spark LEDController = new Spark(LEDConstants.LED_SPARK_ID);
   private LEDPatterns mode = LEDConstants.DEFAULT_PATTERN;
@@ -47,23 +49,21 @@ public class LED extends Subsystem {
       LEDController.set(mode.getValue());
   }
 
-  @Override
-  public String getSubsystemName() {
-    return "LEDs";
+  @AutoLogOutput
+  public String state() {
+    return mode.getClass().toString();
   }
 
   @Override
-  public void queryStatus() {
-    SmartDashboard.putString("LED status", mode.name());
+  public String getName() {
+    return "LEDs";
   }
 
   @Override
   public Status diagnosticStatus() {
     Status status = new Status();
 
-    if(LEDController.isAlive())
-      status.addReport(ReportLevel.INFO, "LED is CONNECTED");
-    else
+    if(!LEDController.isAlive())
       status.addReport(ReportLevel.ERROR, "LED is DISCONNECTED");
     
     status.addReport(ReportLevel.INFO, "LED Mode: " + mode.name());
