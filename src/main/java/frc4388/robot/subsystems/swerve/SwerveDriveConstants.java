@@ -98,7 +98,7 @@ public final class SwerveDriveConstants {
         private static final Distance BACK_LEFT_YPOS = Inches.of(HALF_HEIGHT);
         
         //Back Right
-        private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.4306640625+0.5);
+        private static final Angle BACK_RIGHT_ENCODER_OFFSET = Rotations.of(0.4306640625);
         private static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = false;
         private static final boolean BACK_RIGHT_STEER_MOTOR_INVERTED = true;
         private static final boolean BACK_RIGHT_ENCODER_INVERTED = false;

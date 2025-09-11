@@ -49,7 +49,8 @@ public final class Constants {
 
     public static final class AutoConstants {
         // public static final Gains XY_GAINS = new Gains(5,0.6,0.0);
-        public static final Gains XY_GAINS = new Gains(8,0,0.0);
+        // public static final Gains XY_GAINS = new Gains(8,0,0.0);
+        public static final Gains XY_GAINS = new Gains(0.8,0,0.0);
         // public static final ConfigurableDouble P_XY_GAINS = new ConfigurableDouble("P_XY_GAINS", XY_GAINS.kP);
         // public static final ConfigurableDouble I_XY_GAINS = new ConfigurableDouble("I_XY_GAINS", XY_GAINS.kI);
         // public static final ConfigurableDouble D_XY_GAINS = new ConfigurableDouble("D_XY_GAINS", XY_GAINS.kD);
@@ -78,8 +79,8 @@ public final class Constants {
         public static final double Y_SCORING_POSITION_OFFSET = Units.inchesToMeters(16+1);
         public static final double HALF_ROBOT_SIZE = Units.inchesToMeters(18);
 
-        public static final double L4_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
-        public static final double L4_DISTANCE_SCORE = L4_DISTANCE_PREP;
+        public static final double L4_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15 - 3)  ;
+        public static final double L4_DISTANCE_SCORE = L4_DISTANCE_PREP - Units.inchesToMeters(3);
         // public static final double L4_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(4.5);
         
         public static final double L3_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
@@ -113,8 +114,8 @@ public final class Constants {
         public static final String LEFT_CAMERA_NAME = "CAMERA_LEFT";
         public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
 
-        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
-        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(4.547), -Units.inchesToMeters(8.031), Units.inchesToMeters(8.858)), new Rotation3d(0,0.0,0.0));
+        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(5.3), Units.inchesToMeters(8.75), Units.inchesToMeters(9)), new Rotation3d(0,0.0,-15.0 * Math.PI / 180));
+        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(0), -Units.inchesToMeters(0), Units.inchesToMeters(0)), new Rotation3d(0,0.0,0));
         
         public static final double MIN_ESTIMATION_DISTANCE = 2; // Meters
 

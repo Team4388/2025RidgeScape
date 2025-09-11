@@ -79,7 +79,7 @@ public class RobotContainer {
     
     /* Subsystems */
     public final LED m_robotLED = new LED();
-    public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
+    public final Vision m_vision = new Vision(m_robotMap.leftCamera);// m_robotMap.rightCamera);
     public final Elevator m_robotElevator = new Elevator(m_robotMap.elevatorIO, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
@@ -107,9 +107,9 @@ public class RobotContainer {
     private Command autoCommand;
 
     private Command waitFeedStation = new waitSupplier(m_robotElevator::readyToMove);
-    // private Command waitDebuger = new waitSupplier(m_driverXbox::getYButtonPressed);
+    private Command waitDebuger = new waitSupplier(m_driverXbox::getXButtonPressed);
     // private Command waitDebugerManual = new waitSupplier(m_driverXbox::getYButtonPressed);
-    private Command waitDebuger = new waitSupplier(() -> true);
+    // private Command waitDebuger = new waitSupplier(() -> true);
 
     // private ConfigurableString autoplaybackName = new ConfigurableString("Auto Playback Name", lastAutoName);
     // private neoJoystickPlayback autoPlayback = new neoJoystickPlayback(m_robotSwerveDrive, 
@@ -120,10 +120,10 @@ public class RobotContainer {
     private Command AprilLidarAlignL4RightFullAuto = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
         
-        new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
-            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.RIGHT, true)
-        ), () -> m_robotElevator.isL4Primed()),
+        // new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.RIGHT, true),
+        // ), () -> m_robotElevator.isL4Primed()),
 
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
         // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.RIGHT),
@@ -133,7 +133,7 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.RIGHT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
         waitDebuger.asProxy(),
         new ParallelRaceGroup(
             new WaitCommand(1),
@@ -204,6 +204,15 @@ public class RobotContainer {
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
         new InstantCommand(m_robotSwerveDrive::startSlowPeriod, m_robotSwerveDrive)
     );
+
+    private Command TempGoToReef = new SequentialCommandGroup(
+        new InstantCommand(m_robotSwerveDrive::startSlowPeriod, m_robotSwerveDrive),
+
+        new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L2_PREP_DISTANCE, Side.LEFT, true),
+
+        new InstantCommand(m_robotSwerveDrive::startSlowPeriod, m_robotSwerveDrive)
+    );
+
 
     /* private Command AprilLidarAlignL4Right = new SequentialCommandGroup(
         new InstantCommand(() -> {m_robotSwerveDrive.startSlowPeriod();}),
@@ -283,41 +292,52 @@ public class RobotContainer {
 
         // new IfCommand(() -> m_robotElevator.isL4Primed(), new SequentialCommandGroup(
 
-        new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
-            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.LEFT, true)
-        ), () -> m_robotElevator.isL4Primed()),
+        // new ConditionalCommand(Commands.none(), new SequentialCommandGroup(
+        new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        // new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_PREP, Side.LEFT, true),
+        // ), () -> m_robotElevator.isL4Primed()),
         
+        waitDebuger.asProxy(),
+
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
         // new GotoLastApril(m_robotSwerveDrive, m_vision, FieldConstants.L4_DISTANCE_2, Side.LEFT),
 
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
 
+        waitDebuger.asProxy(),
+
+
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.LEFT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
-        waitDebuger.asProxy(),
-        new ParallelRaceGroup(
-            new WaitCommand(1),
-            new MoveUntilSuply(
-                m_robotSwerveDrive, 
-                new Translation2d(0,-0.5), 
-                new Translation2d(), m_robotElevator::getEndeffectorLimit, true)
-        ),
-        new InstantCommand(m_robotSwerveDrive::softStop, m_robotSwerveDrive),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // waitDebuger.asProxy(),
+        // new ParallelRaceGroup(
+        //     new WaitCommand(1),
+        //     new MoveUntilSuply(
+        //         m_robotSwerveDrive, 
+        //         new Translation2d(0,-0.5), 
+        //         new Translation2d(), m_robotElevator::getEndeffectorLimit, true)
+        // ),
+        // new InstantCommand(m_robotSwerveDrive::softStop, m_robotSwerveDrive),
         
         new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringFour), m_robotElevator),
 
+        waitDebuger.asProxy(),
+
+
         new waitEndefectorRefrence(m_robotElevator),
 
-        
-        new MoveForTimeCommand(m_robotSwerveDrive, 
-            new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
+        waitDebuger.asProxy(),
 
-        // // new ConditionalCommand(
-        // //     new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
-            new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
+
+        
+        // new MoveForTimeCommand(m_robotSwerveDrive, 
+        //     new Translation2d(0,1), new Translation2d(), AutoConstants.L4_DRIVE_TIME, true),
+
+        // // // new ConditionalCommand(
+        // // //     new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.PrimedFour), m_robotElevator),
+        //     new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.Waiting), m_robotElevator),
                 // () -> m_robotElevator.hasCoral()),
 
 
@@ -671,6 +691,11 @@ public class RobotContainer {
         new JoystickButton(getDeadbandedDriverController(), XboxController.A_BUTTON)
             .onTrue(new InstantCommand(() -> m_robotSwerveDrive.resetGyro()));
 
+        
+        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+            .onTrue(AprilLidarAlignL4LeftFullAuto);
+            
+
         // ! /* Speed */
         new JoystickButton(getDeadbandedDriverController(), XboxController.RIGHT_BUMPER_BUTTON)
             .onTrue(new InstantCommand(()  -> m_robotSwerveDrive.shiftUp()));
@@ -717,10 +742,10 @@ public class RobotContainer {
                 ), m_robotSwerveDrive))
             .onFalse(new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive));
         
-        new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
-        //        .onTrue( new DriveUntilLiDAR(m_robotSwerveDrive, 
-        //        new Translation2d(-1,0), new Translation2d(), m_robotMap.reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, true));
-            .onTrue(WannaSeeMeDunk.asProxy());
+        // new JoystickButton(getDeadbandedDriverController(), XboxController.Y_BUTTON)
+        // //        .onTrue( new DriveUntilLiDAR(m_robotSwerveDrive, 
+        // //        new Translation2d(-1,0), new Translation2d(), m_robotMap.reverseLidar, LiDARConstants.HUMAN_PLAYER_STATION_DISTANCE, true));
+        //     .onTrue(WannaSeeMeDunk.asProxy());
 
         new JoystickButton(getDeadbandedDriverController(), XboxController.X_BUTTON)
             .onTrue(thrustIntake.asProxy());
