@@ -55,7 +55,7 @@ public class ReefPositionHelper {
             }
         }
         
-        System.out.println(minPos.getRotation().getDegrees());
+        // System.out.println(minPos.getRotation().getDegrees());
 
         return minPos;
     }
