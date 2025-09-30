@@ -80,7 +80,7 @@ public final class Constants {
         public static final double HALF_ROBOT_SIZE = Units.inchesToMeters(18);
 
         public static final double L4_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15 - 6);
-        public static final double L4_DISTANCE_SCORE = L4_DISTANCE_PREP;
+        public static final double L4_DISTANCE_SCORE = L4_DISTANCE_PREP +  Units.inchesToMeters(-6);
         // public static final double L4_DISTANCE_SCORE = HALF_ROBOT_SIZE + Units.inchesToMeters(4.5);
         
         public static final double L3_DISTANCE_PREP = HALF_ROBOT_SIZE + Units.inchesToMeters(15);
@@ -114,8 +114,8 @@ public final class Constants {
         public static final String LEFT_CAMERA_NAME = "CAMERA_LEFT";
         public static final String RIGHT_CAMERA_NAME = "CAMERA_RIGHT";
 
-        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(5.3), Units.inchesToMeters(8.75+3), Units.inchesToMeters(9)), new Rotation3d(0,0.0,-15.0 * Math.PI / 180));
-        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(0), -Units.inchesToMeters(0), Units.inchesToMeters(0)), new Rotation3d(0,0.0,0));
+        public static final Transform3d LEFT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(5.3), Units.inchesToMeters(8.75+6), Units.inchesToMeters(9)), new Rotation3d(0,0.0,-15.0 * Math.PI / 180));
+        public static final Transform3d RIGHT_CAMERA_POS = new Transform3d(new Translation3d(Units.inchesToMeters(5.3), -Units.inchesToMeters(8.75-3), Units.inchesToMeters(9)), new Rotation3d(0,0.0,15.0 * Math.PI / 180));
         
         public static final double MIN_ESTIMATION_DISTANCE = 2; // Meters
 

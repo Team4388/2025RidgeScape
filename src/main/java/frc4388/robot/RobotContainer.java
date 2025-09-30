@@ -79,12 +79,12 @@ public class RobotContainer {
     
     /* Subsystems */
     public final LED m_robotLED = new LED();
-    public final Vision m_vision = new Vision(m_robotMap.leftCamera);// m_robotMap.rightCamera);
+    public final Vision m_vision = new Vision(m_robotMap.leftCamera, m_robotMap.rightCamera);
     public final Elevator m_robotElevator = new Elevator(m_robotMap.elevatorIO, m_robotLED);
     public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain, m_vision);
     // public final SwerveDrive m_robotSwerveDrive = new SwerveDrive(m_robotMap.swerveDrivetrain);
 
-    public final LiDAR reefLidar = new LiDAR(m_robotMap.reefLidar, "Reef");
+    // public final LiDAR reefLidar = new LiDAR(m_robotMap.reefLidar, "Reef");
     public final LiDAR reverseLidar = new LiDAR(m_robotMap.reverseLidar, "Reverse");
 
 
@@ -347,7 +347,7 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L4_DISTANCE_SCORE, Side.LEFT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
         // waitDebuger.asProxy(),
         // new ParallelRaceGroup(
         //     new WaitCommand(1),
@@ -388,8 +388,8 @@ public class RobotContainer {
 
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_SCORE-Units.inchesToMeters(1), Side.LEFT, true),
         waitDebuger.asProxy(),
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
-        waitDebuger.asProxy(),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // waitDebuger.asProxy(),
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
@@ -417,8 +417,8 @@ public class RobotContainer {
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L3_DISTANCE_SCORE, Side.RIGHT, true),
         waitDebuger.asProxy(),
         
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
-        waitDebuger.asProxy(),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // waitDebuger.asProxy(),
 
         // new InstantCommand(() ->  m_robotElevator.transitionState(CoordinationState.ScoringThree), m_robotElevator),
 
@@ -437,8 +437,8 @@ public class RobotContainer {
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.LEFT, true),
         waitDebuger.asProxy(),
         
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
-        waitDebuger.asProxy(),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // waitDebuger.asProxy(),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
@@ -458,8 +458,8 @@ public class RobotContainer {
         new DriveToReef(m_robotSwerveDrive, m_vision, AutoConstants.L2_SCORE_DISTANCE, Side.RIGHT, true),
         waitDebuger.asProxy(),
 
-        new LidarAlign(m_robotSwerveDrive, reefLidar),
-        waitDebuger.asProxy(),
+        // new LidarAlign(m_robotSwerveDrive, reefLidar),
+        // waitDebuger.asProxy(),
         new InstantCommand(() -> {m_robotElevator.transitionState(CoordinationState.L2Score);}, m_robotElevator),
         new waitEndefectorRefrence(m_robotElevator),
         new waitElevatorRefrence(m_robotElevator),
@@ -735,7 +735,7 @@ public class RobotContainer {
             .onTrue(thrustIntake.asProxy());
           
         new JoystickButton(getDeadbandedDriverController(), XboxController.B_BUTTON)
-            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.softStop();}, m_robotSwerveDrive, reefLidar)); 
+            .onTrue(new InstantCommand(() -> {m_robotSwerveDrive.softStop();}, m_robotSwerveDrive)); 
         
             
         // ?  /* Operator Buttons */
@@ -748,10 +748,10 @@ public class RobotContainer {
         // Button box
 
         new JoystickButton(getButtonBox(), ButtonBox.Five)
-            .onTrue(AprilLidarAlignL4LeftSemiAuto);
+            .onTrue(AprilLidarAlignL4LeftFullAuto);
         
         new JoystickButton(getButtonBox(), ButtonBox.One)
-            .onTrue(AprilLidarAlignL4RightSemiAuto);
+            .onTrue(AprilLidarAlignL4RightFullAuto);
 
         new JoystickButton(getButtonBox(), ButtonBox.Six)
             .onTrue(AprilLidarAlignL3Left);
@@ -813,7 +813,7 @@ public class RobotContainer {
             .onTrue(AprilLidarAlignL4LeftFullAuto);
         
         new Trigger(() -> getDeadbandedOperatorController().getRightTriggerAxis() >= 0.8 && !operatorManualMode)
-            .onTrue(AprilLidarAlignL4RightSemiAuto);
+            .onTrue(AprilLidarAlignL4RightFullAuto);
 
         new Trigger(() -> getDeadbandedOperatorController().getLeftBumperButton() && !operatorManualMode)
             .onTrue(AprilLidarAlignL3Left);

@@ -45,7 +45,7 @@ public class RobotMap {
     // public RobotGyro gyro = new RobotGyro(m_pigeon2);
 
     public final VisionIO leftCamera;
-    // public final VisionIO rightCamera;
+    public final VisionIO rightCamera;
 
     // public final LiDAR lidar = new 
 
@@ -67,10 +67,10 @@ public class RobotMap {
             case REAL:
                 // Configure cameras
                 PhotonCamera leftCameraReal = new PhotonCamera(VisionConstants.LEFT_CAMERA_NAME);
-                // PhotonCamera rightCameraReal = new PhotonCamera(VisionConstants.RIGHT_CAMERA_NAME);
+                PhotonCamera rightCameraReal = new PhotonCamera(VisionConstants.RIGHT_CAMERA_NAME);
 
                 leftCamera =  new VisionReal(leftCameraReal, VisionConstants.LEFT_CAMERA_POS);                ;
-                // rightCamera = new VisionReal(rightCameraReal, VisionConstants.RIGHT_CAMERA_POS);
+                rightCamera = new VisionReal(rightCameraReal, VisionConstants.RIGHT_CAMERA_POS);
 
                 FaultPhotonCamera.addDevice(leftCameraReal, "Left Camera");
                 // FaultPhotonCamera.addDevice(rightCameraReal , "Right Camera");
@@ -126,7 +126,7 @@ public class RobotMap {
             //     break;
             default:
                 leftCamera = new VisionIO() {};
-                // rightCamera = new VisionIO() {};
+                rightCamera = new VisionIO() {};
                 reefLidar = new LidarIO() {};
                 reverseLidar = new LidarIO() {};
                 swerveDrivetrain = new SwerveIO() {};

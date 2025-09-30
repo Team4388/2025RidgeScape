@@ -277,7 +277,7 @@ public class SwerveDrive extends SubsystemBase implements Queryable {
                 .withVelocityY(0)
                 .withTargetDirection(Rotation2d.fromDegrees(angle)));
 
-        if (Math.abs(angle - getGyroAngle()) < 5.0) {
+        if (Math.abs(angle - getGyroAngle()) < 2.0) {
             return true;
         }
 
