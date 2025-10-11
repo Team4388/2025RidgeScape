@@ -1,5 +1,7 @@
 package frc4388.robot.commands.alignment;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -60,6 +62,8 @@ public class DriveToReef extends Command {
             Units.inchesToMeters(AutoConstants.X_OFFSET_TRIM.get()), 
             distance + Units.inchesToMeters(AutoConstants.Y_OFFSET_TRIM.get())
         );
+        
+        Logger.recordOutput("SwerveDrive", targetpos);
     }
     
     double xerr;

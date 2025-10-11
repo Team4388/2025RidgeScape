@@ -66,7 +66,7 @@ public final class Constants {
         public static final Trim ARM_OFFSET_TRIM =      new Trim("ARM Offset Trim",      -ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, ElevatorConstants.COMPLETLY_TOP_ENDEFFECTOR, 1, 0);
                 
         public static final double XY_TOLERANCE = 0.07; // Meters
-        public static final double ROT_TOLERANCE = 5; // Degrees
+        public static final double ROT_TOLERANCE = 3; // Degrees
 
         public static final double MIN_XY_PID_OUTPUT = 0.0;
         public static final double MIN_ROT_PID_OUTPUT = 0.0;
