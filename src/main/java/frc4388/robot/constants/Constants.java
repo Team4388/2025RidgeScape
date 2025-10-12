@@ -181,7 +181,7 @@ public final class Constants {
         //Max for elevator = 50%
         
         public static final double GROUND_POSITION_ELEVATOR = 0 * GEAR_RATIO_ELEVATOR;
-        public static final double WAITING_POSITION_ELEVATOR = -9.5 - 1.5; // TODO: find 2-4 in off the pipe
+        public static final double WAITING_POSITION_ELEVATOR = -9.5 - 0.5; // TODO: find 2-4 in off the pipe
         public static final double HOVERING_POSITION_ELEVATOR = -7.5; // TODO: find 2-4 in off the pipe
         public static final double WAITING_POSITION_BEAM_BREAK_ELEVATOR = -5; // TODO: find on the pipe
         public static final double SCORING_THREE_ELEVATOR = -9.25;

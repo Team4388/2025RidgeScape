@@ -536,6 +536,12 @@ public class RobotContainer {
         new InstantCommand(() -> m_robotSwerveDrive.softStop(), m_robotSwerveDrive),
         new InstantCommand(() -> m_robotSwerveDrive.endSlowPeriod(), m_robotSwerveDrive)
     );
+
+    private Command moveForwardL4 = new SequentialCommandGroup(
+        new InstantCommand(() -> m_robotSwerveDrive.startSlowPeriod(), m_robotSwerveDrive),
+        new MoveForTimeCommand(m_robotSwerveDrive, new Translation2d(0,-1), new Translation2d(), 1500, true),
+        new InstantCommand(() -> m_robotSwerveDrive.endSlowPeriod(), m_robotSwerveDrive)
+    );
     
     private Boolean operatorManualMode = false;
     
@@ -595,6 +601,8 @@ public class RobotContainer {
             // new InstantCommand(() -> Constants.AutoConstants.Y_OFFSET_TRIM.set(1.5)),
             new InstantCommand(() -> m_robotElevator.transitionState(CoordinationState.PrimedFour))
         ));
+
+        NamedCommands.registerCommand("move-forward-l4", moveForwardL4);
 
         configureButtonBindings();        
         configureVirtualButtonBindings();

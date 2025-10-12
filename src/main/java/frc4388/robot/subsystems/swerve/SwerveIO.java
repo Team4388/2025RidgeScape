@@ -1,6 +1,7 @@
 package frc4388.robot.subsystems.swerve;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -30,4 +31,6 @@ public interface SwerveIO {
     public default void addVisionMeasurement(List<PoseObservation> poses) {}
 
     public default void updateInputs(SwerveState state) {}
+
+    public default Optional<Pose2d> samplePoseAt(double time) {return Optional.empty();}
 }

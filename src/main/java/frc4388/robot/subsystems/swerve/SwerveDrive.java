@@ -7,6 +7,7 @@ package frc4388.robot.subsystems.swerve;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -76,7 +77,7 @@ public class SwerveDrive extends SubsystemBase implements Queryable {
         // DoubleSupplier a = () -> 1.d;
         AutoBuilder.configure(
                 () -> {
-                    return getPose2d();
+                    return io.samplePoseAt(Utils.getCurrentTimeSeconds()).orElse(initalPose2d);
                 }, // Robot pose supplier
                 this::setOdoPose, // Method to reset odometry (will be called if your auto has a starting
                                              // pose)

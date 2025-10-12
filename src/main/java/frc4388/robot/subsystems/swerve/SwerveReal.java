@@ -1,6 +1,7 @@
 package frc4388.robot.subsystems.swerve;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -10,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc4388.robot.subsystems.vision.Vision;
 import frc4388.robot.subsystems.vision.VisionIO.PoseObservation;
 
@@ -51,6 +53,11 @@ public class SwerveReal implements SwerveIO {
             talonFXConfigs.CurrentLimits.SupplyCurrentLimit = limitInAmps+10;
             talonFXConfigurator.apply(talonFXConfigs);
         }
+    }
+
+    @Override
+    public Optional<Pose2d> samplePoseAt(double time) {
+        return swerveDriveTrain.samplePoseAt(time);
     }
 
     @Override
