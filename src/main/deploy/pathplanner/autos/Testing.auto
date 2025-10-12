@@ -5,15 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "prepare-l4"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Center Barge to Reef 4 Left"
+            "pathName": "Test path"
           }
         },
         {
